@@ -1,0 +1,39 @@
+{
+  "name": "",
+  "charset": "",
+  "dependencies":"",
+  "request": "",
+  "metadata": {
+    "list": "",
+    "name": "",
+    "author": "",
+    "img": "",
+    "link": ""
+  },
+  "detail": {
+    "author": "",
+    "summary": "",
+    "upDate": "",
+    "catalog_link": "",
+    "tab": {
+      "list": "",
+      "name": ""
+    },
+    "catalog": {
+      "list": "",
+      "chapter": {
+        "list": "",
+        "name": "",
+        "link": "",
+        "orderBy": 1,
+        "category": 1
+      }
+    }
+  },
+  "content": {
+    "list": "",
+    "link": "",
+    "mode": 1,
+    "text": "",
+  }
+}
