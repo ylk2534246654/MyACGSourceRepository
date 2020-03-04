@@ -119,7 +119,7 @@ https://github.com/ylk2534246654/MyACGSourceRepository
     "list": [
         {
             "name": "",
-            "url": "",
+            "summary": "",
             "checked": true,
             "category": 1
         }
@@ -137,7 +137,7 @@ https://github.com/ylk2534246654/MyACGSourceRepository
 |             |                |      |                                             |
 | list        | null           | 是     |  搜索源列表                              |
 | name        | String(文本型) | 是     | 搜索源名称                                  |
-| url         | String(文本型) | 是     | 搜索源介绍                                   |
+| summary     | String(文本型) | 是     | 搜索源介绍                                   |
 | checked     | bool(逻辑型)   | 是     | 搜索源默认开关                                   |
 | category    | int(整数型)    | 是     | 搜索源类型1:链接2:漫画解析3:视频解析4:小说解析 |
 
@@ -152,7 +152,7 @@ https://github.com/ylk2534246654/MyACGSourceRepository
   "request": "",
   "metadata": {
     "list": "",
-    "name": "",
+    "title": "",
     "author": "",
     "img": "",
     "link": ""
@@ -162,7 +162,7 @@ https://github.com/ylk2534246654/MyACGSourceRepository
     "summary": "",
     "upDate": "",
     "catalog_link": "",
-    "tab": {
+    "tabs": {
       "list": "",
       "name": ""
     },
@@ -196,7 +196,7 @@ https://github.com/ylk2534246654/MyACGSourceRepository
 |              |                           |      |                              |
 | metadata     | null                      | 是   | 搜索结果处理                 |
 | list         | javaScript代码,返回为数组 | 是   | 搜索结果列表                 |
-| name         | javaScript代码,返回为文本 | 是   | 搜索结果名称                 |
+| title        | javaScript代码,返回为文本 | 是   | 搜索结果名称                 |
 | author       | javaScript代码,返回为文本 | 是   | 搜索结果作者                 |
 | img          | javaScript代码,返回为文本 | 是   | 搜索结果缩略图               |
 | link         | javaScript代码,返回为文本 | 是   | 搜索结果跳转链接             |
@@ -207,7 +207,7 @@ https://github.com/ylk2534246654/MyACGSourceRepository
 | upDate       | null                      | 是   | 搜索结果处理                 |
 | catalog_link | javaScript代码,返回为文本 | 否   | 目录跳转链接[一般不使用]         |
 |              |                           |      |                              |
-| tab         | null                       | 否   | 详细界面tab[一般不使用]        |
+| tabs         | null                       | 否   | 详细界面tab[一般不使用]        |
 | list       | javaScript代码,返回为数组    | 是   | tab列表                       |
 | name       | javaScript代码,返回为文本    | 是   | tab名称                       |
 |              |                           |      |                              |
