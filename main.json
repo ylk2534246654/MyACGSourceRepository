@@ -1,0 +1,16 @@
+{
+    "type": "MyACG搜索源",
+    "name": "",
+    "summary": "",
+    "sources": "",
+    "versionName": "",
+    "versionCode": 1,
+    "list": [
+        {
+            "name": "",
+            "url": "",
+            "checked": true,
+            "category": 1
+        }
+    ]
+}
