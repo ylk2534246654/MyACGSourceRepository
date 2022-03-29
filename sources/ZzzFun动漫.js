@@ -6,7 +6,7 @@ function mainifest() {
 		//优先级1~100，数值越大越靠前
 		priority:1,
 		
-		//是否失效,默认关闭
+		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
 		invalid: false,
 		
@@ -23,7 +23,7 @@ function mainifest() {
 		version: 1,
 
 		//搜索源更新链接(可使用多个) ","符号进行隔开，注意：不要使用中文的逗号
-		updateUrl: "",
+		updateUrl: "https://gitee.com/yx/sources/raw/master/sources/www.biqug.com.js",
 		
 		//更新时间
 		updateTime: "2022年3月29日",
