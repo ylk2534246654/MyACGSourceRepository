@@ -35,7 +35,7 @@ function mainifest() {
 		tag: "美图",
 		
 		//@NonNull 详细界面域名，搜索源标识
-		host: "duitang.com"
+		host: "www.duitang.com"
 	});
 }
 const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
