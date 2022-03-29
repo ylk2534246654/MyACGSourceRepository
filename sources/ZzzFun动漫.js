@@ -23,7 +23,7 @@ function mainifest() {
 		version: 1,
 
 		//搜索源更新链接(可使用多个) ","符号进行隔开，注意：不要使用中文的逗号
-		updateUrl: "https://gitee.com/yx/sources/raw/master/sources/www.biqug.com.js",
+		updateUrl: "",
 		
 		//更新时间
 		updateTime: "2022年3月29日",
