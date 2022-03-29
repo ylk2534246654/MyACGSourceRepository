@@ -54,7 +54,7 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'https://m.i2356.com/search/?keywords=' + encodeURI(key) + '@charset->UTF-8' + header;
+	var url = 'https://m.i2356.com/search/?keywords=' + encodeURI(key) + header;
 	const response = httpRequest(url);
 	
 	const list = jsoupArray(response,'#update_list > div > div').outerHtml();
@@ -72,7 +72,7 @@ function search(key) {
 			cover : jsoup(data,'div.itemImg > a > mip-img').attr('src'),
 			
 			//链接
-			url : urlJoin(url,jsoup(data,'div.itemTxt > a').attr('href'))
+			url : ToolUtil.urlJoin(url,jsoup(data,'div.itemTxt > a').attr('href'))
 			});
 	}
 	return JSON.stringify(array);
@@ -139,7 +139,7 @@ function catalogs(response,url) {
 				//章节名称
 				name: jsoup(chapter,'a').text(),
 				//章节链接
-				url: urlJoin(url,jsoup(chapter,'a').attr('href').replace('.html','-{p}.html@zero->1@start->1'))
+				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href').replace('.html','-{p}.html@zero->1@start->1'))
 			});
 		}
 		//添加目录
@@ -187,7 +187,7 @@ function find(url) {
 			cover : jsoup(data,'mip-img').attr('src'),
 			
 			//链接
-			url : urlJoin(url,jsoup(data,'a.ImgA').attr('href'))
+			url : ToolUtil.urlJoin(url,jsoup(data,'a.ImgA').attr('href'))
 			});
 	}
 	return JSON.stringify(array);
