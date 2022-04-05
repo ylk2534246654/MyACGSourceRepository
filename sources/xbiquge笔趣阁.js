@@ -1,5 +1,9 @@
 function mainifest() {
 	return JSON.stringify({
+		//@NonNull 搜索源ID标识，设置后不建议更改
+		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
+		id: 1648714426,
+		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
 		minMyACG: 20220101,
 
@@ -22,8 +26,14 @@ function mainifest() {
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
 		version: 1,
 
-		//搜索源更新链接(可使用多个) ","符号进行隔开，注意：不要使用中文的逗号
-		updateUrl: "",
+		//搜索源自动同步更新链接
+		syncList: {
+			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/xbiquge笔趣阁.js",
+			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/xbiquge笔趣阁.js",
+			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/xbiquge笔趣阁.js",
+			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/xbiquge笔趣阁.js",
+			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/xbiquge笔趣阁.js"
+		},
 		
 		//更新时间
 		updateTime: "2022年3月29日",
@@ -34,8 +44,8 @@ function mainifest() {
 		//自定义标签，支持配置多个，多个链接之间，通过英文逗号进行分隔
 		tag: "小说",
 		
-		//@NonNull 详细界面域名，搜索源标识
-		host: "www.xbiquge.la",
+		//@NonNull 详细界面的域名
+		hostName: "https://www.xbiquge.la"
 	});
 }
 
@@ -72,7 +82,7 @@ function search(key) {
 /**
  * 详情
  * @params {string} url
- * @returns {[{author, summary, cover, upDate, reverseOrder, catalogs}]}
+ * @returns {[{author, summary, cover, upDate, reverseOrder, catalog}]}
  */
 function detail(url) {
 	const response = httpRequest(url+ header);
@@ -90,16 +100,16 @@ function detail(url) {
 		reverseOrder: false,
 		
 		//目录链接/非外链无需使用
-		catalogs: catalogs(response,url)
+		catalog: catalog(response,url)
 	})
 }
 /**
  * 目录
  * @params {string} response
  * @params {string} url
- * @returns {tag, chapters:{[{group, name, url}]}}
+ * @returns {tag, chapter:{[{group, name, url}]}}
  */
-function catalogs(response,url) {
+function catalog(response,url) {
 	//创建目录数组
 	var new_catalogs= [];
 		
@@ -126,19 +136,19 @@ function catalogs(response,url) {
 		//目录名称
 		tag: '目录',
 		//章节
-		chapters : newchapters
+		chapter : newchapters
 	});
 	return new_catalogs;
 }
 
 /**
- * 解析
+ * 内容
  * @params {string} url
  * @returns {[{url}]}
  */
-function analysis(url) {
+function content(url) {
 	const response = httpRequest(url + header);
-	const url2 = jsoup(response,'#content').outerHtml();
-	return url2;
+	const src = jsoup(response,'#content').outerHtml();
+	return src;
 }
 
