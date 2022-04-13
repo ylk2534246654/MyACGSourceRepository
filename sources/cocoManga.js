@@ -132,7 +132,7 @@ function catalog(response,url) {
 				//章节名称
 				name: jsoup(chapter,'a').text(),
 				//章节链接
-				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href')) + setting
+				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href')) + '@contentType->2' + setting
 			});
 		}
 		//添加目录
@@ -146,11 +146,23 @@ function catalog(response,url) {
 	return new_catalogs
 }
 /**
- * 内容
+ * 内容(InterceptRequest)
  * @params {string} url
  * @returns {[{url}]}
  */
 function content(url) {
+	//浏览器请求结果处理
+	if(url.startsWith('https://img.cocomanga.com')){
+		return url;
+	}
+	return null;
+}
+/**
+ * 内容(失效)
+ * @params {string} url
+ * @returns {[{url}]}
+ */
+function content_invalid(url) {
 	const response = httpRequest(url);
 	
 	var C_DATA = ToolUtil.substring(response,"C_DATA='","'") + '=';

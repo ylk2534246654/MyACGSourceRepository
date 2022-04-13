@@ -170,7 +170,7 @@ function catalog(response,url) {
 function content(url) {
 	const response = httpRequest(url + header);
 	const src = jsoup(response,'mip-link > mip-img:not([style=display: none;])').attr('src');
-	return src;
+	return JSON.stringify(src);
 }
 
 /**
