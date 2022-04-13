@@ -44,23 +44,20 @@ function mainifest() {
 		//自定义标签，支持配置多个，多个链接之间，通过英文逗号进行分隔
 		tag: "小说,轻小说",
 		
-		//@NonNull 详细界面的域名
-		hostName: "https://www.wenku8.net",
-		
-		//@NonNull 详细界面域名，搜索源标识
-		host: "www.wenku8.net",
+		//@NonNull 详细界面的基本网址
+		baseUrl: "https://www.wenku8.net",
 		
 		//登录授权是否启用
 		auth: true,
 		
 		//登录授权链接
-		authUrl:"http://www.wenku8.net/index.php@callback->登录成功"
+		authUrl:"https://www.wenku8.net/index.php@callback->登录成功"
 	});
 }
 
 function auth() {
-	const response = httpRequest("http://www.wenku8.net/index.php");
-	if(response.indexOf('轻小说文库欢迎您')==-1){
+	const response = httpRequest("https://www.wenku8.net/index.php");
+	if(response.indexOf('轻小说文库欢迎您') != -1){
 		return true;
 	}
 	return false;

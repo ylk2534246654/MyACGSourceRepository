@@ -44,19 +44,18 @@ function mainifest() {
 		//自定义标签，支持配置多个，多个链接之间，通过英文逗号进行分隔
 		tag: "漫画",
 		
-		//@NonNull 详细界面的域名
-		hostName: "https://www.cocomanga.com"
+		//@NonNull 详细界面的基本网址
+		baseUrl: "https://www.cocomanga.com"//onemanhua
 	})
 }
-const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
-
+const setting = "@rate->2500";
 /**
  * 搜索
  * @params {string} key
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'https://www.cocomanga.com/search?searchString=' + encodeURI(key) + header;
+	var url = 'https://www.cocomanga.com/search?searchString=' + encodeURI(key) + setting;
 	const response = httpRequest(url);
 	
 	const list = jsoupArray(response,'div.fed-part-layout > dl').outerHtml();
@@ -66,7 +65,7 @@ function search(key) {
 		array.push({
 			title : jsoup(data,'dd > h1').text(),
 			introduction : jsoup(data,'dd > ul > li:nth-child(3)').text(),
-			cover : jsoup(data,'dt > a').attr('data-original') + '@header->referer:https://www.cocomanga.com/'+header,
+			cover : jsoup(data,'dt > a').attr('data-original') + '@header->Referer:https://www.cocomanga.com/' + setting,
 			url : ToolUtil.urlJoin(url,jsoup(data,'dt > a').attr('href'))
 			});
 	}
@@ -78,7 +77,7 @@ function search(key) {
  * @returns {[{author, summary, cover, upDate, reverseOrder, catalog}]}
  */
 function detail(url) {
-	const response = httpRequest(url+ header);
+	const response = httpRequest(url + setting);
 	return JSON.stringify({
 		//作者
 		author: jsoup(response,'dd > ul > li:nth-child(2) > a').text(),
@@ -87,7 +86,7 @@ function detail(url) {
 		summary: jsoup(response,'p.fed-part-both').text(),
 
 		//封面
-		//cover: ,
+		cover: jsoup(response,'a.fed-list-pics:nth-last-child(1)').attr('data-original') + '@header->Referer:https://www.cocomanga.com/' + setting,
 
 		//更新时间
 		upDate: jsoup(response,'dd > ul > li:nth-child(3) > a').text(),
@@ -133,7 +132,7 @@ function catalog(response,url) {
 				//章节名称
 				name: jsoup(chapter,'a').text(),
 				//章节链接
-				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href'))
+				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href')) + setting
 			});
 		}
 		//添加目录
@@ -152,26 +151,20 @@ function catalog(response,url) {
  * @returns {[{url}]}
  */
 function content(url) {
-	const response = httpRequest(url+ header);
+	const response = httpRequest(url);
 	
-	var __READKEY = 'fw122587mkertyui';
 	var C_DATA = ToolUtil.substring(response,"C_DATA='","'") + '=';
-	var DECRIPT_DATA;
-	try {
-		DECRIPT_DATA = __cdecrypt(__READKEY, CryptoJS.enc.Base64.parse(C_DATA).toString(CryptoJS.enc.Utf8));
-	} catch(error) {
-		DECRIPT_DATA = __cdecrypt('JRUIFMVJDIWE569j', CryptoJS.enc.Base64.parse(C_DATA).toString(CryptoJS.enc.Utf8));
-	}
+	var DECRIPT_DATA = __cdecrypt('z3hhZ1EzYv5rtAPB', CryptoJS.enc.Base64.parse(C_DATA).toString(CryptoJS.enc.Utf8));
 	eval(DECRIPT_DATA);
-	var endid = __cdecrypt(__READKEY, CryptoJS.enc.Base64.parse(mh_info.enc_code1).toString(CryptoJS.enc.Utf8));
-	var imgpath = __cdecrypt('fw125gjdi9ertyui', CryptoJS['enc']['Base64']['parse'](mh_info['enc_code2']).toString(CryptoJS['enc'].Utf8));
+	var endid = __cdecrypt('FqBrpwfMMfz6X3eK', CryptoJS.enc.Base64.parse(mh_info.enc_code1).toString(CryptoJS.enc.Utf8));
+	var imgpath = __cdecrypt('X6bMxI06N5kAPGE3', CryptoJS.enc.Base64.parse(mh_info.enc_code2).toString(CryptoJS.enc.Utf8));
 	var murl = 'http://' + mh_info.domain + '/comic/' + imgpath;
 	var src = [];
 	for (var i = mh_info.startimg; i <= endid; i++) {
 		var num = i;
 		var n = 4;
 		var a = (Array(n).join(0) + num).slice( - n);
-		src.push(murl + a + '.jpg@header->referer:https://www.cocomanga.com/');
+		src.push(murl + a + '.jpg@header->Referer:https://www.cocomanga.com/');
 	};
 	return JSON.stringify(src);
 }

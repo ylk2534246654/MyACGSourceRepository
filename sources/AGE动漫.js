@@ -44,8 +44,8 @@ function mainifest() {
 		//自定义标签，支持配置多个，多个链接之间，通过英文逗号进行分隔
 		tag: "动漫",
 		
-		//@NonNull 详细界面的域名
-		hostName: "https://agemys.com"
+		//@NonNull 详细界面的基本网址
+		baseUrl: "https://agemys.com"
 	});
 }
 const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';

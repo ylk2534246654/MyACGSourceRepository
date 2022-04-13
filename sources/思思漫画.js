@@ -44,8 +44,8 @@ function mainifest() {
 		//自定义标签，支持配置多个，多个链接之间，通过英文逗号进行分隔
 		tag: "漫画",
 		
-		//@NonNull 详细界面的域名
-		hostName: "https://m.sisimanhua.com",
+		//@NonNull 详细界面的基本网址
+		baseUrl: "https://m.sisimanhua.com",
 		
 		//发现
 		findList: {
