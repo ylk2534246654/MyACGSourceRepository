@@ -148,7 +148,7 @@ function catalog(response,url) {
 				//章节名称
 				name: jsoup(chapter,'a').text(),
 				//章节链接
-				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href').replace('.html','-{p}.html@zero->1@start->1'))
+				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href').replace('.html','-${p}.html@zero->1@start->1'))
 			});
 		}
 		//添加目录
