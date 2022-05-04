@@ -1,5 +1,8 @@
 function mainifest() {
 	return JSON.stringify({
+		//MyACG 最新版本
+		MyACG: 'https://lanzou.com/b07xqlbxc ',
+		
 		//@NonNull 搜索源ID标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
 		id: 1648714123,
@@ -8,7 +11,8 @@ function mainifest() {
 		minMyACG: 20220101,
 
 		//优先级1~100，数值越大越靠前
-		priority:1,
+		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
+		priority: 1,
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
@@ -20,8 +24,8 @@ function mainifest() {
 		//搜索源制作人
 		author: "雨夏",
 
-		//联系邮箱
-		mail: "2534246654@qq.com",
+		//电子邮箱
+		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
 		version: 1,
@@ -41,11 +45,11 @@ function mainifest() {
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
 		
-		//自定义标签，支持配置多个，多个链接之间，通过英文逗号进行分隔
-		tag: "动漫",
+		//自定义标签
+		tag: ["动漫"],
 		
 		//@NonNull 详细界面的基本网址
-		baseUrl: "https://agemys.com"
+		baseUrl: "https://agemys.com",
 	});
 }
 const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';

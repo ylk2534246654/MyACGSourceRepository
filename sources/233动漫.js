@@ -5,7 +5,7 @@ function mainifest() {
 		
 		//@NonNull 搜索源ID标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
-		id: 1648714353,
+		id: 1651501716,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
 		minMyACG: 20220101,
@@ -19,7 +19,7 @@ function mainifest() {
 		invalid: false,
 		
 		//@NonNull 搜索源名称
-		name: "ZzzFun动漫",
+		name: "233动漫",
 
 		//搜索源制作人
 		author: "雨夏",
@@ -32,11 +32,11 @@ function mainifest() {
 
 		//搜索源自动同步更新链接
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/ZzzFun动漫.js",
-			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/ZzzFun动漫.js",
-			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/ZzzFun动漫.js",
-			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/ZzzFun动漫.js",
-			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/ZzzFun动漫.js"
+			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/233动漫.js",
+			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/233动漫.js",
+			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/233动漫.js",
+			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/233动漫.js",
+			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/233动漫.js"
 		},
 		
 		//更新时间
@@ -49,7 +49,7 @@ function mainifest() {
 		tag: ["动漫"],
 		
 		//@NonNull 详细界面的基本网址
-		baseUrl: "http://service-i86gk1am-1251249846.gz.apigw.tencentcs.com",
+		baseUrl: "https://www.dm233.cc",
 	});
 }
 const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
@@ -60,25 +60,25 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'http://service-i86gk1am-1251249846.gz.apigw.tencentcs.com/android/search@post->key='+ encodeURI(key) + header;
+	var url = 'http://www.dm233.cc/search?keyword='+ encodeURI(key) + header;
 	const response = httpRequest(url);
 	
-	const list = jsonPathArray(response,'$..data[*]');
+	const list = jsoupArray(response,'#page-back > div > div > div.main > section > div.dhnew.adj1 > ul > li').outerHtml();
 	var array= [];
 	for (var i=0;i<list.length;i++) {
 	    var data = list[i];
 		array.push({
 			//标题
-			title : jsonPath(data,'$.videoName'),
+			title : jsoup(data,'p:nth-child(2) > a').text(),
 			
 			//概览
-			summary : jsonPath(data,'$.videoremarks'),
+			summary : jsoup(data,'p:nth-child(3) > a').text(),
 			
 			//封面
-			cover : jsonPath(data,'$.videoImg'),
+			cover : ToolUtil.urlJoin(url,jsoup(data,'p:nth-child(1) > a > img').attr('src')),
 			
 			//链接
-			url : 'http://service-i86gk1am-1251249846.gz.apigw.tencentcs.com/android/video/list_ios?videoId='+jsonPath(data,'$.videoId')
+			url : ToolUtil.urlJoin(url,jsoup(data,'p:nth-child(2) > a').attr('href'))
 			});
 	}
 	return JSON.stringify(array);
@@ -92,13 +92,16 @@ function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
 		//作者
-		//author: jsonPath(response,'li:nth-child(5) > span.detail_imform_value').text(),
+		author: jsoup(response,'#page-back > div > div > div.sidebar-left > div.normal-wai1 > div > div.normal-nei1.dhxx.anime_info > p:nth-child(7)').text(),
 		
 		//概览
-		summary: jsonPath(response,'$..videoDoc'),
+		summary: jsoup(response,'div.info2').text(),
 
 		//封面
-		//cover : jsonPath(response,'#fmimg > img').attr('src'),
+		//cover : jsoup(response,'#fmimg > img').attr('src'),
+
+		//更新时间
+		upDate: jsoup(response,'#page-back > div > div > div.main-right > section:nth-child(1) > div > div > div.info > div.info1 > ul.info1-left > li:nth-child(3) > p').text(),
 		
 		//目录是否倒序
 		reverseOrder: false,
@@ -115,10 +118,10 @@ function detail(url) {
  */
 function catalog(response,url) {
 	//目录标签代码
-	const tabs = jsonPathArray(response,'$..videoSets[*]');
+	const tabs = jsoupArray(response,'div.ol-select > ul > li').outerHtml();
 	
 	//目录代码
-	const catalogs = jsonPathArray(response,'$..videoSets[*]');
+	const catalogs = jsoupArray(response,'ul.eplist-eppic,ul.eplist-normal').outerHtml();
 	
 	//创建目录数组
 	var new_catalogs= [];
@@ -130,39 +133,28 @@ function catalog(response,url) {
 		var newchapters= [];
 		
 		//章节代码
-		var chapters = jsonPathArray(catalog,'$..list[*]');
+		var chapters = jsoupArray(catalog,'li').outerHtml();
 		
 		for (var ci=0;ci<chapters.length;ci++) {
 			var chapter = chapters[ci];
-			
-			var playids = jsonPath(chapter,'$.playid').split('-');
 			
 			newchapters.push({
 				//是否为分组
 				group: false,
 				//章节名称
-				name: jsonPath(chapter,'$.ji'),
+				name: jsoup(chapter,'a').text(),
 				//章节链接
-				url: 'http://www.zzzfun.com/vod_play_id_'+playids[0]+'_sid_1_nid_'+playids[1]+'.html'
+				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href'))
 			});
 		}
 		//添加目录
 		new_catalogs.push({
 			//目录名称
-			tag: jsonPath(tabs[i],'$..load'),
+			tag: jsoup(tabs[i],'li').text(),
 			//章节
 			chapter : newchapters
 			});
 	}
 	return new_catalogs
-}
-
-/**
- * 内容
- * @params string html
- * @returns {[{title, introduction, cover, url}]}
- */
-function content(url) {
-	return url+header+'@header->Referer:http://www.zzzfun.com';
 }
 

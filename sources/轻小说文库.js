@@ -1,5 +1,8 @@
 function mainifest() {
 	return JSON.stringify({
+		//MyACG 最新版本
+		MyACG: 'https://lanzou.com/b07xqlbxc ',
+		
 		//@NonNull 搜索源ID标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
 		id: 1648714588,
@@ -8,7 +11,8 @@ function mainifest() {
 		minMyACG: 20220101,
 
 		//优先级1~100，数值越大越靠前
-		priority:1,
+		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
+		priority: 50,
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
@@ -20,8 +24,8 @@ function mainifest() {
 		//搜索源制作人
 		author: "雨夏",
 
-		//联系邮箱
-		mail: "2534246654@qq.com",
+		//电子邮箱
+		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
 		version: 1,
@@ -41,8 +45,8 @@ function mainifest() {
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
 		
-		//自定义标签，支持配置多个，多个链接之间，通过英文逗号进行分隔
-		tag: "小说,轻小说",
+		//自定义标签
+		tag: ["小说","轻小说"],
 		
 		//@NonNull 详细界面的基本网址
 		baseUrl: "https://www.wenku8.net",
@@ -51,7 +55,10 @@ function mainifest() {
 		auth: true,
 		
 		//登录授权链接
-		authUrl:"https://www.wenku8.net/index.php@callback->登录成功"
+		authUrl:"https://www.wenku8.net/index.php@callback->登录成功",
+		
+		//需要授权的功能（search，detail，content，find）
+		authRequired: ["search"],
 	});
 }
 
@@ -145,23 +152,27 @@ function catalog(url) {
 	const response = httpRequest(url+ header);
 	//创建目录数组
 	var new_catalogs= [];
-		
+	
 	//创建章节数组
 	var newchapters= [];
 		
 	//章节代码
 	var chapters = jsoupArray(response,'td.vcss,td.ccss').outerHtml();
 		
+	var group;//分组记录
 	for (var ci=0;ci<chapters.length;ci++) {
 		var chapter = chapters[ci];
-		newchapters.push({
-			//是否为分组
-			group: !(chapter.indexOf('href')!=-1),
-			//章节名称
-			name: jsoup(chapter,'a,:matchText').text(),
-			//章节链接
-			url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href'))
-		});
+		
+		if(!(chapter.indexOf('href')!=-1)){
+			group = jsoup(chapter,':matchText').text();
+		}else{
+			newchapters.push({
+				//章节名称
+				name: group + ' ' + jsoup(chapter,'a').text(),
+				//章节链接
+				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href'))
+			});
+		}
 	}
 	//添加目录
 	new_catalogs.push({

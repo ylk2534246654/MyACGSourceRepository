@@ -5,21 +5,21 @@ function mainifest() {
 		
 		//@NonNull 搜索源ID标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
-		id: 1648714663,
+		id: 1651484017,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
 		minMyACG: 20211219,
-
+		
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
-		priority: 30,
+		priority: 1,
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
 		invalid: false,
 		
 		//@NonNull 搜索源名称
-		name: "思思漫画",
+		name: "168漫画",
 
 		//搜索源制作人
 		author: "雨夏",
@@ -32,11 +32,11 @@ function mainifest() {
 
 		//搜索源自动同步更新链接
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/思思漫画.js",
-			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/思思漫画.js",
-			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/思思漫画.js",
-			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/思思漫画.js",
-			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/思思漫画.js"
+			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/168漫画.js",
+			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/168漫画.js",
+			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/168漫画.js",
+			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/168漫画.js",
+			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/168漫画.js"
 		},
 		
 		//更新时间
@@ -49,14 +49,15 @@ function mainifest() {
 		tag: ["漫画"],
 		
 		//@NonNull 详细界面的基本网址
-		baseUrl: "https://m.sisimanhua.com",
+		baseUrl: "https://m.168manhua.com/",
 		
 		//发现
 		findList: {
-			"完结": "https://m.sisimanhua.com/list/wanjie/",
-			"都市": "https://m.sisimanhua.com/list/dushi/",
-			"后宫": "https://m.sisimanhua.com/list/hougong/",
-			"穿越": "https://m.sisimanhua.com/list/chuanyue/"
+			"完结漫画": "https://m.168manhua.com/list/wanjie/",
+			"都市漫画": "https://m.168manhua.com/list/dushi/",
+			"后宫漫画": "https://m.168manhua.com/list/hougong/",
+			"穿越漫画": "https://m.168manhua.com/list/chuanyue/",
+			"仙侠漫画": "https://m.168manhua.com/list/xianxia/"
 		},
 	});
 }
@@ -68,7 +69,7 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'https://m.sisimanhua.com/search/?keywords=' + encodeURI(key) + header;
+	var url = 'https://m.i2356.com/search/?keywords=' + encodeURI(key) + header;
 	const response = httpRequest(url);
 	
 	const list = jsoupArray(response,'#update_list > div > div').outerHtml();
@@ -118,6 +119,7 @@ function detail(url) {
 		catalog: catalog(response,url)
 	})
 }
+
 /**
  * 目录
  * @params {string} response
@@ -186,7 +188,7 @@ function content(url) {
  * @returns {[{title, introduction, cover, url}]}
  */
 function find(url) {
-	const response = httpRequest(url+ header);
+	const response = httpRequest(url + header);
 	//目录标签代码
 	const list = jsoupArray(response,'.list-comic').outerHtml();
 	var array= [];
