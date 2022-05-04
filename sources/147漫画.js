@@ -148,8 +148,6 @@ function catalog(response,url) {
 			var chapter = chapters[ci];
 			
 			newchapters.push({
-				//是否为分组
-				group: false,
 				//章节名称
 				name: jsoup(chapter,'a').text(),
 				//章节链接

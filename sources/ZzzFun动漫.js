@@ -138,8 +138,6 @@ function catalog(response,url) {
 			var playids = jsonPath(chapter,'$.playid').split('-');
 			
 			newchapters.push({
-				//是否为分组
-				group: false,
 				//章节名称
 				name: jsonPath(chapter,'$.ji'),
 				//章节链接
