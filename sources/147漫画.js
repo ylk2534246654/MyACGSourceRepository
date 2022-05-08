@@ -1,4 +1,4 @@
-function mainifest() {
+function manifest() {
 	return JSON.stringify({
 		//MyACG 最新版本
 		MyACG: 'https://lanzou.com/b07xqlbxc ',
@@ -36,7 +36,7 @@ function mainifest() {
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/147漫画.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/147漫画.js",
 			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/147漫画.js",
-			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/147漫画.js"
+			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/147漫画.js",
 		},
 		
 		//更新时间
@@ -106,7 +106,7 @@ function detail(url) {
 		summary: jsoup(response,'div.comic-view.clearfix > p').text(),
 
 		//封面
-		//cover: ,
+		cover : jsoup(response,'div.img > mip-img').attr('src'),
 
 		//更新时间
 		upDate: jsoup(response,'div.comic-view.clearfix > div.view-sub.autoHeight > div > dl:nth-child(5) > dd').text(),

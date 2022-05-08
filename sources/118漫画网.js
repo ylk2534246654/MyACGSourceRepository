@@ -1,4 +1,4 @@
-function mainifest() {
+function manifest() {
 	return JSON.stringify({
 		//MyACG 最新版本
 		MyACG: 'https://lanzou.com/b07xqlbxc ',
@@ -36,7 +36,7 @@ function mainifest() {
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/118漫画.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/118漫画.js",
 			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/118漫画.js",
-			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/118漫画.js"
+			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/118漫画.js",
 		},
 		
 		//更新时间
@@ -104,7 +104,7 @@ function detail(url) {
 		summary: jsoup(response,'p.txtDesc').text(),
 
 		//封面
-		//cover: ,
+		cover : jsoup(response,'#Cover > img').attr('src'),
 
 		//更新时间
 		upDate: jsoup(response,'span.date').text(),
@@ -163,7 +163,7 @@ function content(url) {
 	const qingtiandy = Base64.decode(ToolUtil.substring(response,'m_murl_e=\"','\"')).split('$qingtiandy$');
 	
 	for(var i = 0;i < qingtiandy.length;i++){
-		qingtiandy[i] = ToolUtil.urlJoin(url,qingtiandy[i]).replace('http://m','http://www');
+		qingtiandy[i] = 'http://res.xzcstjx.com/statics/pic/?p=' + qingtiandy[i];
 	}
 	return JSON.stringify(qingtiandy);
 }

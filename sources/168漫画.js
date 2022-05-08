@@ -1,4 +1,4 @@
-function mainifest() {
+function manifest() {
 	return JSON.stringify({
 		//MyACG 最新版本
 		MyACG: 'https://lanzou.com/b07xqlbxc ',
@@ -36,7 +36,7 @@ function mainifest() {
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/168漫画.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/168漫画.js",
 			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/168漫画.js",
-			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/168漫画.js"
+			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/168漫画.js",
 		},
 		
 		//更新时间
@@ -49,7 +49,7 @@ function mainifest() {
 		tag: ["漫画"],
 		
 		//@NonNull 详细界面的基本网址
-		baseUrl: "https://m.168manhua.com/",
+		baseUrl: "https://m.168manhua.com",
 		
 		//发现
 		findList: {
@@ -61,7 +61,7 @@ function mainifest() {
 		},
 	});
 }
-const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
+const header = '';
 
 /**
  * 搜索
@@ -69,7 +69,7 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'https://m.i2356.com/search/?keywords=' + encodeURI(key) + header;
+	var url = 'https://m.168manhua.com/search/?keywords=' + encodeURI(key) + header;
 	const response = httpRequest(url);
 	
 	const list = jsoupArray(response,'#update_list > div > div').outerHtml();
@@ -107,7 +107,7 @@ function detail(url) {
 		summary: jsoup(response,'div.comic-view.clearfix > p').text(),
 
 		//封面
-		//cover: ,
+		cover : jsoup(response,'div.img > mip-img').attr('src'),
 
 		//更新时间
 		upDate: jsoup(response,'div.comic-view.clearfix > div.view-sub.autoHeight > div > dl:nth-child(5) > dd').text(),
@@ -173,9 +173,23 @@ function catalog(response,url) {
  */
 function content(url) {
 	const response = httpRequest(url + header);
-	const src = jsoup(response,'mip-link > mip-img:not([style=display: none;])').attr('src');
-	if(src.indexOf('default') == -1){
-		return JSON.stringify(src);
+	var img =  jsoup(response,'mip-link > mip-img:not([style=display: none;])').attr('src');
+	
+	if((img+'').length < 1){
+		img = jsoup(response,'div:not([style]) > mip-link > mip-img:not([style],[width])').attr('src');
+	}
+	if((img+'').length < 1){
+		img = jsoup(response,'mip-link > mip-img').attr('src');
+	}
+	if((img+'').length < 1){
+		var img2 = jsoupArray(response,'div.UnderPag > mip-img');
+		if(img2.length>1){
+			return JSON.stringify(img2);
+		}
+	};
+	if(img.indexOf('cover')==-1){
+		img = img.replace('res1','res1');
+		return JSON.stringify(img);
 	}
 	return null;
 }

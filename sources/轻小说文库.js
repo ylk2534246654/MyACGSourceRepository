@@ -1,4 +1,4 @@
-function mainifest() {
+function manifest() {
 	return JSON.stringify({
 		//MyACG 最新版本
 		MyACG: 'https://lanzou.com/b07xqlbxc ',
@@ -36,7 +36,7 @@ function mainifest() {
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/轻小说文库.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/轻小说文库.js",
 			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/轻小说文库.js",
-			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/轻小说文库.js"
+			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/轻小说文库.js",
 		},
 		
 		//更新时间

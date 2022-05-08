@@ -1,4 +1,4 @@
-function mainifest() {
+function manifest() {
 	return JSON.stringify({
 		//MyACG 最新版本
 		MyACG: 'https://lanzou.com/b07xqlbxc ',
@@ -36,7 +36,7 @@ function mainifest() {
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/cocoManga.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/cocoManga.js",
 			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/cocoManga.js",
-			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/cocoManga.js"
+			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/cocoManga.js",
 		},
 
 		//更新时间
@@ -52,7 +52,7 @@ function mainifest() {
 		baseUrl: "https://www.cocomanga.com",//onemanhua
 	})
 }
-const setting = "@rate->2500";
+const setting = "";
 /**
  * 搜索
  * @params {string} key
@@ -154,7 +154,7 @@ function catalog(response,url) {
  */
 function content(url) {
 	//浏览器请求结果处理
-	if(url.startsWith('https://img.cocomanga.com')){
+	if(url.startsWith('https://img.cocomanga.com') && url.indexOf('enc.') == -1){
 		return url;
 	}
 	return null;

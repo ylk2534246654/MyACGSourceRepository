@@ -1,4 +1,4 @@
-function mainifest() {
+function manifest() {
 	return JSON.stringify({
 		//MyACG 最新版本
 		MyACG: 'https://lanzou.com/b07xqlbxc ',
@@ -36,7 +36,7 @@ function mainifest() {
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/39漫画.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/39漫画.js",
 			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/39漫画.js",
-			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/39漫画.js"
+			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/39漫画.js",
 		},
 		
 		//更新时间
@@ -49,14 +49,14 @@ function mainifest() {
 		tag: ["漫画"],
 		
 		//@NonNull 详细界面的基本网址
-		baseUrl: "https://m.manhua39.com",
+		baseUrl: "http://m.manhua39.com",
 		
 		//发现
 		findList: {
-			"完结": "https://m.manhua39.com/list/wanjie/",
-			"都市": "https://m.manhua39.com/list/dushi/",
-			"后宫": "https://m.manhua39.com/list/hougong/",
-			"穿越": "https://m.manhua39.com/list/chuanyue/"
+			"完结": "http://m.manhua39.com/list/wanjie/",
+			"都市": "http://m.manhua39.com/list/dushi/",
+			"后宫": "http://m.manhua39.com/list/hougong/",
+			"穿越": "http://m.manhua39.com/list/chuanyue/"
 		},
 	});
 }
@@ -68,7 +68,7 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'https://m.manhua39.com/search/?keywords=' + encodeURI(key) + header;
+	var url = 'http://m.manhua39.com/search/?keywords=' + encodeURI(key) + header;
 	const response = httpRequest(url);
 	
 	const list = jsoupArray(response,'#update_list > div > div').outerHtml();
@@ -106,7 +106,7 @@ function detail(url) {
 		summary: jsoup(response,'div.comic-view.clearfix > p').text(),
 
 		//封面
-		//cover: ,
+		cover : jsoup(response,'div.img > mip-img').attr('src'),
 
 		//更新时间
 		upDate: jsoup(response,'div.comic-view.clearfix > div.view-sub.autoHeight > div > dl:nth-child(5) > dd').text(),
