@@ -45,6 +45,9 @@ function manifest() {
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
 		
+		//内容处理方式： 0：链接处理并浏览器访问{url}，1：链接处理{url}，2：浏览器拦截请求{url}，3：浏览器拦截框架{html}
+		contentType: 2,
+		
 		//自定义标签
 		tag: ["动漫"],
 		
@@ -134,7 +137,7 @@ function catalog(response,url) {
 				//章节名称
 				name: jsoup(chapter,'a').text(),
 				//章节链接
-				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href')) + '@contentType->2' + setting
+				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href')) + setting
 			});
 		}
 		//添加目录
@@ -154,7 +157,7 @@ function catalog(response,url) {
  */
 function content(url) {
 	//浏览器请求结果处理
-	if(url.startsWith('https://img.cocomanga.com') && url.indexOf('enc.') == -1){
+	if(url.indexOf('cocomanga.com') != -1){
 		return url;
 	}
 	return null;

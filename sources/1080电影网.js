@@ -45,6 +45,9 @@ function manifest() {
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
 		
+		//内容处理方式： 0：链接处理并浏览器访问{url}，1：链接处理{url}，2：浏览器拦截请求{url}，3：浏览器拦截框架{html}
+		contentType: 2,
+		
 		//自定义标签
 		tag: ["影视"],
 		
@@ -153,3 +156,20 @@ function catalog(response,url) {
 	return new_catalogs
 }
 
+/**
+ * 内容(InterceptRequest)
+ * @params {string} url
+ * @returns {[{url}]}
+ */
+function content(url) {
+	//浏览器请求结果处理
+	var re = /1080kdy|ylzy1/i;
+	if(re.test(url)){
+		return url;
+	}
+	var re = /.png|.jpg|.svg|.ico|.gif|.webp|.jpeg/i;
+	if(!re.test(url)){
+		return url;
+	}
+	return null;
+}
