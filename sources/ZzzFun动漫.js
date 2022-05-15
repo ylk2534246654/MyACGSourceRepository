@@ -12,7 +12,7 @@ function manifest() {
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
-		priority: 1,
+		priority: 60,
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//搜索源自动同步更新链接
 		syncList: {
@@ -95,13 +95,13 @@ function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
 		//作者
-		//author: jsonPath(response,'li:nth-child(5) > span.detail_imform_value').text(),
+		author: jsonPath(response,'$.data.up'),
 		
 		//概览
-		summary: jsonPath(response,'$..videoDoc'),
+		summary: jsonPath(response,'$.data.videoDoc'),
 
 		//封面
-		//cover : jsonPath(response,'#fmimg > img').attr('src'),
+		cover : jsonPath(response,'$.data.videoImg'),
 		
 		//目录是否倒序
 		reverseOrder: false,
@@ -117,17 +117,14 @@ function detail(url) {
  * @returns {tag, chapter:{[{group, name, url}]}}
  */
 function catalog(response,url) {
-	//目录标签代码
-	const tabs = jsonPathArray(response,'$..videoSets[*]');
-	
-	//目录代码
-	const catalogs = jsonPathArray(response,'$..videoSets[*]');
+	//分组代码
+	const videoSets = jsonPathArray(response,'$..videoSets[*]');
 	
 	//创建目录数组
 	var new_catalogs= [];
 	
-	for (var i=0;i<catalogs.length;i++) {
-	    var catalog = catalogs[i];
+	for (var i=0;i<videoSets.length;i++) {
+	    var catalog = videoSets[i];
 		
 		//创建章节数组
 		var newchapters= [];
@@ -150,7 +147,7 @@ function catalog(response,url) {
 		//添加目录
 		new_catalogs.push({
 			//目录名称
-			tag: jsonPath(tabs[i],'$..load'),
+			tag: jsonPath(videoSets[i],'$.load'),
 			//章节
 			chapter : newchapters
 			});

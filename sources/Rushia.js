@@ -5,21 +5,21 @@ function manifest() {
 		
 		//@NonNull 搜索源ID标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
-		id: 1651504057,
+		id: 1652594943,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20211219,
-		
+		minMyACG: 20220101,
+
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
-		priority: 20,
+		priority: 1,
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
 		invalid: false,
 		
 		//@NonNull 搜索源名称
-		name: "36漫画",
+		name: "Rushia",
 
 		//搜索源制作人
 		author: "雨夏",
@@ -32,36 +32,53 @@ function manifest() {
 
 		//搜索源自动同步更新链接
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/36漫画.js",
-			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/36漫画.js",
-			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/36漫画.js",
-			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/36漫画.js",
-			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/36漫画.js"
+			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/Rushia.js",
+			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/Rushia.js",
+			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/Rushia.js",
+			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/Rushia.js",
+			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/Rushia.js",
 		},
 		
 		//更新时间
 		updateTime: "2022年3月29日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
-		type: 2,
+		type: 3,
 		
 		//内容处理方式： 0：链接处理并浏览器访问{url}，1：链接处理{url}，2：浏览器拦截请求{url}，3：浏览器拦截框架{html}
-		contentType: 1,
+		contentType: 2,
 		
 		//自定义标签
-		tag: ["漫画"],
+		tag: ["动漫"],
 		
 		//@NonNull 详细界面的基本网址
-		baseUrl: "http://m.36man.cc",
+		baseUrl: "https://www.rushia.me",
 		
 		//发现
 		findList: {
-			"完结": "http://m.36man.cc/list/wanjie/",
-			"后宫": "http://m.36man.cc/list/hougong/",
-			"穿越": "http://m.36man.cc/list/chuanyue/"
+			"热门": "https://www.rushia.me/label/top/",
 		},
+		
+		//登录授权是否启用
+		auth: true,
+		
+		//登录授权链接
+		authUrl:"https://www.rushia.me/user/login/@callback->个人中心",
+		
+		//需要授权的功能（search，detail，content，find）
+		authRequired: ["content"],
+		
 	});
 }
+
+function auth() {
+	const response = httpRequest("https://www.rushia.me");
+	if(response.indexOf('个人中心') != -1){
+		return true;
+	}
+	return false;
+}
+
 const header = '';
 
 /**
@@ -70,29 +87,30 @@ const header = '';
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'http://m.36man.cc/search/?keywords=' + encodeURI(key) + header;
+	var url = 'https://www.rushia.me/vodsearch/-------------/?wd='+ encodeURI(key) + header;
 	const response = httpRequest(url);
 	
-	const list = jsoupArray(response,'.se-list> div > li').outerHtml();
+	const list = jsoupArray(response,'article.post-list').outerHtml();
 	var array= [];
 	for (var i=0;i<list.length;i++) {
 	    var data = list[i];
 		array.push({
 			//标题
-			title : jsoup(data,'a.pic > div > h3').text(),
+			title : jsoup(data,'div.entry-title').text(),
 			
 			//概览
-			summary : jsoup(data,'a.tool').text(),
+			summary : jsoup(data,'div.entry-summary').text(),
 			
 			//封面
-			cover : jsoup(data,'a.pic > img').attr('src'),
+			cover : ToolUtil.urlJoin(url,jsoup(data,'div.search-image > a > img').attr('src')),
 			
 			//链接
-			url : ToolUtil.urlJoin(url,jsoup(data,'a.pic').attr('href'))
+			url : ToolUtil.urlJoin(url,jsoup(data,'div.entry-title > a').attr('href'))
 			});
 	}
 	return JSON.stringify(array);
 }
+
 /**
  * 发现
  * @params string html
@@ -101,26 +119,27 @@ function search(key) {
 function find(url) {
 	const response = httpRequest(url + header);
 	//目录标签代码
-	const list = jsoupArray(response,'.se-list> div > li').outerHtml();
+	const list = jsoupArray(response,'ul.mod-list > li').outerHtml();
 	var array= [];
 	for (var i=0;i<list.length;i++) {
 	    var data = list[i];
 		array.push({
 			//标题
-			title : jsoup(data,'a.pic > div > h3').text(),
+			title : jsoup(data,'div.product-title').text(),
 			
 			//概览
-			summary : jsoup(data,'a.tool').text(),
+			summary : jsoup(data,'div.product-desc').text(),
 			
 			//封面
-			cover : jsoup(data,'a.pic > img').attr('src'),
+			cover : ToolUtil.urlJoin(url,jsoup(data,'div.product-image > img').attr('data-url')),
 			
 			//链接
-			url : ToolUtil.urlJoin(url,jsoup(data,'a.pic').attr('href'))
+			url : ToolUtil.urlJoin(url,jsoup(data,'a').attr('href'))
 			});
 	}
 	return JSON.stringify(array);
 }
+
 /**
  * 详情
  * @params {string} url
@@ -130,18 +149,18 @@ function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
 		//作者
-		author: jsoup(response,'div.pic > div > p:nth-child(2) > a').text(),
+		//author: jsoup(response,'li:nth-child(5) > span.detail_imform_value').text(),
 		
 		//概览
-		summary: jsoup(response,'#detail_block > div > p').text(),
+		summary: jsoup(response,'div.entry-content > div > :matchText').text(),
 
 		//封面
-		cover : jsoup(response,'#cover_pic').attr('src'),
+		cover : jsoup(response,'div.entry-content> div > div> div> img').attr('src'),
 		
 		//目录是否倒序
 		reverseOrder: false,
 		
-		//目录加载
+		//目录链接/非外链无需使用
 		catalog: catalog(response,url)
 	})
 }
@@ -160,7 +179,7 @@ function catalog(response,url) {
 	var newchapters= [];
 	
 	//章节代码
-	var chapters = jsoupArray(response,'.chapter-body > ul > li').outerHtml();
+	var chapters = jsoupArray(response,'div.play-pannel-list > ul > li').outerHtml();
 	
 	for (var ci=0;ci<chapters.length;ci++) {
 		var chapter = chapters[ci];
@@ -180,20 +199,4 @@ function catalog(response,url) {
 		chapter : newchapters
 		});
 	return new_catalogs
-}
-
-/**
- * 内容
- * @params {string} url
- * @returns {[{url}]}
- */
-function content(url) {
-	const response = httpRequest(url+ header);
-	eval(ToolUtil.substring(response,'<script>;','</script>'));
-	
-	const urlPath = ToolUtil.urlJoin(pageImage,'/' + chapterPath);
-	for(var i = 0;i < chapterImages.length;i++){
-		chapterImages[i] = ToolUtil.urlJoin(urlPath,chapterImages[i]);
-	}
-	return JSON.stringify(chapterImages);
 }

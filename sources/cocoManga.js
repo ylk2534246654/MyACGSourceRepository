@@ -49,7 +49,7 @@ function manifest() {
 		contentType: 2,
 		
 		//自定义标签
-		tag: ["动漫"],
+		tag: ["漫画"],
 		
 		//@NonNull 详细界面的基本网址
 		baseUrl: "https://www.cocomanga.com",//onemanhua

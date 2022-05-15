@@ -5,21 +5,21 @@ function manifest() {
 		
 		//@NonNull 搜索源ID标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
-		id: 1652586404,
+		id: 1652608955,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
 		minMyACG: 20211219,
 		
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
-		priority: 40,
+		priority: 10,
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
 		invalid: false,
 		
 		//@NonNull 搜索源名称
-		name: "90漫画",
+		name: "jpm1234",
 
 		//搜索源制作人
 		author: "雨夏",
@@ -32,11 +32,11 @@ function manifest() {
 
 		//搜索源自动同步更新链接
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/90漫画.js",
-			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/90漫画.js",
-			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/90漫画.js",
-			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/90漫画.js",
-			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/90漫画.js"
+			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/jpm1234.js",
+			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/jpm1234.js",
+			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/jpm1234.js",
+			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/jpm1234.js",
+			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/jpm1234.js"
 		},
 		
 		//更新时间
@@ -52,10 +52,10 @@ function manifest() {
 		tag: ["漫画"],
 		
 		//@NonNull 详细界面的基本网址
-		baseUrl: "https://api.90mh.com",
+		baseUrl: "http://www.jpm1234.com",
 	});
 }
-const header = '';
+const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
 
 /**
  * 搜索
@@ -63,25 +63,25 @@ const header = '';
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'https://api.90mh.com/app/comic/search?sort=click&keywords=' + encodeURI(key) + header;
+	var url = 'http://www.jpm1234.com/Search/Keyword/' + encodeURI(key) + header;
 	const response = httpRequest(url);
 	
-	const list = jsonPathArray(response,'$.items.*');
+	const list = jsoupArray(response,'#contList > li').outerHtml();
 	var array= [];
 	for (var i=0;i<list.length;i++) {
 	    var data = list[i];
 		array.push({
 			//标题
-			title : jsonPath(data,'$.name'),
+			title : jsoup(data,'p.ell > a').text(),
 			
 			//概览
-			summary : jsonPath(data,'$.last_chapter_name'),
+			summary : jsoup(data,'span.tt').text(),
 			
 			//封面
-			cover : ToolUtil.urlJoin('https://js.tingliu.cc/',jsonPath(data,'$.cover')),
+			cover : jsoup(data,'a > img').attr('data-src'),
 			
 			//链接
-			url : 'https://api.90mh.com/app/comic/view?id=' + jsonPath(data,'$.id')
+			url : ToolUtil.urlJoin(url,jsoup(data,'p.ell > a').attr('href'))
 			});
 	}
 	return JSON.stringify(array);
@@ -95,13 +95,13 @@ function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
 		//作者
-		author: jsonPath(response,'$.data.author'),
+		author: jsoup(response,'ul.detail-list > li:nth-child(2) > span > a:nth-child(2)').text(),
 		
 		//概览
-		summary: jsonPath(response,'$.data.description'),
+		summary: jsoup(response,'#intro-all').text(),
 
 		//封面
-		cover : ToolUtil.urlJoin('https://js.tingliu.cc/',jsonPath(response,'$.data.cover')),
+		cover : jsoup(response,'div.book-cover > p > img').attr('src'),
 		
 		//目录是否倒序
 		reverseOrder: false,
@@ -125,16 +125,16 @@ function catalog(response,url) {
 	var newchapters= [];
 	
 	//章节代码
-	var chapters = jsonPathArray(response,'$.data.chapterGroup.*.*');
+	var chapters = jsoupArray(response,'div.chapter-list > ul > li').outerHtml();
 	
 	for (var ci=0;ci<chapters.length;ci++) {
 		var chapter = chapters[ci];
 		
 		newchapters.push({
 			//章节名称
-			name: jsonPath(chapter,'$.name'),
+			name: jsoup(chapter,'a').text(),
 			//章节链接
-			url: 'https://api.90mh.com/app/chapter/view?id=' + jsonPath(chapter,'$.id')
+			url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href'))
 		});
 	}
 	//添加目录
@@ -154,11 +154,16 @@ function catalog(response,url) {
  */
 function content(url) {
 	const response = httpRequest(url+ header);
-	var path = jsonPath(response,'$.data.path');
-	var imageArray= jsonPathArray(response,'$.data.imageArray.*');
-	var newImageArray= [];
-	for(var i =0;i<imageArray.length;i++){
-		newImageArray.push('http://js.tingliu.cc/'+path+imageArray[i]);
+	var host = 'http://img4.jpm1234.com/uploads';
+	eval('var cInfo'+ToolUtil.substring(response,'var cInfo','</script>'));
+	if(response.indexOf('configsa')!=-1){
+		host = 'http://img2.jpm1234.com/uploads';
+	};
+	if(response.indexOf('configsb')!=-1){
+		host = 'http://img3.jpm1234.com/uploads';
+	};
+	for(var i = 0;i < cInfo.fs.length;i++){
+		cInfo.fs[i] = host + cInfo.fs[i];
 	}
-	return JSON.stringify(newImageArray);
+	return JSON.stringify(cInfo.fs);
 }
