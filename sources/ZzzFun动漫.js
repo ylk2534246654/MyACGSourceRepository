@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 3,
+		version: 4,
 
 		//搜索源自动同步更新链接
 		syncList: {
@@ -118,19 +118,19 @@ function detail(url) {
  */
 function catalog(response,url) {
 	//分组代码
-	const videoSets = jsonPathArray(response,'$..videoSets[*]');
+	const videoSets = jsonPathArray(response,'$.data.videoSets[*]');
 	
 	//创建目录数组
 	var new_catalogs= [];
 	
-	for (var i=0;i<videoSets.length;i++) {
+	for (var i = 0;i<videoSets.length;i++) {
 	    var catalog = videoSets[i];
 		
 		//创建章节数组
 		var newchapters= [];
 		
 		//章节代码
-		var chapters = jsonPathArray(catalog,'$..list[*]');
+		var chapters = jsonPathArray(catalog,'$.list[*]');
 		
 		for (var ci=0;ci<chapters.length;ci++) {
 			var chapter = chapters[ci];
@@ -141,7 +141,7 @@ function catalog(response,url) {
 				//章节名称
 				name: jsonPath(chapter,'$.ji'),
 				//章节链接
-				url: 'http://www.zzzfun.com/vod_play_id_'+playids[0]+'_sid_1_nid_'+playids[1]+'.html'
+				url: 'http://www.zzzfun.com/vod_play_id_'+playids[0]+'_sid_'+(i+1)+'_nid_'+playids[1]+'.html'
 			});
 		}
 		//添加目录
