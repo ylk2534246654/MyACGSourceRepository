@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 3,
 
 		//搜索源自动同步更新链接
 		syncList: {
@@ -153,17 +153,4 @@ function catalog(response,url) {
 			});
 	}
 	return new_catalogs
-}
-
-/**
- * 内容(InterceptRequest)
- * @params {string} url
- * @returns {[{url}]}
- */
-function content(url) {
-	//浏览器请求结果处理
-	if(url.indexOf('zzzfun.com') != -1){
-		return url;
-	}
-	return null;
 }
