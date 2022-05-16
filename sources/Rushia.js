@@ -12,7 +12,7 @@ function manifest() {
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
-		priority: 1,
+		priority: 30,
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//搜索源自动同步更新链接
 		syncList: {
@@ -172,31 +172,38 @@ function detail(url) {
  * @returns {tag, chapter:{[{group, name, url}]}}
  */
 function catalog(response,url) {
+	//目录代码
+	const boxs = jsoupArray(response,'div.play-pannel-box').outerHtml();
+	
 	//创建目录数组
 	var new_catalogs= [];
-		
-	//创建章节数组
-	var newchapters= [];
 	
-	//章节代码
-	var chapters = jsoupArray(response,'div.play-pannel-list > ul > li').outerHtml();
-	
-	for (var ci=0;ci<chapters.length;ci++) {
-		var chapter = chapters[ci];
+	for (var i=0;i<boxs.length;i++) {
+	    var catalog = boxs[i];
 		
-		newchapters.push({
-			//章节名称
-			name: jsoup(chapter,'a').text(),
-			//章节链接
-			url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href'))
-		});
+		//创建章节数组
+		var newchapters= [];
+		
+		//章节代码
+		var chapters = jsoupArray(catalog,'div.play-pannel-list > ul > li').outerHtml();
+		
+		for (var ci=0;ci<chapters.length;ci++) {
+			var chapter = chapters[ci];
+			
+			newchapters.push({
+				//章节名称
+				name: jsoup(chapter,'a').text(),
+				//章节链接
+				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href'))
+			});
+		}
+		//添加目录
+		new_catalogs.push({
+			//目录名称
+			tag: jsoup(boxs[i],'div.play-pannel_hd').text(),
+			//章节
+			chapter : newchapters
+			});
 	}
-	//添加目录
-	new_catalogs.push({
-		//目录名称
-		tag: "目录",
-		//章节
-		chapter : newchapters
-		});
 	return new_catalogs
 }
