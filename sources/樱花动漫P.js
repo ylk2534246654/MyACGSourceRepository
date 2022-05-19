@@ -53,6 +53,14 @@ function manifest() {
 		
 		//@NonNull 详细界面的基本网址
 		baseUrl: "https://m.yhdmp.live/",//备份https://www.yhdmp.net/
+		
+		//发现
+		findList: {
+			"每日推荐": "https://m.yhdmp.live/recommend/",
+			"最近更新": "https://m.yhdmp.live/list/?region=%E6%97%A5%E6%9C%AC",
+			"剧场版": "https://m.yhdmp.live/list/?region=%E6%97%A5%E6%9C%AC&genre=%E5%89%A7%E5%9C%BA%E7%89%88",
+			"完结": "https://m.yhdmp.live/list/?region=%E6%97%A5%E6%9C%AC&status=%E5%AE%8C%E7%BB%93"
+		},
 	});
 }
 const header = '';
@@ -66,6 +74,35 @@ function search(key) {
 	var url = 'https://m.yhdmp.live/s_all?ex=1&kw='+ encodeURI(key) + header;
 	const response = httpRequest(url);
 	
+	const list = jsoupArray(response,'div.list > ul > li').outerHtml();
+	var array= [];
+	for (var i=0;i<list.length;i++) {
+	    var data = list[i];
+		array.push({
+			//标题
+			title : jsoup(data,'a.itemtext').text(),
+			
+			//概览
+			summary : jsoup(data,'div:nth-child(7) > span.cell_imform_value').text(),
+			
+			//封面
+			cover : ToolUtil.urlJoin(url,ToolUtil.substring(jsoup(data,'div.imgblock').attr('style'),'\'','\'')),
+			
+			//链接
+			url : ToolUtil.urlJoin(url,jsoup(data,'a.itemtext').attr('href'))
+			});
+	}
+	return JSON.stringify(array);
+}
+
+/**
+ * 发现
+ * @params string html
+ * @returns {[{title, introduction, cover, url}]}
+ */
+function find(url) {
+	const response = httpRequest(url + header);
+	//目录标签代码
 	const list = jsoupArray(response,'div.list > ul > li').outerHtml();
 	var array= [];
 	for (var i=0;i<list.length;i++) {

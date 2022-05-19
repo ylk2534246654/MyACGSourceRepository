@@ -53,6 +53,15 @@ function manifest() {
 		
 		//@NonNull 详细界面的基本网址
 		baseUrl: "https://agemys.com",
+		
+		
+		//发现
+		findList: {
+			"热门": "https://www.agemys.com/catalog/all-all-all-all-all-%E7%82%B9%E5%87%BB%E9%87%8F-1-%E6%97%A5%E6%9C%AC-all-all",
+			"最近更新": "https://www.agemys.com/catalog/all-all-all-all-all-time-1-%E6%97%A5%E6%9C%AC-all-all",
+			"剧场版": "https://www.agemys.com/catalog/%E5%89%A7%E5%9C%BA%E7%89%88-all-all-all-all-time-1-%E6%97%A5%E6%9C%AC-all-all",
+			"完结": "https://www.agemys.com/catalog/all-all-all-all-all-time-1-%E6%97%A5%E6%9C%AC-all-%E5%AE%8C%E7%BB%93"
+		},
 	});
 }
 const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
@@ -86,6 +95,35 @@ function search(key) {
 	}
 	return JSON.stringify(array);
 }
+/**
+ * 发现
+ * @params string html
+ * @returns {[{title, introduction, cover, url}]}
+ */
+function find(url) {
+	const response = httpRequest(url + header);
+	//目录标签代码
+	const list = jsoupArray(response,'div[class=blockcontent1] > div').outerHtml();
+	var array= [];
+	for (var i=0;i<list.length;i++) {
+	    var data = list[i];
+		array.push({
+			//标题
+			title : jsoup(data,'a[class=cell_poster] > img').attr('alt'),
+			
+			//概览
+			summary : jsoup(data,'div:nth-child(7) > span.cell_imform_value').text(),
+			
+			//封面
+			cover : ToolUtil.urlJoin(url,jsoup(data,'a[class=cell_poster] > img').attr('src')),
+			
+			//链接
+			url : ToolUtil.urlJoin(url,jsoup(data,'a[class=cell_poster]').attr('href'))
+			});
+	}
+	return JSON.stringify(array);
+}
+
 /**
  * 详情
  * @params {string} url
