@@ -5,21 +5,21 @@ function manifest() {
 		
 		//@NonNull 搜索源ID标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
-		id: 1648714123,
+		id: 1652945404,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
 		minMyACG: 20220101,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
-		priority: 20,
+		priority: 30,
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
 		invalid: false,
 		
 		//@NonNull 搜索源名称
-		name: "AGE动漫",
+		name: "动漫星球",
 
 		//搜索源制作人
 		author: "雨夏",
@@ -32,11 +32,11 @@ function manifest() {
 
 		//搜索源自动同步更新链接
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/AGE动漫.js",
-			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/AGE动漫.js",
-			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/AGE动漫.js",
-			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/AGE动漫.js",
-			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/AGE动漫.js",
+			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/动漫星球.js",
+			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/动漫星球.js",
+			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/动漫星球.js",
+			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/动漫星球.js",
+			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/动漫星球.js",
 		},
 		
 		//更新时间
@@ -49,13 +49,13 @@ function manifest() {
 		contentType: 2,
 		
 		//自定义标签
-		tag: ["动漫"],
+		tag: ["影视"],
 		
 		//@NonNull 详细界面的基本网址
-		baseUrl: "https://agemys.com",
+		baseUrl: "https://www.dmxq.me",
 	});
 }
-const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
+const header = '';
 
 /**
  * 搜索
@@ -63,25 +63,25 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'https://agemys.com/search?&query='+ encodeURI(key) + header;
+	var url = 'https://www.dmxq.me/vodsearch/-------------.html?wd='+ encodeURI(key) + header;
 	const response = httpRequest(url);
 	
-	const list = jsoupArray(response,'div[class=blockcontent1] > div').outerHtml();
+	const list = jsoupArray(response,'div.module-items > div').outerHtml();
 	var array= [];
 	for (var i=0;i<list.length;i++) {
 	    var data = list[i];
 		array.push({
 			//标题
-			title : jsoup(data,'a[class=cell_poster] > img').attr('alt'),
+			title : jsoup(data,'div.video-info-header > h3 > a').text(),
 			
 			//概览
-			summary : jsoup(data,'div:nth-child(7) > span.cell_imform_value').text(),
+			summary : jsoup(data,'div.video-info-header > a').text(),
 			
 			//封面
-			cover : ToolUtil.urlJoin(url,jsoup(data,'a[class=cell_poster] > img').attr('src')),
+			cover : ToolUtil.urlJoin(url,jsoup(data,'div.video-cover > div > div > img').attr('data-src')),
 			
 			//链接
-			url : ToolUtil.urlJoin(url,jsoup(data,'a[class=cell_poster]').attr('href'))
+			url : ToolUtil.urlJoin(url,jsoup(data,'div.video-info-header > h3 > a').attr('href'))
 			});
 	}
 	return JSON.stringify(array);
@@ -95,13 +95,13 @@ function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
 		//作者
-		author: jsoup(response,'li:nth-child(5) > span.detail_imform_value').text(),
+		author: jsoup(response,'div.video-info-actor').text(),
 		
 		//概览
-		summary: jsoup(response,'div.detail_imform_desc_pre > p').text(),
+		summary: jsoup(response,'div.video-info-content > span').text(),
 
 		//封面
-		//cover : jsoup(response,'#fmimg > img').attr('src'),
+		cover : jsoup(response,'div.video-cover > div > div > img').attr('data-src'),
 		
 		//目录是否倒序
 		reverseOrder: false,
@@ -118,10 +118,10 @@ function detail(url) {
  */
 function catalog(response,url) {
 	//目录标签代码
-	const tabs = jsoupArray(response,'#menu0 > li').outerHtml();
+	const tabs = jsoupArray(response,'div.module-tab-content > div.module-tab-item').outerHtml();
 	
 	//目录代码
-	const catalogs = jsoupArray(response,'#main0 > div.movurl').outerHtml();
+	const catalogs = jsoupArray(response,'div.module-player-list').outerHtml();
 	
 	//创建目录数组
 	var new_catalogs= [];
@@ -133,7 +133,7 @@ function catalog(response,url) {
 		var newchapters= [];
 		
 		//章节代码
-		var chapters = jsoupArray(catalog,'ul > li').outerHtml();
+		var chapters = jsoupArray(catalog,'div.scroll-content > a').outerHtml();
 		
 		for (var ci=0;ci<chapters.length;ci++) {
 			var chapter = chapters[ci];
@@ -148,7 +148,7 @@ function catalog(response,url) {
 		//添加目录
 		new_catalogs.push({
 			//目录名称
-			tag: jsoup(tabs[i],'li').text(),
+			tag: jsoup(tabs[i],'span').text(),
 			//章节
 			chapter : newchapters
 			});
@@ -156,3 +156,16 @@ function catalog(response,url) {
 	return new_catalogs
 }
 
+/**
+ * 内容(InterceptRequest)
+ * @params {string} url
+ * @returns {[{url}]}
+ */
+function content(url) {
+	//浏览器请求结果处理
+	var re = /.png|.jpg|.svg|.ico|.gif|.webp|.jpeg/i;
+	if(!re.test(url)){
+		return url;
+	}
+	return null;
+}
