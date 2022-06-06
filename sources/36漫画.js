@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//搜索源自动同步更新链接
 		syncList: {
@@ -139,7 +139,7 @@ function detail(url) {
 		cover : jsoup(response,'#cover_pic').attr('src'),
 		
 		//目录是否倒序
-		reverseOrder: false,
+		reverseOrder: true,
 		
 		//目录加载
 		catalog: catalog(response,url)
