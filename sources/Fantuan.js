@@ -5,21 +5,21 @@ function manifest() {
 		
 		//@NonNull 搜索源ID标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
-		id: 1652947579,
+		id: 1654757510,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
 		minMyACG: 20220101,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
-		priority: 30,
+		priority: 10,
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
 		invalid: false,
 		
 		//@NonNull 搜索源名称
-		name: "樱花动漫P",
+		name: "Fantuan",
 
 		//搜索源制作人
 		author: "雨夏",
@@ -28,15 +28,15 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 1,
 
 		//搜索源自动同步更新链接
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/樱花动漫P.js",
-			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/樱花动漫P.js",
-			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/樱花动漫P.js",
-			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/樱花动漫P.js",
-			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/樱花动漫P.js",
+			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/Fantuan.js",
+			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/Fantuan.js",
+			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/Fantuan.js",
+			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/Fantuan.js",
+			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/Fantuan.js",
 		},
 		
 		//更新时间
@@ -52,14 +52,12 @@ function manifest() {
 		tag: ["动漫"],
 		
 		//@NonNull 详细界面的基本网址
-		baseUrl: "https://m.yhdmp.live",//备份https://www.yhdmp.net/
+		baseUrl: "https://acgfantuan.com",//备份https://fantuantv.com
+		
 		
 		//发现
 		findList: {
-			"每日推荐": "https://m.yhdmp.live/recommend/",
-			"最近更新": "https://m.yhdmp.live/list/?region=%E6%97%A5%E6%9C%AC",
-			"剧场版": "https://m.yhdmp.live/list/?region=%E6%97%A5%E6%9C%AC&genre=%E5%89%A7%E5%9C%BA%E7%89%88",
-			"完结": "https://m.yhdmp.live/list/?region=%E6%97%A5%E6%9C%AC&status=%E5%AE%8C%E7%BB%93"
+			"新番": "https://acgfantuan.com/album/serial-jp-video",
 		},
 	});
 }
@@ -71,30 +69,29 @@ const header = '';
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'https://m.yhdmp.live/s_all?ex=1&kw='+ encodeURI(key) + header;
+	var url = 'https://acgfantuan.com/search/'+ encodeURI(key) + header;
 	const response = httpRequest(url);
 	
-	const list = jsoupArray(response,'div.list > ul > li').outerHtml();
+	const list = jsoupArray(response,'div.catalog > div > div > div').outerHtml();
 	var array= [];
 	for (var i=0;i<list.length;i++) {
 	    var data = list[i];
 		array.push({
 			//标题
-			title : jsoup(data,'a.itemtext').text(),
+			title : jsoup(data,'.card__title').text(),
 			
 			//概览
-			summary : jsoup(data,'div.itemimgtext').text(),
+			summary : jsoup(data,'.card__description').text(),
 			
 			//封面
-			cover : ToolUtil.urlJoin(url,ToolUtil.substring(jsoup(data,'div.imgblock').attr('style'),'\'','\'')),
+			cover : ToolUtil.urlJoin(url,jsoup(data,'.card__cover > img').attr('src')),
 			
 			//链接
-			url : ToolUtil.urlJoin(url,jsoup(data,'a.itemtext').attr('href'))
+			url : ToolUtil.urlJoin(url,jsoup(data,'.card__title > a').attr('href'))
 			});
 	}
 	return JSON.stringify(array);
 }
-
 /**
  * 发现
  * @params string html
@@ -103,26 +100,27 @@ function search(key) {
 function find(url) {
 	const response = httpRequest(url + header);
 	//目录标签代码
-	const list = jsoupArray(response,'div.list > ul > li').outerHtml();
+	const list = jsoupArray(response,'div.catalog > div > div > div').outerHtml();
 	var array= [];
 	for (var i=0;i<list.length;i++) {
 	    var data = list[i];
 		array.push({
 			//标题
-			title : jsoup(data,'a.itemtext').text(),
+			title : jsoup(data,'.card__title').text(),
 			
 			//概览
-			summary : jsoup(data,'div:nth-child(7) > span.cell_imform_value').text(),
+			summary : jsoup(data,'.card__description').text(),
 			
 			//封面
-			cover : ToolUtil.urlJoin(url,ToolUtil.substring(jsoup(data,'div.imgblock').attr('style'),'\'','\'')),
+			cover : ToolUtil.urlJoin(url,jsoup(data,'.card__cover > img').attr('src')),
 			
 			//链接
-			url : ToolUtil.urlJoin(url,jsoup(data,'a.itemtext').attr('href'))
+			url : ToolUtil.urlJoin(url,jsoup(data,'.card__title > a').attr('href'))
 			});
 	}
 	return JSON.stringify(array);
 }
+
 /**
  * 详情
  * @params {string} url
@@ -132,13 +130,13 @@ function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
 		//作者
-		author: jsoup(response,'div.info-sub > p:nth-child(1)').text(),
+		//author: jsoup(response,'li:nth-child(5) > span.detail_imform_value').text(),
 		
 		//概览
-		summary: jsoup(response,'div.info').text(),
+		summary: jsoup(response,'.card__description').text(),
 
 		//封面
-		cover : jsoup(response,'div.show > img').attr('src'),
+		cover : jsoup(response,'.card__cover > img').attr('src'),
 		
 		//目录是否倒序
 		reverseOrder: false,
@@ -154,42 +152,31 @@ function detail(url) {
  * @returns {tag, chapter:{[{group, name, url}]}}
  */
 function catalog(response,url) {
-	//目录标签代码
-	const tabs = jsoupArray(response,'#menu0 > li').outerHtml();
-	
-	//目录代码
-	const catalogs = jsoupArray(response,'#main0 > div.movurl').outerHtml();
-	
 	//创建目录数组
 	var new_catalogs= [];
+		
+	//创建章节数组
+	var newchapters= [];
 	
-	for (var i=0;i<catalogs.length;i++) {
-	    var catalog = catalogs[i];
-		
-		//创建章节数组
-		var newchapters= [];
-		
-		//章节代码
-		var chapters = jsoupArray(catalog,'ul > li').outerHtml();
-		
-		for (var ci=0;ci<chapters.length;ci++) {
-			var chapter = chapters[ci];
-			
-			newchapters.push({
-				//章节名称
-				name: jsoup(chapter,'a').text(),
-				//章节链接
-				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href'))
-			});
-		}
-		//添加目录
-		new_catalogs.push({
-			//目录名称
-			tag: jsoup(tabs[i],'li').text(),
-			//章节
-			chapter : newchapters
-			});
+	//章节代码
+	var tr = jsoupArray(response,'.accordion__list > tbody > tr').text();
+	var id = jsoupArray(response,'.accordion__list > tbody > tr').attr('data-episode-id');
+	
+	for (var ci=0;ci< tr.length;ci++) {
+		newchapters.push({
+			//章节名称
+			name: tr[ci],
+			//章节链接
+			url: ToolUtil.urlJoin(url,id[ci])
+		});
 	}
+	//添加目录
+	new_catalogs.push({
+		//目录名称
+		tag: "目录",
+		//章节
+		chapter : newchapters
+		});
 	return new_catalogs
 }
 
@@ -197,12 +184,13 @@ function catalog(response,url) {
  * 内容(InterceptRequest)
  * @params {string} url
  * @returns {[{url}]}
- */
+
 function content(url) {
 	//浏览器请求结果处理
-	var re = /kbt.yhbsk.cn|viplp|tianvip|yangshengzu|mtyrvc|studylabs|hongmao|cslpf|mmstat|.png|.jpg|.svg|.ico|.webp|.jpeg/i;
+	var re = /.png|.jpg|.svg|.ico|.gif|.webp|.jpeg/i;
 	if(!re.test(url)){
 		return url;
 	}
 	return null;
 }
+ */

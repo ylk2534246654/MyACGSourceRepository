@@ -5,7 +5,7 @@ function manifest() {
 		
 		//@NonNull 搜索源ID标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
-		id: 1654501053,
+		id: 1654762700,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
 		minMyACG: 20220101,
@@ -19,7 +19,7 @@ function manifest() {
 		invalid: false,
 		
 		//@NonNull 搜索源名称
-		name: "哆咪动漫",
+		name: "E-ACG",
 
 		//搜索源制作人
 		author: "雨夏",
@@ -28,15 +28,15 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 1,
 
 		//搜索源自动同步更新链接
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/哆咪动漫.js",
-			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/哆咪动漫.js",
-			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/哆咪动漫.js",
-			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/哆咪动漫.js",
-			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/哆咪动漫.js",
+			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/E-ACG.js",
+			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/E-ACG.js",
+			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/E-ACG.js",
+			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/E-ACG.js",
+			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/E-ACG.js",
 		},
 		
 		//更新时间
@@ -52,17 +52,11 @@ function manifest() {
 		tag: ["动漫"],
 		
 		//@NonNull 详细界面的基本网址
-		baseUrl: "http://www.dmdm2020.com",
-		
+		baseUrl: "https://eacg.net",
 		
 		//发现
 		findList: {
-			"国漫": "https://www.dmdm2020.com/dongmantype/21.html",
-			"最近更新": "https://www.dmdm2020.com/dongmanshow/20/by/time.html",
-			"热门": "https://www.dmdm2020.com/dongmanshow/20/by/hits.html",
-			"完结": "https://www.dmdm2020.com/dongmanshow/20/area/%E5%B7%B2%E5%AE%8C%E7%BB%93.html",
-			"校园": "https://www.dmdm2020.com/dongmanshow/20/class/%E6%A0%A1%E5%9B%AD.html",
-			"百合": "https://www.dmdm2020.com/dongmanshow/20/class/%E7%99%BE%E5%90%88.html"
+			"新番推荐": "https://eacg.net/label/front.html",
 		},
 	});
 }
@@ -74,25 +68,25 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'http://www.dmdm2020.com/dongmansearch/wd/'+ encodeURI(key) + header;
+	var url = 'https://eacg.net/vodsearch/-------------.html?wd='+ encodeURI(key) + header;
 	const response = httpRequest(url);
 	
-	const list = jsoupArray(response,'#searchList > li').outerHtml();
+	const list = jsoupArray(response,'div.fed-main-info > div > div > dl').outerHtml();
 	var array= [];
 	for (var i=0;i<list.length;i++) {
 	    var data = list[i];
 		array.push({
 			//标题
-			title : jsoup(data,'.title').text(),
+			title : jsoup(data,'.fed-deta-content > h1').text(),
 			
 			//概览
-			summary : jsoup(data,'div.detail > p.hidden-xs > :matchText').text(),
+			summary : jsoup(data,'.fed-list-remarks').text(),
 			
 			//封面
-			cover : ToolUtil.urlJoin(url,jsoup(data,'div.thumb > a').attr('data-original')),
+			cover : ToolUtil.urlJoin(url,jsoup(data,'.fed-list-pics').attr('data-original')),
 			
 			//链接
-			url : ToolUtil.urlJoin(url,jsoup(data,'.title > a').attr('href'))
+			url : ToolUtil.urlJoin(url,jsoup(data,'.fed-deta-content > h1 > a').attr('href'))
 			});
 	}
 	return JSON.stringify(array);
@@ -105,22 +99,22 @@ function search(key) {
 function find(url) {
 	const response = httpRequest(url + header);
 	//目录标签代码
-	const list = jsoupArray(response,'ul.myui-vodlist > li').outerHtml();
+	const list = jsoupArray(response,'ul.fed-list-info > li').outerHtml();
 	var array= [];
 	for (var i=0;i<list.length;i++) {
 	    var data = list[i];
 		array.push({
 			//标题
-			title : jsoup(data,'.title').text(),
+			title : jsoup(data,'.fed-list-title').text(),
 			
 			//概览
-			summary : jsoup(data,'span.pic-text').text(),
+			summary : jsoup(data,'.fed-list-remarks').text(),
 			
 			//封面
-			cover : ToolUtil.urlJoin(url,jsoup(data,'a.myui-vodlist__thumb').attr('data-original')),
+			cover : ToolUtil.urlJoin(url,jsoup(data,'.fed-list-pics').attr('data-original')),
 			
 			//链接
-			url : ToolUtil.urlJoin(url,jsoup(data,'.title > a').attr('href'))
+			url : ToolUtil.urlJoin(url,jsoup(data,'.fed-list-title').attr('href'))
 			});
 	}
 	return JSON.stringify(array);
@@ -135,13 +129,13 @@ function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
 		//作者
-		author: jsoup(response,'li:nth-child(5) > span.detail_imform_value').text(),
+		author: jsoup(response,'dd.fed-deta-content > ul > li:nth-child(2) > a').text(),
 		
 		//概览
-		summary: jsoup(response,'span.content').text(),
+		summary: jsoup(response,'div.fed-play-data > div > div > p').text(),
 
 		//封面
-		//cover : jsoup(response,'#fmimg > img').attr('src'),
+		cover : jsoup(response,'dt.fed-deta-images > a.fed-list-pics').attr('data-original'),
 		
 		//目录是否倒序
 		reverseOrder: false,
@@ -158,10 +152,10 @@ function detail(url) {
  */
 function catalog(response,url) {
 	//目录标签代码
-	const tabs = jsoupArray(response,'div:nth-child(4) > div > div.myui-panel_hd > div > ul.nav > li').outerHtml();
+	const tabs = jsoupArray(response,'div.fed-drop-info > div > ul > li').outerHtml();
 	
 	//目录代码
-	const catalogs = jsoupArray(response,'div.tab-pane').outerHtml();
+	const catalogs = jsoupArray(response,'div.fed-play-item').outerHtml();
 	
 	//创建目录数组
 	var new_catalogs= [];
@@ -173,7 +167,7 @@ function catalog(response,url) {
 		var newchapters= [];
 		
 		//章节代码
-		var chapters = jsoupArray(catalog,'ul > li').outerHtml();
+		var chapters = jsoupArray(catalog,'ul:nth-child(2) > li').outerHtml();
 		
 		for (var ci=0;ci<chapters.length;ci++) {
 			var chapter = chapters[ci];
@@ -200,16 +194,17 @@ function catalog(response,url) {
  * 内容(InterceptRequest)
  * @params {string} url
  * @returns {[{url}]}
- */
+ 
 function content(url) {
 	//浏览器请求结果处理
 	if(url.indexOf('kwimgs.com') != -1){
 		return url;
 	}else{
-		var re = /govzhajian|nbrlzy|dakawm|.png|.jpg|.svg|.ico|.gif|.webp|.jpeg/i;
+		var re = /.png|.jpg|.svg|.ico|.gif|.webp|.jpeg/i;
 		if(!re.test(url)){
 			return url;
 		}
 	}
 	return null;
 }
+*/
