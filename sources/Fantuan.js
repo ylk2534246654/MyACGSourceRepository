@@ -187,7 +187,7 @@ function catalog(response,url) {
 
 function content(url) {
 	//浏览器请求结果处理
-	var re = /.png|.jpg|.svg|.ico|.gif|.webp|.jpeg/i;
+	var re = /\.png|\.jpg|\.svg|\.ico|\.gif|\.webp|\.jpeg/i;
 	if(!re.test(url)){
 		return url;
 	}

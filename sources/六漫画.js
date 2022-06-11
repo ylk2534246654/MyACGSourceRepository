@@ -52,7 +52,7 @@ function manifest() {
 		tag: ["漫画"],
 		
 		//@NonNull 详细界面的基本网址
-		baseUrl: "http://m.sixmh7.com",//备份链接6mh9.com
+		baseUrl: "http://m.sixmh7.com",//备份链接6mh9.com，此源和七夕漫画相似
 	});
 }
 const header = '';

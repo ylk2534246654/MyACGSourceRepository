@@ -200,7 +200,7 @@ function catalog(response,url) {
  */
 function content(url) {
 	//浏览器请求结果处理
-	var re = /kbt.yhbsk.cn|viplp|tianvip|yangshengzu|mtyrvc|studylabs|hongmao|cslpf|mmstat|.png|.jpg|.svg|.ico|.webp|.jpeg/i;
+	var re = /yhbsk|viplp|tianvip|yangshengzu|mtyrvc|studylabs|hongmao|cslpf|mmstat|\.png|\.jpg|\.svg|\.ico|\.webp|\.jpeg/i;
 	if(!re.test(url)){
 		return url;
 	}

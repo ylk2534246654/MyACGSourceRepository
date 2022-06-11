@@ -5,10 +5,10 @@ function manifest() {
 		
 		//@NonNull 搜索源ID标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
-		id: 1654762700,
+		id: 1654927709,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20220101,
+		minMyACG: 20220611,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -19,7 +19,7 @@ function manifest() {
 		invalid: false,
 		
 		//@NonNull 搜索源名称
-		name: "E-ACG",
+		name: "妮可动漫",
 
 		//搜索源制作人
 		author: "雨夏",
@@ -32,15 +32,15 @@ function manifest() {
 
 		//搜索源自动同步更新链接
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/E-ACG.js",
-			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/E-ACG.js",
-			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/E-ACG.js",
-			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/E-ACG.js",
-			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/E-ACG.js",
+			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/妮可动漫.js",
+			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/妮可动漫.js",
+			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/妮可动漫.js",
+			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/妮可动漫.js",
+			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/妮可动漫.js",
 		},
 		
 		//更新时间
-		updateTime: "2022年6月9日",
+		updateTime: "2022年6月11日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -52,12 +52,7 @@ function manifest() {
 		tag: ["动漫"],
 		
 		//@NonNull 详细界面的基本网址
-		baseUrl: "https://eacg.net",
-		
-		//发现
-		findList: {
-			"新番推荐": "https://eacg.net/label/front.html",
-		},
+		baseUrl: "http://www.nicotv.club",
 	});
 }
 const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
@@ -68,53 +63,25 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'https://eacg.net/vodsearch/-------------.html?wd='+ encodeURI(key) + header;
+	var url = 'http://www.nicotv.club/video/search/' + encodeURI(key) + header;
 	const response = httpRequest(url);
 	
-	const list = jsoupArray(response,'div.fed-main-info > div > div > dl').outerHtml();
+	const list = jsoupArray(response,'ul.list-unstyled > li').outerHtml();
 	var array= [];
 	for (var i=0;i<list.length;i++) {
 	    var data = list[i];
 		array.push({
 			//标题
-			title : jsoup(data,'.fed-deta-content > h1').text(),
+			title : jsoup(data,'h2.text-nowrap').text(),
 			
 			//概览
-			summary : jsoup(data,'.fed-list-remarks').text(),
+			summary : jsoup(data,'span.continu').text(),
 			
 			//封面
-			cover : ToolUtil.urlJoin(url,jsoup(data,'.fed-list-pics').attr('data-original')),
+			cover : ToolUtil.urlJoin(url,jsoup(data,'.img-responsive').attr('data-original')),
 			
 			//链接
-			url : ToolUtil.urlJoin(url,jsoup(data,'.fed-deta-content > h1 > a').attr('href'))
-			});
-	}
-	return JSON.stringify(array);
-}
-/**
- * 发现
- * @params string html
- * @returns {[{title, introduction, cover, url}]}
- */
-function find(url) {
-	const response = httpRequest(url + header);
-	//目录标签代码
-	const list = jsoupArray(response,'ul.fed-list-info > li').outerHtml();
-	var array= [];
-	for (var i=0;i<list.length;i++) {
-	    var data = list[i];
-		array.push({
-			//标题
-			title : jsoup(data,'.fed-list-title').text(),
-			
-			//概览
-			summary : jsoup(data,'.fed-list-remarks').text(),
-			
-			//封面
-			cover : ToolUtil.urlJoin(url,jsoup(data,'.fed-list-pics').attr('data-original')),
-			
-			//链接
-			url : ToolUtil.urlJoin(url,jsoup(data,'.fed-list-title').attr('href'))
+			url : ToolUtil.urlJoin(url,jsoup(data,'h2.text-nowrap > a').attr('href'))
 			});
 	}
 	return JSON.stringify(array);
@@ -129,13 +96,13 @@ function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
 		//作者
-		author: jsoup(response,'dd.fed-deta-content > ul > li:nth-child(2) > a').text(),
+		//author: jsoup(response,'li:nth-child(5) > span.detail_imform_value').text(),
 		
 		//概览
-		summary: jsoup(response,'div.fed-play-data > div > div > p').text(),
+		summary: jsoup(response,'div.m-intro').text(),
 
 		//封面
-		cover : jsoup(response,'dt.fed-deta-images > a.fed-list-pics').attr('data-original'),
+		cover : jsoup(response,'div.m-info > div > img').attr('src'),
 		
 		//目录是否倒序
 		reverseOrder: false,
@@ -152,10 +119,10 @@ function detail(url) {
  */
 function catalog(response,url) {
 	//目录标签代码
-	const tabs = jsoupArray(response,'div.fed-drop-info > div > ul > li').outerHtml();
+	const tabs = jsoupArray(response,'ul.nav.nav-tabs > li').outerHtml();
 	
 	//目录代码
-	const catalogs = jsoupArray(response,'div.fed-play-item').outerHtml();
+	const catalogs = jsoupArray(response,'div.tab-content > ul').outerHtml();
 	
 	//创建目录数组
 	var new_catalogs= [];
@@ -167,7 +134,7 @@ function catalog(response,url) {
 		var newchapters= [];
 		
 		//章节代码
-		var chapters = jsoupArray(catalog,'ul:nth-child(2) > li').outerHtml();
+		var chapters = jsoupArray(catalog,'ul > li').outerHtml();
 		
 		for (var ci=0;ci<chapters.length;ci++) {
 			var chapter = chapters[ci];
@@ -176,7 +143,7 @@ function catalog(response,url) {
 				//章节名称
 				name: jsoup(chapter,'a').text(),
 				//章节链接
-				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href'))
+				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href')) + header
 			});
 		}
 		//添加目录
@@ -194,17 +161,13 @@ function catalog(response,url) {
  * 内容(InterceptRequest)
  * @params {string} url
  * @returns {[{url}]}
- 
+*/
 function content(url) {
 	//浏览器请求结果处理
-	if(url.indexOf('kwimgs.com') != -1){
+	var re = /notice|stgowan|sogowan|bjbkh|smilk|yanko/i;
+	//|\.png|\.jpg|\.svg|\.ico|\.gif|\.webp|\.jpeg
+	if(!re.test(url)){
 		return url;
-	}else{
-		var re = /\.png|\.jpg|\.svg|\.ico|\.gif|\.webp|\.jpeg/i;
-		if(!re.test(url)){
-			return url;
-		}
 	}
 	return null;
-}
-*/
+} 

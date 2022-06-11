@@ -5,21 +5,21 @@ function manifest() {
 		
 		//@NonNull 搜索源ID标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
-		id: 1648714588,
+		id: 1654507793,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20220101,
+		minMyACG: 20220608,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
-		priority: 50,
+		priority: 20,
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
 		invalid: false,
 		
 		//@NonNull 搜索源名称
-		name: "轻小说文库",
+		name: "哔哩轻小说",
 
 		//搜索源制作人
 		author: "雨夏",
@@ -32,11 +32,11 @@ function manifest() {
 
 		//搜索源自动同步更新链接
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/轻小说文库.js",
-			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/轻小说文库.js",
-			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/轻小说文库.js",
-			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/轻小说文库.js",
-			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/轻小说文库.js",
+			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/哔哩轻小说.js",
+			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/哔哩轻小说.js",
+			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/哔哩轻小说.js",
+			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/哔哩轻小说.js",
+			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/哔哩轻小说.js",
 		},
 		
 		//更新时间
@@ -49,28 +49,11 @@ function manifest() {
 		contentType: 1,
 		
 		//自定义标签
-		tag: ["小说","轻小说"],
+		tag: ["轻小说","小说"],
 		
 		//@NonNull 详细界面的基本网址
-		baseUrl: "https://www.wenku8.net",
-		
-		//登录授权是否启用
-		auth: true,
-		
-		//登录授权链接
-		authUrl:"https://www.wenku8.net/index.php@callback->登录成功",
-		
-		//需要授权的功能（search，detail，content，find）
-		authRequired: ["search"],
+		baseUrl: "https://w.linovelib.com",
 	});
-}
-
-function auth() {
-	const response = httpRequest("https://www.wenku8.net/index.php");
-	if(response.length > 1 && response.indexOf('轻小说文库欢迎您') != -1){
-		return true;
-	}
-	return false;
 }
 
 const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
@@ -80,43 +63,40 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'https://www.wenku8.net/modules/article/search.php?searchtype=articlename&searchkey='+ ToolUtil.encodeURI(key,'GBK') + header;
+	var url = 'https://w.linovelib.com/S0/?searchkey=' + encodeURI(key) + '&searchtype=all' + header;
 	const response = httpRequest(url);
-	
 	var array= [];
-	if(response.indexOf('小说目录')!=-1){
+	if(response.indexOf('开始阅读') != -1){
 		array.push({
 			//标题
-			title : jsoup(response,'#content > div > table > tbody > tr > td > table > tbody > tr > td > span > b').text(),
+			title : jsoup(response,'div.book-cell > h2').text(),
 			
 			//概览
-			summary : jsoup(response,'#content > div:nth-child(1) > table:nth-child(4) > tbody > tr > td:nth-child(2) > span:nth-child(13)').text(),
+			summary : jsoup(response,'div.book-meta-r > p').text(),
 			
 			//封面
-			cover : ToolUtil.urlJoin(url,jsoup(response,'#content > div > table > tbody > tr > td > img').attr('src')),
+			cover : jsoup(response,'div.book-layout > img').attr('src'),
 			
 			//链接
-			url : 'https://www.wenku8.net/book/' + ToolUtil.substring(response,'bid=','\"')+'.htm'
+			url : ToolUtil.urlJoin(url,jsoup(response,'link[rel=canonical]').attr('href'))
 			});
 		return JSON.stringify(array);
 	}
-	
-	const list = jsoupArray(response,'#content > table > tbody > tr > td > div').outerHtml();
-	
-	for (var i=0;i <list.length ; i++) {
+	const list = jsoupArray(response,'div.module > ol > li').outerHtml();
+	for (var i=0;i<list.length;i++) {
 	    var data = list[i];
 		array.push({
 			//标题
-			title : jsoup(data,'div:nth-child(2) > b > a').text(),
+			title : jsoup(data,'h4.book-title').text(),
 			
 			//概览
-			summary : jsoup(data,'div:nth-child(2) > p:nth-child(3)').text(),
+			summary : jsoup(data,'p.book-desc').text(),
 			
 			//封面
-			cover : ToolUtil.urlJoin(url,jsoup(data,':nth-child(1) > a >img').attr('src')),
+			cover : jsoup(data,'a > img').attr('data-original'),
 			
 			//链接
-			url : ToolUtil.urlJoin(url,jsoup(data,'div:nth-child(2) > b > a').attr('href'))
+			url : ToolUtil.urlJoin(url,jsoup(data,'a').attr('href'))
 			});
 	}
 	return JSON.stringify(array);
@@ -130,19 +110,19 @@ function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
 		//作者
-		author: jsoup(response,'#content > div:nth-child(1) > table:nth-child(1) > tbody > tr:nth-child(2) > td:nth-child(2)').text(),
+		author: jsoup(response,'#bookDetailWrapper > div > div.book-layout > div > div').text(),
 		
 		//概览
-		summary: jsoup(response,'#content > div:nth-child(1) > table:nth-child(4) > tbody > tr > td:nth-child(2) > span:nth-child(13)').text(),
+		summary: jsoup(response,'#bookSummary > content').text(),
 
 		//封面
-		cover : ToolUtil.urlJoin(url,jsoup(response,'#content > div > table > tbody > tr > td > img').attr('src')),
+		//cover : jsoup(response,'#fmimg > img').attr('src'),
 		
 		//目录是否倒序
 		reverseOrder: false,
 		
 		//目录链接/非外链无需使用
-		catalog: catalog(ToolUtil.urlJoin(url,jsoup(response,'#content > div:nth-child(1) > div:nth-child(6) > div > span:nth-child(1) > fieldset > div > a').attr('href')))
+		catalog: catalog(ToolUtil.urlJoin(url,jsoup(response,'a.book-meta').attr('href')))
 	})
 }
 /**
@@ -155,13 +135,13 @@ function catalog(url) {
 	const response = httpRequest(url+ header);
 	//创建目录数组
 	var new_catalogs= [];
-	
+		
 	//创建章节数组
 	var newchapters= [];
-		
+	
 	//章节代码
-	var chapters = jsoupArray(response,'td.vcss,td.ccss').outerHtml();
-		
+	var chapters = jsoupArray(response,'ol.chapter-ol > li').outerHtml();
+	
 	var group;//分组记录
 	for (var ci=0;ci<chapters.length;ci++) {
 		var chapter = chapters[ci];
@@ -173,17 +153,17 @@ function catalog(url) {
 				//章节名称
 				name: group + ' ' + jsoup(chapter,'a').text(),
 				//章节链接
-				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href'))
+				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href')).replace('.html','_${p}.html')+'@zero->1@start->1'
 			});
 		}
 	}
 	//添加目录
 	new_catalogs.push({
 		//目录名称
-		tag: '目录',
+		tag: "目录",
 		//章节
 		chapter : newchapters
-	});
+		});
 	return new_catalogs;
 }
 
@@ -194,7 +174,6 @@ function catalog(url) {
  */
 function content(url) {
 	const response = httpRequest(url + header);
-	const content = jsoup(response,'#content').outerHtml();
-	return content;
+	const src = jsoup(response,'#acontent').outerHtml();
+	return src;
 }
-

@@ -161,7 +161,7 @@ function catalog(response,url) {
 
 function content(url) {
 	//浏览器请求结果处理
-	var re = /baidu|.png|.jpg|.svg|.ico|.gif|.webp|.jpeg/i;
+	var re = /baidu|\.png|\.jpg|\.svg|\.ico|\.gif|\.webp|\.jpeg/i;
 	if(!re.test(url)){
 		return url;
 	}

@@ -95,7 +95,7 @@ function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
 		//作者
-		author: jsoup(response,'p.dir:matchText').text(),
+		author: jsoup(response,'p.dir > :matchText').text(),
 		
 		//概览
 		summary: jsoup(response,'div.tbox_js').text(),

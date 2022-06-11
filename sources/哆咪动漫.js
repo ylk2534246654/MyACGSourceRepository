@@ -206,7 +206,7 @@ function content(url) {
 	if(url.indexOf('kwimgs.com') != -1){
 		return url;
 	}else{
-		var re = /govzhajian|nbrlzy|dakawm|.png|.jpg|.svg|.ico|.gif|.webp|.jpeg/i;
+		var re = /govzhajian|nbrlzy|dakawm|\.png|\.jpg|\.svg|\.ico|\.gif|\.webp|\.jpeg/i;
 		if(!re.test(url)){
 			return url;
 		}

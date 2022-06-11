@@ -5,21 +5,21 @@ function manifest() {
 		
 		//@NonNull 搜索源ID标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
-		id: 1651504057,
+		id: 1654920600,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
 		minMyACG: 20211219,
 		
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
-		priority: 20,
+		priority: 1,
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
 		invalid: false,
 		
 		//@NonNull 搜索源名称
-		name: "36漫画",
+		name: "奇漫屋",
 
 		//搜索源制作人
 		author: "雨夏",
@@ -28,15 +28,15 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 1,
 
 		//搜索源自动同步更新链接
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/36漫画.js",
-			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/36漫画.js",
-			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/36漫画.js",
-			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/36漫画.js",
-			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/36漫画.js"
+			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/奇漫屋.js",
+			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/奇漫屋.js",
+			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/奇漫屋.js",
+			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/奇漫屋.js",
+			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/奇漫屋.js"
 		},
 		
 		//更新时间
@@ -52,14 +52,8 @@ function manifest() {
 		tag: ["漫画"],
 		
 		//@NonNull 详细界面的基本网址
-		baseUrl: "http://m.36man.cc",
-		
-		//发现
-		findList: {
-			"完结": "http://m.36man.cc/list/wanjie/",
-			"后宫": "http://m.36man.cc/list/hougong/",
-			"穿越": "http://m.36man.cc/list/chuanyue/"
-		},
+		baseUrl: "http://qiman5.com",//备份http://qiman56.com
+		//此源和七夕漫画，六漫画相似
 	});
 }
 const header = '';
@@ -70,53 +64,25 @@ const header = '';
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'http://m.36man.cc/search/?keywords=' + encodeURI(key) + header;
+	var url = 'http://qiman5.com/spotlight/?keyword=' + encodeURI(key) + header;
 	const response = httpRequest(url);
 	
-	const list = jsoupArray(response,'.se-list> div > li').outerHtml();
+	const list = jsoupArray(response,'div.search-result > div').outerHtml();
 	var array= [];
 	for (var i=0;i<list.length;i++) {
 	    var data = list[i];
 		array.push({
 			//标题
-			title : jsoup(data,'a.pic > div > h3').text(),
+			title : jsoup(data,'p.comic-name > a').text(),
 			
 			//概览
-			summary : jsoup(data,'a.tool').text(),
+			summary : jsoup(data,'p.comic-tags').text() + '.' + jsoup(data,'p.comic-update-at').text(),
 			
 			//封面
-			cover : jsoup(data,'a.pic > img').attr('src'),
+			cover : jsoup(data,'a.cover > img').attr('src'),
 			
 			//链接
-			url : ToolUtil.urlJoin(url,jsoup(data,'a.pic').attr('href'))
-			});
-	}
-	return JSON.stringify(array);
-}
-/**
- * 发现
- * @params string html
- * @returns {[{title, introduction, cover, url}]}
- */
-function find(url) {
-	const response = httpRequest(url + header);
-	//目录标签代码
-	const list = jsoupArray(response,'.se-list> div > li').outerHtml();
-	var array= [];
-	for (var i=0;i<list.length;i++) {
-	    var data = list[i];
-		array.push({
-			//标题
-			title : jsoup(data,'a.pic > div > h3').text(),
-			
-			//概览
-			summary : jsoup(data,'a.tool').text(),
-			
-			//封面
-			cover : jsoup(data,'a.pic > img').attr('src'),
-			
-			//链接
-			url : ToolUtil.urlJoin(url,jsoup(data,'a.pic').attr('href'))
+			url : ToolUtil.urlJoin(url,jsoup(data,'a.cover').attr('href'))
 			});
 	}
 	return JSON.stringify(array);
@@ -130,13 +96,13 @@ function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
 		//作者
-		author: jsoup(response,'div.pic > div > p:nth-child(2) > a').text(),
+		author: jsoup(response,'div.box-back2 > p:nth-child(2)').text(),
 		
 		//概览
-		summary: jsoup(response,'#detail_block > div > p').text(),
+		summary: jsoup(response,'span.comic-intro').text(),
 
 		//封面
-		cover : jsoup(response,'#cover_pic').attr('src'),
+		cover : jsoup(response,'div.comic-info-box > div > img').attr('src'),
 		
 		//目录是否倒序
 		reverseOrder: true,
@@ -160,7 +126,7 @@ function catalog(response,url) {
 	var newchapters= [];
 	
 	//章节代码
-	var chapters = jsoupArray(response,'.chapter-body > ul > li').outerHtml();
+	var chapters = jsoupArray(response,'li.chapter-item').outerHtml();
 	
 	for (var ci=0;ci<chapters.length;ci++) {
 		var chapter = chapters[ci];
@@ -171,6 +137,21 @@ function catalog(response,url) {
 			//章节链接
 			url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href'))
 		});
+	}
+	var id = ToolUtil.substring(response,'id\": ',',');
+	var vid = ToolUtil.substring(response,'id2\": ',',');
+	if(vid.length > 0){
+		var catalog_response = httpRequest('http://qiman56.com/bookchapter/@post->id='+id+'&id2='+vid+ header);
+		var response_chapters = jsonPathArray(catalog_response,'$.[*]');
+		for (var ci=0;ci<response_chapters.length;ci++) {
+			var chapter = response_chapters[ci];
+			newchapters.push({
+				//章节名称
+				name: jsonPath(chapter,'$.name'),
+				//章节链接
+				url: ToolUtil.urlJoin(url,jsonPath(chapter,'$.id'))+'.html'
+			});
+		}
 	}
 	//添加目录
 	new_catalogs.push({
@@ -188,16 +169,8 @@ function catalog(response,url) {
  * @returns {[{url}]}
  */
 function content(url) {
-	const response = httpRequest(url+ header);
-	var chapterImages = '';
-	var chapterImageHost = '';
-	var chapterPath = '';
-	
-	eval(ToolUtil.substring(response,'<script>;','</script>'));
-	
-	const urlPath = ToolUtil.urlJoin(chapterImageHost,'/' + chapterPath);
-	for(var i = 0;i < chapterImages.length;i++){
-		chapterImages[i] = ToolUtil.urlJoin(urlPath,chapterImages[i]);
-	}
-	return JSON.stringify(chapterImages);
+	const response = httpRequest(url + header);
+	var newImgs = '';
+	eval(ToolUtil.substring(response,'<script type=\"text/javascript\">','</script>'));
+	return JSON.stringify(newImgs);
 }

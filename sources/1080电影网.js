@@ -167,7 +167,7 @@ function content(url) {
 	if(re.test(url)){
 		return url;
 	}
-	var re = /.png|.jpg|.svg|.ico|.gif|.webp|.jpeg/i;
+	var re = /\.png|\.jpg|\.svg|\.ico|\.gif|\.webp|\.jpeg/i;
 	if(!re.test(url)){
 		return url;
 	}
