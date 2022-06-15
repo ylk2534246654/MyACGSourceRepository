@@ -12,7 +12,7 @@ function manifest() {
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
-		priority: 20,
+		priority: 80,
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
@@ -66,7 +66,7 @@ function manifest() {
 		},
 	});
 }
-const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
+const header = '';
 
 /**
  * 搜索
