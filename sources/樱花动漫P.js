@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 3,
 
 		//搜索源自动同步更新链接
 		syncList: {
@@ -200,7 +200,7 @@ function catalog(response,url) {
  */
 function content(url) {
 	//浏览器请求结果处理
-	var re = /yhbsk|viplp|tianvip|yangshengzu|mtyrvc|studylabs|hongmao|cslpf|mmstat|\.png|\.jpg|\.svg|\.ico|\.webp|\.jpeg/i;
+	var re = /phk\.|mbt\.|kumo|yhbsk|viplp|tianvip|yangshengzu|mtyrvc|studylabs|hongmao|cslpf|mmstat|\.png|\.jpg|\.gif|\.svg|\.ico|\.webp|\.jpeg/i;
 	if(!re.test(url)){
 		return url;
 	}
