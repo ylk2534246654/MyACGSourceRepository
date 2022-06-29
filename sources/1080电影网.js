@@ -45,18 +45,34 @@ function manifest() {
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
 		
-		//内容处理方式： 0：链接处理并浏览器访问{url}，1：链接处理{url}，2：浏览器拦截请求{url}，3：浏览器拦截框架{html}
+		//内容处理方式： -1: 搜索相似，0：对链接处理并调用外部APP访问{url}，1：对链接处理{url}，2：对内部浏览器拦截的请求处理{url}，3：对内部浏览器拦截的框架处理{html}
 		contentType: 2,
 		
 		//自定义标签
 		tag: ["影视"],
 		
-		//@NonNull 详细界面的基本网址
+		//@NonNull 详情界面的基本网址
 		baseUrl: "https://www.1080kdy.com",
+		
+		//登录授权是否启用
+		auth: true,
+		
+		//登录授权链接
+		authUrl:"https://www.1080kdy.com@callback->电影" + header,
+		
+		//需要授权的功能（search，detail，content，find）
+		authRequired: ["search","detail"],
 	});
 }
 const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
 
+function auth() {
+	const response = httpRequest("https://www.1080kdy.com" + header);
+	if(response.indexOf('电影') != -1){
+		return true;
+	}
+	return false;
+}
 /**
  * 搜索
  * @params {string} key
@@ -94,14 +110,20 @@ function search(key) {
 function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
+		//标题
+		title : jsoup(response,'h1.title').text(),
+		
 		//作者
 		author: jsoup(response,'div.myui-content__detail > p:nth-child(7)').text(),
+		
+		//日期
+		date : jsoup(response,'p.data > span:nth-child(2)').text(),
 		
 		//概览
 		summary: jsoup(response,'span.data').text(),
 
 		//封面
-		//cover : jsoup(response,'#fmimg > img').attr('src'),
+		cover : jsoup(response,'div.myui-content__thumb > a > img').attr('data-original'),
 		
 		//目录是否倒序
 		reverseOrder: false,
@@ -142,7 +164,7 @@ function catalog(response,url) {
 				//章节名称
 				name: jsoup(chapter,'a').text(),
 				//章节链接
-				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href'))
+				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href')) + header
 			});
 		}
 		//添加目录

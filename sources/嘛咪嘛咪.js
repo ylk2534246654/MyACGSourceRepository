@@ -45,25 +45,14 @@ function manifest() {
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
 		
-		//内容处理方式： 0：链接处理并浏览器访问{url}，1：链接处理{url}，2：浏览器拦截请求{url}，3：浏览器拦截框架{html}
+		//内容处理方式： -1: 搜索相似，0：对链接处理并调用外部APP访问{url}，1：对链接处理{url}，2：对内部浏览器拦截的请求处理{url}，3：对内部浏览器拦截的框架处理{html}
 		contentType: 2,
 		
 		//自定义标签
 		tag: ["动漫"],
 		
-		//@NonNull 详细界面的基本网址
-		baseUrl: "https://www.malimali5.com",//https://www.malimali.com
-		
-		
-		//发现
-		findList: {
-			"国漫": "https://www.dmdm2020.com/dongmantype/21.html",
-			"最近更新": "https://www.dmdm2020.com/dongmanshow/20/by/time.html",
-			"热门": "https://www.dmdm2020.com/dongmanshow/20/by/hits.html",
-			"完结": "https://www.dmdm2020.com/dongmanshow/20/area/%E5%B7%B2%E5%AE%8C%E7%BB%93.html",
-			"校园": "https://www.dmdm2020.com/dongmanshow/20/class/%E6%A0%A1%E5%9B%AD.html",
-			"百合": "https://www.dmdm2020.com/dongmanshow/20/class/%E7%99%BE%E5%90%88.html"
-		},
+		//@NonNull 详情界面的基本网址
+		baseUrl: "https://www.malimali6.com",//https://www.malimali.com
 	});
 }
 const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
@@ -74,58 +63,29 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'https://www.malimali5.com/vodsearch/-------------.html?wd='+ encodeURI(key) + header;
+	var url = 'https://www.malimali6.com/vodsearch/-------------.html?wd='+ encodeURI(key) + header;
 	const response = httpRequest(url);
 	
-	const list = jsoupArray(response,'li.search.list').outerHtml();
+	const list = jsoupArray(response,'div.module-items > div').outerHtml();
 	var array= [];
 	for (var i=0;i<list.length;i++) {
 	    var data = list[i];
 		array.push({
 			//标题
-			title : jsoup(data,'.title').text(),
+			title : jsoup(data,'div.video-info-header > h3 > a').text(),
 			
 			//概览
-			summary : jsoup(data,'span.so-imgTag_rb').text(),
+			summary : jsoup(data,'div.video-info > div.video-info-main > div:nth-child(3) > div').text(),
 			
 			//封面
-			cover : ToolUtil.urlJoin(url,jsoup(data,'img.item-lazy').attr('data-echo')),
+			cover : ToolUtil.urlJoin(url,jsoup(data,'div.video-cover > div > div > img').attr('data-src')),
 			
 			//链接
-			url : ToolUtil.urlJoin(url,jsoup(data,'.title').attr('href'))
+			url : ToolUtil.urlJoin(url,jsoup(data,'div.video-info-header > h3 > a').attr('href'))
 			});
 	}
 	return JSON.stringify(array);
 }
-/**
- * 发现
- * @params string html
- * @returns {[{title, introduction, cover, url}]}
- */
-function find(url) {
-	const response = httpRequest(url + header);
-	//目录标签代码
-	const list = jsoupArray(response,'div.drama-data > div:nth-child(1) > label.intro').outerHtml();
-	var array= [];
-	for (var i=0;i<list.length;i++) {
-	    var data = list[i];
-		array.push({
-			//标题
-			title : jsoup(data,'.title').text(),
-			
-			//概览
-			summary : jsoup(data,'div.drama-data > div:nth-child(5) > label.intro').text(),
-			
-			//封面
-			cover : ToolUtil.urlJoin(url,jsoup(data,'div.infobox > div > img').attr('src')),
-			
-			//链接
-			url : ToolUtil.urlJoin(url,jsoup(data,'.title > a').attr('href'))
-			});
-	}
-	return JSON.stringify(array);
-}
-
 /**
  * 详情
  * @params {string} url
@@ -134,14 +94,17 @@ function find(url) {
 function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
+		//标题
+		title : jsoup(response,'.page-title').text(),
+		
 		//作者
-		author: jsoup(response,'div.drama-data > div:nth-child(1) > label.intro').text(),
+		author: jsoup(response,'div.video-info-main > div:nth-child(1) > div').text(),
 		
 		//概览
-		summary: jsoup(response,'div.drama-data > div:nth-child(5) > label.intro').text(),
+		summary: jsoup(response,'div.vod_content > span').text(),
 
 		//封面
-		cover : jsoup(response,'div.infobox > div > img').attr('src'),
+		cover : jsoup(response,'div.video-cover > div > div > img').attr('data-src'),
 		
 		//目录是否倒序
 		reverseOrder: false,
@@ -158,7 +121,7 @@ function detail(url) {
  */
 function catalog(response,url) {
 	//目录标签代码
-	const playlist = jsoupArray(response,'div.playlist').outerHtml();
+	const playlist = jsoupArray(response,'.module-player-list > div.scroll-box').outerHtml();
 	
 	//创建目录数组
 	var new_catalogs= [];
@@ -170,7 +133,7 @@ function catalog(response,url) {
 		var newchapters= [];
 		
 		//章节代码
-		var chapters = jsoupArray(catalog,'div > ul > li').outerHtml();
+		var chapters = jsoupArray(catalog,'div > a').outerHtml();
 		
 		for (var ci=0;ci<chapters.length;ci++) {
 			var chapter = chapters[ci];

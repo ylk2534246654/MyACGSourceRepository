@@ -45,13 +45,13 @@ function manifest() {
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
 		
-		//内容处理方式： 0：链接处理并浏览器访问{url}，1：链接处理{url}，2：浏览器拦截请求{url}，3：浏览器拦截框架{html}
+		//内容处理方式： -1: 搜索相似，0：对链接处理并调用外部APP访问{url}，1：对链接处理{url}，2：对内部浏览器拦截的请求处理{url}，3：对内部浏览器拦截的框架处理{html}
 		contentType: 1,
 		
 		//自定义标签
 		tag: ["小说","轻小说"],
 		
-		//@NonNull 详细界面的基本网址
+		//@NonNull 详情界面的基本网址
 		baseUrl: "https://www.wenku8.net",
 		
 		//登录授权是否启用
@@ -129,8 +129,14 @@ function search(key) {
 function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
+		//标题
+		title : jsoup(response,'#content > div:nth-child(1) > table:nth-child(1) > tbody > tr:nth-child(1) > td > table > tbody > tr > td:nth-child(1) > span > b').text(),
+		
 		//作者
 		author: jsoup(response,'#content > div:nth-child(1) > table:nth-child(1) > tbody > tr:nth-child(2) > td:nth-child(2)').text(),
+		
+		//日期
+		date : jsoup(response,'dl:nth-child(5) > dd').text(),
 		
 		//概览
 		summary: jsoup(response,'#content > div:nth-child(1) > table:nth-child(4) > tbody > tr > td:nth-child(2) > span:nth-child(13)').text(),

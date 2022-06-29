@@ -40,18 +40,18 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2022年6月9日",
+		updateTime: "2022年6月29日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
 		
-		//内容处理方式： 0：链接处理并浏览器访问{url}，1：链接处理{url}，2：浏览器拦截请求{url}，3：浏览器拦截框架{html}
+		//内容处理方式： -1: 搜索相似，0：对链接处理并调用外部APP访问{url}，1：对链接处理{url}，2：对内部浏览器拦截的请求处理{url}，3：对内部浏览器拦截的框架处理{html}
 		contentType: 2,
 		
 		//自定义标签
 		tag: ["动漫"],
 		
-		//@NonNull 详细界面的基本网址
+		//@NonNull 详情界面的基本网址
 		baseUrl: "https://m.yhdmp.live",//备份https://www.yhdmp.net/
 		
 		//发现
@@ -131,6 +131,9 @@ function find(url) {
 function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
+		//标题
+		title : jsoup(response,'div:nth-child(2) > div > h1').text(),
+		
 		//作者
 		author: jsoup(response,'div.info-sub > p:nth-child(1)').text(),
 		
@@ -138,7 +141,7 @@ function detail(url) {
 		summary: jsoup(response,'div.info').text(),
 
 		//封面
-		cover : jsoup(response,'div.show > img').attr('src'),
+		cover :  ToolUtil.urlJoin(url,jsoup(response,'div.show > img').attr('src')),
 		
 		//目录是否倒序
 		reverseOrder: false,
@@ -199,7 +202,7 @@ function catalog(response,url) {
  * @returns {[{url}]}
  */
 function content(url) {
-	//浏览器请求结果处理
+	//浏览器请求结果处理，和异世界动漫相似
 	var re = /phk\.|mbt\.|kumo|yhbsk|viplp|tianvip|yangshengzu|mtyrvc|studylabs|hongmao|cslpf|mmstat|\.png|\.jpg|\.gif|\.svg|\.ico|\.webp|\.jpeg/i;
 	if(!re.test(url)){
 		return url;

@@ -45,13 +45,13 @@ function manifest() {
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
 		
-		//内容处理方式： 0：链接处理并浏览器访问{url}，1：链接处理{url}，2：浏览器拦截请求{url}，3：浏览器拦截框架{html}
+		//内容处理方式： -1: 搜索相似，0：对链接处理并调用外部APP访问{url}，1：对链接处理{url}，2：对内部浏览器拦截的请求处理{url}，3：对内部浏览器拦截的框架处理{html}
 		contentType: 1,
 		
 		//自定义标签
 		tag: ["漫画"],
 		
-		//@NonNull 详细界面的基本网址
+		//@NonNull 详情界面的基本网址
 		baseUrl: "https://m.168manhua.com",
 		
 		//发现
@@ -95,6 +95,36 @@ function search(key) {
 	}
 	return JSON.stringify(array);
 }
+
+/**
+ * 发现
+ * @params string html
+ * @returns {[{title, introduction, cover, url}]}
+ */
+function find(url) {
+	const response = httpRequest(url + header);
+	//目录标签代码
+	const list = jsoupArray(response,'.list-comic').outerHtml();
+	var array= [];
+	for (var i=0;i<list.length;i++) {
+	    var data = list[i];
+		array.push({
+			//标题
+			title : jsoup(data,'a.txtA').text(),
+			
+			//概览
+			summary : jsoup(data,'span.info').text(),
+			
+			//封面
+			cover : jsoup(data,'mip-img').attr('src'),
+			
+			//链接
+			url : ToolUtil.urlJoin(url,jsoup(data,'a.ImgA').attr('href'))
+			});
+	}
+	return JSON.stringify(array);
+}
+
 /**
  * 详情
  * @params {string} url
@@ -103,17 +133,20 @@ function search(key) {
 function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
+		//标题
+		title : jsoup(response,'h1.title').text(),
+		
 		//作者
 		author: jsoup(response,'div.comic-view.clearfix > div.view-sub.autoHeight > div > dl:nth-child(3) > dd').text(),
+		
+		//日期
+		date : jsoup(response,'dl:nth-child(5) > dd').text(),
 		
 		//概览
 		summary: jsoup(response,'div.comic-view.clearfix > p').text(),
 
 		//封面
 		cover : jsoup(response,'div.img > mip-img').attr('src'),
-
-		//更新时间
-		upDate: jsoup(response,'div.comic-view.clearfix > div.view-sub.autoHeight > div > dl:nth-child(5) > dd').text(),
 		
 		//目录是否倒序
 		reverseOrder: true,
@@ -195,33 +228,4 @@ function content(url) {
 		return JSON.stringify(img);
 	}
 	return null;
-}
-
-/**
- * 发现
- * @params string html
- * @returns {[{title, introduction, cover, url}]}
- */
-function find(url) {
-	const response = httpRequest(url + header);
-	//目录标签代码
-	const list = jsoupArray(response,'.list-comic').outerHtml();
-	var array= [];
-	for (var i=0;i<list.length;i++) {
-	    var data = list[i];
-		array.push({
-			//标题
-			title : jsoup(data,'a.txtA').text(),
-			
-			//概览
-			summary : jsoup(data,'span.info').text(),
-			
-			//封面
-			cover : jsoup(data,'mip-img').attr('src'),
-			
-			//链接
-			url : ToolUtil.urlJoin(url,jsoup(data,'a.ImgA').attr('href'))
-			});
-	}
-	return JSON.stringify(array);
 }

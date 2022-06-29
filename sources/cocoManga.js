@@ -45,13 +45,13 @@ function manifest() {
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
 		
-		//内容处理方式： 0：链接处理并浏览器访问{url}，1：链接处理{url}，2：浏览器拦截请求{url}，3：浏览器拦截框架{html}
+		//内容处理方式： -1: 搜索相似，0：对链接处理并调用外部APP访问{url}，1：对链接处理{url}，2：对内部浏览器拦截的请求处理{url}，3：对内部浏览器拦截的框架处理{html}
 		contentType: 2,
 		
 		//自定义标签
 		tag: ["漫画"],
 		
-		//@NonNull 详细界面的基本网址
+		//@NonNull 详情界面的基本网址
 		baseUrl: "https://www.cocomanga.com",//onemanhua
 	})
 }
@@ -86,17 +86,20 @@ function search(key) {
 function detail(url) {
 	const response = httpRequest(url + setting);
 	return JSON.stringify({
+		//标题
+		title : jsoup(response,'h1.fed-part-eone').text(),
+		
 		//作者
 		author: jsoup(response,'dd > ul > li:nth-child(2) > a').text(),
+		
+		//更新时间
+		date: jsoup(response,'dd > ul > li:nth-child(3) > a').text(),
 		
 		//概览
 		summary: jsoup(response,'p.fed-part-both').text(),
 
 		//封面
 		cover: jsoup(response,'a.fed-list-pics:nth-last-child(1)').attr('data-original') + '@header->Referer:https://www.cocomanga.com/' + setting,
-
-		//更新时间
-		upDate: jsoup(response,'dd > ul > li:nth-child(3) > a').text(),
 		
 		//目录是否倒序
 		reverseOrder: true,

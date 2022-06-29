@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 3,
 
 		//搜索源自动同步更新链接
 		syncList: {
@@ -40,18 +40,18 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2022年6月18日",
+		updateTime: "2022年6月29日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
 		
-		//内容处理方式： 0：链接处理并浏览器访问{url}，1：链接处理{url}，2：浏览器拦截请求{url}，3：浏览器拦截框架{html}
+		//内容处理方式： -1: 搜索相似，0：对链接处理并调用外部APP访问{url}，1：对链接处理{url}，2：对内部浏览器拦截的请求处理{url}，3：对内部浏览器拦截的框架处理{html}
 		contentType: 2,
 		
 		//自定义标签
 		tag: ["动漫"],
 		
-		//@NonNull 详细界面的基本网址
+		//@NonNull 详情界面的基本网址
 		baseUrl: "http://www.sbdm.net",//备用：http://www.kudm.vip/，https://www.gqdm.net/
 	});
 }
@@ -61,6 +61,7 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
  * 搜索
  * @params {string} key
  * @returns {[{title, summary, cover, url}]}
+ */
 //2022/6/18
 function search(key) {
 	var url = 'http://www.sbdm.net/search.asp@post->searchword=' + ToolUtil.encodeURI(key,'gb2312') + '&submit=%CB%D1%CB%F7' + header;
@@ -86,7 +87,7 @@ function search(key) {
 	}
 	return JSON.stringify(array);
 }
- */
+/**
 function search(key) {
 	var url = 'https://www.sbdm.net/index.php/vod/search.html?wd=' + encodeURI(key) + header;
 	const response = httpRequest(url);
@@ -112,23 +113,30 @@ function search(key) {
 	return JSON.stringify(array);
 }
 
+ */
 
 /**
  * 详情
  * @params {string} url
  * @returns {[{author, summary, cover, upDate, reverseOrder, catalog}]}
-
+ */
 function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
+		//标题
+		title : jsoup(response,'div.m-info > div.mtext > ul > li:nth-child(1) > h1').text(),
+		
 		//作者
 		//author: jsoup(response,'li:nth-child(5) > span.detail_imform_value').text(),
+		
+		//日期
+		date : jsoup(response,'div.m-info > div.mtext > ul > li:nth-child(3) ').text(),
 		
 		//概览
 		summary: jsoup(response,'div.m-intro').text(),
 
 		//封面
-		cover : jsoup(response,'div.m-info > div > img').attr('src'),
+		cover : ToolUtil.urlJoin(url,jsoup(response,'div.m-info > div > img').attr('src')),
 		
 		//目录是否倒序
 		reverseOrder: false,
@@ -137,12 +145,18 @@ function detail(url) {
 		catalog: catalog(response,url)
 	})
 }
- */
+/**
 function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
+		//标题
+		title : jsoup(response,'div.m-info > div.mtext > ul > li:nth-child(1) > h1').text(),
+		
 		//导演
 		author: jsoup(response,'.content_min  > ul > li:nth-child(4)').text(),
+		
+		//日期
+		date : jsoup(response,'div.m-info > div.mtext > ul > li:nth-child(3) ').text(),
 		
 		//概览
 		summary: jsoup(response,'div.context').text(),
@@ -157,13 +171,13 @@ function detail(url) {
 		catalog: catalog(response,url)
 	})
 }
- 
+  */
 /**
  * 目录
  * @params {string} response
  * @params {string} url
  * @returns {tag, chapter:{[{group, name, url}]}}
-
+ */
 function catalog(response,url) {
 	//目录代码
 	const catalogs = jsoupArray(response,'div.playurl').outerHtml();
@@ -200,7 +214,7 @@ function catalog(response,url) {
 	}
 	return new_catalogs
 }
- */
+/**
 function catalog(response,url) {
 	//目录标签代码
 	const tabs = jsoupArray(response,'.play_source_tab > a').outerHtml();
@@ -240,7 +254,7 @@ function catalog(response,url) {
 	}
 	return new_catalogs
 }
-
+ */
 /**
  * 内容(InterceptRequest)
  * @params {string} url

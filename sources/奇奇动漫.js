@@ -45,13 +45,13 @@ function manifest() {
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
 		
-		//内容处理方式： 0：链接处理并浏览器访问{url}，1：链接处理{url}，2：浏览器拦截请求{url}，3：浏览器拦截框架{html}
+		//内容处理方式： -1: 搜索相似，0：对链接处理并调用外部APP访问{url}，1：对链接处理{url}，2：对内部浏览器拦截的请求处理{url}，3：对内部浏览器拦截的框架处理{html}
 		contentType: 2,
 		
 		//自定义标签
 		tag: ["动漫"],
 		
-		//@NonNull 详细界面的基本网址
+		//@NonNull 详情界面的基本网址
 		baseUrl: "https://www.qiqidongman.com",
 	});
 }
@@ -63,7 +63,7 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'http://m.qiqidongman.com/vod-search-wd-'+ encodeURI(key) + '.html' + header;
+	var url = 'https://m.qiqidongman.com/vod-search-wd-'+ encodeURI(key) + '.html' + header;
 	const response = httpRequest(url);
 	
 	const list = jsoupArray(response,'#LIST > li').outerHtml();
@@ -95,6 +95,9 @@ function search(key) {
 function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
+		//标题
+		title : jsoup(response,'#DESC-info > h1').text(),
+		
 		//作者
 		//author: jsoup(response,'li:nth-child(5) > span.detail_imform_value').text(),
 		

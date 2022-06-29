@@ -45,18 +45,18 @@ function manifest() {
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
 		
-		//内容处理方式： 0：链接处理并浏览器访问{url}，1：链接处理{url}，2：浏览器拦截请求{url}，3：浏览器拦截框架{html}
+		//内容处理方式： -1: 搜索相似，0：对链接处理并调用外部APP访问{url}，1：对链接处理{url}，2：对内部浏览器拦截的请求处理{url}，3：对内部浏览器拦截的框架处理{html}
 		contentType: 2,
 		
 		//自定义标签
 		tag: ["动漫"],
 		
-		//@NonNull 详细界面的基本网址
-		baseUrl: "https://k6dm.com",//备用链接：https://eacg.net | https://my.cbox.ws/qkan8
+		//@NonNull 详情界面的基本网址
+		baseUrl: "https://www.qkan9.com",//备用链接：https://eacg.net | https://my.cbox.ws/qkan8
 		
 		//发现
 		findList: {
-			"新番推荐": "https://k6dm.com/index.php/label/front.html"
+			"新番推荐": "https://www.qkan9.com/index.php/label/front.html"
 		},
 	});
 }
@@ -68,7 +68,7 @@ const header = '';
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'https://k6dm.com/index.php/vod/search.html?wd='+ encodeURI(key) + header;
+	var url = 'https://www.qkan9.com/index.php/vod/search.html?wd='+ encodeURI(key) + header;
 	const response = httpRequest(url);
 	
 	const list = jsoupArray(response,'div.fed-main-info > div > div > dl').outerHtml();
@@ -128,8 +128,14 @@ function find(url) {
 function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
+		//标题
+		title : jsoup(response,'h1.fed-part-eone > a').text(),
+		
 		//作者
 		author: jsoup(response,'dd.fed-deta-content > ul > li:nth-child(2) > a').text(),
+		
+		//日期
+		date : jsoup(response,'dd.fed-deta-content > ul > li:nth-child(6)').text(),
 		
 		//概览
 		summary: jsoup(response,'div.fed-play-data > div > div > p').text(),

@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//搜索源自动同步更新链接
 		syncList: {
@@ -45,13 +45,13 @@ function manifest() {
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
 		
-		//内容处理方式： 0：链接处理并浏览器访问{url}，1：链接处理{url}，2：浏览器拦截请求{url}，3：浏览器拦截框架{html}
+		//内容处理方式： -1: 搜索相似，0：对链接处理并调用外部APP访问{url}，1：对链接处理{url}，2：对内部浏览器拦截的请求处理{url}，3：对内部浏览器拦截的框架处理{html}
 		contentType: 1,
 		
 		//自定义标签
 		tag: ["小说"],
 		
-		//@NonNull 详细界面的基本网址
+		//@NonNull 详情界面的基本网址
 		baseUrl: "https://m.fpzw.org",
 	});
 }
@@ -94,14 +94,20 @@ function search(key) {
 function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
-		//作者
+		//标题
+		title : jsoup(response,'td:nth-child(2) > div:nth-child(1)').text(),
+		
+		//作者/导演
 		author: jsoup(response,'td:nth-child(2) > div:nth-child(2)').text(),
+		
+		//日期
+		date : jsoup(response,'td:nth-child(2) > div:nth-child(4)').text(),
 		
 		//概览
 		summary: jsoup(response,'div.lb_jj > div:nth-child(5)').text(),
 
 		//封面
-		//cover : jsoup(response,'#fmimg > img').attr('src'),
+		cover : jsoup(response,'tr > td:nth-child(1) > img').attr('src'),
 		
 		//目录是否倒序
 		reverseOrder: true,

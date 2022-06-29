@@ -8,7 +8,7 @@ function manifest() {
 		id: 1651679241,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20220101,
+		minMyACG: 20220621,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -45,13 +45,13 @@ function manifest() {
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
 		
-		//内容处理方式： 0：链接处理并浏览器访问{url}，1：链接处理{url}，2：浏览器拦截请求{url}，3：浏览器拦截框架{html}
-		contentType: 0,
+		//内容处理方式： -1: 搜索相似，0：对链接处理并调用外部APP访问{url}，1：对链接处理{url}，2：对内部浏览器拦截的请求处理{url}，3：对内部浏览器拦截的框架处理{html}
+		contentType: -1,
 		
 		//自定义标签
 		tag: ["小说","聚合"],
 		
-		//@NonNull 详细界面的基本网址
+		//@NonNull 详情界面的基本网址
 		baseUrl: "https://book.qidian.com",
 	});
 }
@@ -85,24 +85,3 @@ function search(key) {
 	}
 	return JSON.stringify(array);
 }
-
-/**
- * 详情
- * @params {string} url
- * @returns {[{author, summary, cover, upDate, reverseOrder, catalog}]}
- */
-function detail(url) {
-	const response = httpRequest(url+ header);
-	return JSON.stringify({
-		//作者
-		author: jsoup(response,'div.book-info > h1 > span > a').text(),
-		
-		//概览
-		summary: jsoup(response,'div.book-intro').text(),
-		
-		//封面
-		cover : ToolUtil.urlJoin(url,jsoup(response,'#bookImg > img').attr('src'))
-	})
-}
-
-//订阅检测是否有content
