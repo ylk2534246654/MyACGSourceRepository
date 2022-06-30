@@ -107,7 +107,7 @@ function detail(url) {
 		summary: jsoup(response,'#intro').text(),
 
 		//封面
-		cover : jsoup(response,'#fmimg > img').attr('src'),
+		cover : ToolUtil.urlJoin(url,jsoup(response,'#fmimg > img').attr('src')),
 		
 		//目录是否倒序
 		reverseOrder: false,
