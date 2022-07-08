@@ -3,7 +3,7 @@ function manifest() {
 		//MyACG 最新版本
 		MyACG: 'https://lanzou.com/b07xqlbxc ',
 		
-		//@NonNull 搜索源ID标识，设置后不建议更改
+		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
 		id: 1648714515,
 		
@@ -30,7 +30,7 @@ function manifest() {
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
 		version: 1,
 
-		//搜索源自动同步更新链接
+		//搜索源自动同步更新网址
 		syncList: {
 			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/刘志进实验室.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/刘志进实验室.js",
@@ -45,13 +45,13 @@ function manifest() {
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 5,
 		
-		//内容处理方式： -1: 搜索相似，0：对链接处理并调用外部APP访问{url}，1：对链接处理{url}，2：对内部浏览器拦截的请求处理{url}，3：对内部浏览器拦截的框架处理{html}
+		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截的请求处理，3：对内部浏览器拦截的框架处理
 		contentType: 1,
 		
 		//自定义标签
 		tag: ["音乐"],
 		
-		//@NonNull 详情界面的基本网址
+		//@NonNull 详情页的基本网址
 		baseUrl: "http://music.163.com",
 	});
 }
@@ -80,7 +80,7 @@ function search(key) {
 			//封面
 			cover : jsonPath(data,'$.pic'),
 			
-			//链接
+			//网址
 			url : ToolUtil.urlJoin(url,jsonPath(data,'$.url'))
 			});
 	}

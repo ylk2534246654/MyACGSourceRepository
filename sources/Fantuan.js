@@ -3,7 +3,7 @@ function manifest() {
 		//MyACG 最新版本
 		MyACG: 'https://lanzou.com/b07xqlbxc ',
 		
-		//@NonNull 搜索源ID标识，设置后不建议更改
+		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
 		id: 1654757510,
 		
@@ -30,7 +30,7 @@ function manifest() {
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
 		version: 1,
 
-		//搜索源自动同步更新链接
+		//搜索源自动同步更新网址
 		syncList: {
 			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/Fantuan.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/Fantuan.js",
@@ -45,13 +45,13 @@ function manifest() {
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
 		
-		//内容处理方式： -1: 搜索相似，0：对链接处理并调用外部APP访问{url}，1：对链接处理{url}，2：对内部浏览器拦截的请求处理{url}，3：对内部浏览器拦截的框架处理{html}
+		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截的请求处理，3：对内部浏览器拦截的框架处理
 		contentType: 2,
 		
 		//自定义标签
 		tag: ["动漫"],
 		
-		//@NonNull 详情界面的基本网址
+		//@NonNull 详情页的基本网址
 		baseUrl: "https://acgfantuan.com",//备份https://fantuantv.com
 		
 		
@@ -86,7 +86,7 @@ function search(key) {
 			//封面
 			cover : ToolUtil.urlJoin(url,jsoup(data,'.card__cover > img').attr('src')),
 			
-			//链接
+			//网址
 			url : ToolUtil.urlJoin(url,jsoup(data,'.card__title > a').attr('href'))
 			});
 	}
@@ -94,8 +94,8 @@ function search(key) {
 }
 /**
  * 发现
- * @params string html
- * @returns {[{title, introduction, cover, url}]}
+ * @params string url
+ * @returns {[{title, summary, cover, url}]}
  */
 function find(url) {
 	const response = httpRequest(url + header);
@@ -114,7 +114,7 @@ function find(url) {
 			//封面
 			cover : ToolUtil.urlJoin(url,jsoup(data,'.card__cover > img').attr('src')),
 			
-			//链接
+			//网址
 			url : ToolUtil.urlJoin(url,jsoup(data,'.card__title > a').attr('href'))
 			});
 	}
@@ -124,7 +124,7 @@ function find(url) {
 /**
  * 详情
  * @params {string} url
- * @returns {[{author, summary, cover, upDate, reverseOrder, catalog}]}
+ * @returns {[{title, author, date, summary, cover, reverseOrder, catalog:{[{tag, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = httpRequest(url+ header);
@@ -147,7 +147,7 @@ function detail(url) {
 		//目录是否倒序
 		reverseOrder: false,
 		
-		//目录链接/非外链无需使用
+		//目录网址/非外链无需使用
 		catalog: catalog(response,url)
 	})
 }
@@ -155,7 +155,7 @@ function detail(url) {
  * 目录
  * @params {string} response
  * @params {string} url
- * @returns {tag, chapter:{[{group, name, url}]}}
+ * @returns {[{tag, chapter:{[{name, url}]}}]}
  */
 function catalog(response,url) {
 	//创建目录数组
@@ -172,7 +172,7 @@ function catalog(response,url) {
 		newchapters.push({
 			//章节名称
 			name: tr[ci],
-			//章节链接
+			//章节网址
 			url: ToolUtil.urlJoin(url,id[ci])
 		});
 	}
@@ -189,7 +189,7 @@ function catalog(response,url) {
 /**
  * 内容(InterceptRequest)
  * @params {string} url
- * @returns {[{url}]}
+ * @returns {string} content
 
 function content(url) {
 	//浏览器请求结果处理
