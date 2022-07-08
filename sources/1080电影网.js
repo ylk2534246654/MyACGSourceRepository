@@ -1,3 +1,5 @@
+const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
+
 function manifest() {
 	return JSON.stringify({
 		//MyACG 最新版本
@@ -64,8 +66,6 @@ function manifest() {
 		authRequired: ["search","detail"],
 	});
 }
-const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
-
 /*
  * 拦截并验证手动授权数据
  * @params {string} html	网页源码
