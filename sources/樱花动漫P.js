@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 3,
+		version: 4,
 
 		//搜索源自动同步更新链接
 		syncList: {
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2022年6月29日",
+		updateTime: "2022年7月14日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -202,7 +202,7 @@ function catalog(response,url) {
  */
 function content(url) {
 	//浏览器请求结果处理，和异世界动漫相似
-	var re = /phk\.|mbt\.|kumo|yhbsk|viplp|tianvip|yangshengzu|mtyrvc|studylabs|hongmao|cslpf|mmstat|\.png|\.jpg|\.gif|\.svg|\.ico|\.webp|\.jpeg/i;
+	var re = /phk\.|kmo\.|baidu|mbt\.|kumo|yhbsk|viplp|tianvip|yangshengzu|mtyrvc|studylabs|hongmao|cslpf|mmstat|\.png|\.jpg|\.gif|\.svg|\.ico|\.webp|\.jpeg/i;
 	if(!re.test(url)){
 		return url;
 	}
