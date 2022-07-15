@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2022年3月29日",
+		updateTime: "2022年7月15日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -66,22 +66,22 @@ function search(key) {
 	var url = 'https://www.malimali6.com/vodsearch/-------------.html?wd='+ encodeURI(key) + header;
 	const response = httpRequest(url);
 	
-	const list = jsoupArray(response,'div.module-items > div').outerHtml();
+	const list = jsoupArray(response,'div.module-items > div,.list').outerHtml();
 	var array= [];
 	for (var i=0;i<list.length;i++) {
 	    var data = list[i];
 		array.push({
 			//标题
-			title : jsoup(data,'div.video-info-header > h3 > a').text(),
+			title : jsoup(data,'div.video-info-header > h3 > a,.title').text(),
 			
 			//概览
-			summary : jsoup(data,'div.video-info > div.video-info-main > div:nth-child(3) > div').text(),
+			summary : jsoup(data,'div.video-info > div.video-info-main > div:nth-child(3) > div,.des').text(),
 			
 			//封面
-			cover : ToolUtil.urlJoin(url,jsoup(data,'div.video-cover > div > div > img').attr('data-src')),
+			cover : ToolUtil.urlJoin(url,jsoup(data,'div.video-cover > div > div > img').attr('data-src') + jsoup(data,'[src]').attr('data-echo')),
 			
 			//网址
-			url : ToolUtil.urlJoin(url,jsoup(data,'div.video-info-header > h3 > a').attr('href'))
+			url : ToolUtil.urlJoin(url,jsoup(data,'div.video-info-header > h3 > a,.title').attr('href'))
 			});
 	}
 	return JSON.stringify(array);
@@ -95,16 +95,16 @@ function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
 		//标题
-		title : jsoup(response,'.page-title').text(),
+		title : jsoup(response,'.page-title,.drama-tit > h3').text(),
 		
 		//作者
-		author: jsoup(response,'div.video-info-main > div:nth-child(1) > div').text(),
+		author: jsoup(response,'div.video-info-main > div:nth-child(1) > div,.drama-data > div:nth-child(1) > label').text(),
 		
 		//概览
-		summary: jsoup(response,'div.vod_content > span').text(),
+		summary: jsoup(response,'div.vod_content > span,div.drama-data > div:nth-child(5) > label').text(),
 
 		//封面
-		cover : jsoup(response,'div.video-cover > div > div > img').attr('data-src'),
+		cover : ToolUtil.urlJoin(url,jsoup(response,'div.video-cover > div > div > img').attr('data-src') + jsoup(response,'div.thumb > img').attr('src')),
 		
 		//目录是否倒序
 		reverseOrder: false,
@@ -121,7 +121,7 @@ function detail(url) {
  */
 function catalog(response,url) {
 	//目录标签代码
-	const playlist = jsoupArray(response,'.module-player-list > div.scroll-box').outerHtml();
+	const playlist = jsoupArray(response,'.module-player-list > div.scroll-box,.playbox').outerHtml();
 	
 	//创建目录数组
 	var new_catalogs= [];
@@ -133,7 +133,7 @@ function catalog(response,url) {
 		var newchapters= [];
 		
 		//章节代码
-		var chapters = jsoupArray(catalog,'div > a').outerHtml();
+		var chapters = jsoupArray(catalog,'div > a,ul > li').outerHtml();
 		
 		for (var ci=0;ci<chapters.length;ci++) {
 			var chapter = chapters[ci];
