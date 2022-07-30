@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 3,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2022年5月29日",
+		updateTime: "2022年7月31日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -53,7 +53,39 @@ function manifest() {
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: "https://www.dmxq.me",
+		
+		//登录授权是否启用
+		auth: true,
+		
+		//登录授权网址
+		authUrl:"https://www.dmxq.me/vodsearch/-------------.html?wd=" + header,
+		
+		//需要授权的功能（search，detail，content，find）
+		authRequired: ["search"],
 	});
+}
+/*
+ * 拦截并验证手动授权数据
+ * @params {string} html	网页源码
+ * @params {string} url		网址
+ * @returns 是否授权
+ */
+function authCallback(html,url) {
+	if(html.length > 1 && html.indexOf('单击进行搜索验证') == -1){
+		return true;
+	}
+	return false;
+}
+/*
+ * 自动验证授权结果
+ * @returns 是否授权
+ */
+function authVerify() {
+	const response = httpRequest("https://www.dmxq.me/vodsearch/-------------.html?wd=" + header);
+	if(response.indexOf('单击进行搜索验证') == -1){
+		return true;
+	}
+	return false;
 }
 const header = '';
 
