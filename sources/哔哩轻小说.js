@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -37,10 +37,11 @@ function manifest() {
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/哔哩轻小说.js",
 			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/哔哩轻小说.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/哔哩轻小说.js",
+			"Gitcode": "https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/哔哩轻小说.js",
 		},
 		
 		//更新时间
-		updateTime: "2022年3月29日",
+		updateTime: "2022年8月2日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -52,51 +53,51 @@ function manifest() {
 		tag: ["轻小说","小说"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "https://w.linovelib.com",
+		baseUrl: "https://www.linovelib.com",
 	});
 }
 
-const header = '';
+const header = '@header->user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 Edg/103.0.1264.7';
 /**
  * 搜索
  * @params {string} key
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'https://w.linovelib.com/S0/?searchkey=' + encodeURI(key) + '&searchtype=all' + header;
+	var url = 'https://www.linovelib.com/S6/@post->searchkey=' + encodeURI(key) + '&searchtype=all' + header;
 	const response = httpRequest(url);
 	var array= [];
 	if(response.indexOf('开始阅读') != -1){
 		array.push({
 			//标题
-			title : jsoup(response,'div.book-cell > h2').text(),
+			title : jsoup(response,'.book-name').text(),
 			
 			//概览
-			summary : jsoup(response,'div.book-meta-r > p').text(),
+			summary : jsoup(response,'div.book-dec > p').text(),
 			
 			//封面
-			cover : jsoup(response,'div.book-layout > img').attr('src'),
+			cover : jsoup(response,'div.book-img > img').attr('src'),
 			
 			//网址
-			url : ToolUtil.urlJoin(url,jsoup(response,'link[rel=canonical]').attr('href'))
+			url : ToolUtil.urlJoin(url,jsoup(response,"[property='og:url']").attr('content'))
 			});
 		return JSON.stringify(array);
 	}
-	const list = jsoupArray(response,'div.module > ol > li').outerHtml();
+	const list = jsoupArray(response,'.search-result-list').outerHtml();
 	for (var i=0;i<list.length;i++) {
 	    var data = list[i];
 		array.push({
 			//标题
-			title : jsoup(data,'h4.book-title').text(),
+			title : jsoup(data,'.tit').text(),
 			
 			//概览
-			summary : jsoup(data,'p.book-desc').text(),
+			summary : jsoup(data,'div > p').text(),
 			
 			//封面
-			cover : jsoup(data,'a > img').attr('data-original'),
+			cover : jsoup(data,'div > a > img').attr('src'),
 			
 			//网址
-			url : ToolUtil.urlJoin(url,jsoup(data,'a').attr('href'))
+			url : ToolUtil.urlJoin(url,jsoup(data,'.tit > a').attr('href'))
 			});
 	}
 	return JSON.stringify(array);
@@ -110,25 +111,25 @@ function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
 		//标题
-		title : jsoup(response,'.book-title').text(),
+		title : jsoup(response,'.book-name').text(),
 		
 		//作者
-		author: jsoup(response,'#bookDetailWrapper > div > div.book-layout > div > div').text(),
+		author: jsoup(response,'div.au-name > a').text(),
 		
 		//日期
-		date : jsoup(response,'div.book-meta-r > p > :matchText:nth-child(1)').text(),
+		date : jsoup(response,'div.nums > span:nth-child(1) > i').text(),
 		
 		//概览
-		summary: jsoup(response,'#bookSummary > content').text(),
+		summary: jsoup(response,'div.book-dec > p').text(),
 
 		//封面
-		cover : jsoup(response,'div.book-layout > img').attr('src'),
+		cover : jsoup(response,'div.book-img > img').attr('src'),
 		
 		//目录是否倒序
 		reverseOrder: false,
 		
 		//目录网址/非外链无需使用
-		catalog: catalog(ToolUtil.urlJoin(url,jsoup(response,'a.book-meta').attr('href')))
+		catalog: catalog(ToolUtil.urlJoin(url,jsoup(response,'div.book-info > div.btn-group > a.btn.read-btn').attr('href')))
 	})
 }
 /**
@@ -146,7 +147,7 @@ function catalog(url) {
 	var newchapters= [];
 	
 	//章节代码
-	var chapters = jsoupArray(response,'ol.chapter-ol > li').outerHtml();
+	var chapters = jsoupArray(response,'ul.chapter-list > div,ul.chapter-list > li').outerHtml();
 	
 	var group;//分组记录
 	for (var ci=0;ci<chapters.length;ci++) {
@@ -179,7 +180,7 @@ function catalog(url) {
  * @returns {string} content
  */
 function content(url) {
-	const response = httpRequest(url + header);
+	const response = httpRequest(url);
 	const src = jsoup(response,'#acontent').outerHtml();
 	return src;
 }
