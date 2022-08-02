@@ -37,6 +37,7 @@ function manifest() {
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/奇奇动漫.js",
 			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/奇奇动漫.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/奇奇动漫.js",
+			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/奇奇动漫.js",
 		},
 		
 		//更新时间
@@ -52,7 +53,7 @@ function manifest() {
 		tag: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "https://www.qiqidongman.com",
+		baseUrl: "https://www.qiqidongman.com",//备用：https://www.qiqidongman.cc
 	});
 }
 const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';

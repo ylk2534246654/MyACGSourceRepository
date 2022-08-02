@@ -37,6 +37,7 @@ function manifest() {
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/布米米.js",
 			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/布米米.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/布米米.js",
+			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/布米米.js",
 		},
 		
 		//更新时间
@@ -166,7 +167,7 @@ function catalog(response,url) {
 */
 function content(url) {
 	//浏览器请求结果处理
-	var re = /yzleyzp|adayvquq|\.jpg|\.svg|\.ico|\.gif|\.webp|\.jpeg/i;
+	var re = /yzleyzp|adayvquq|hm\.|\.jpg|\.svg|\.ico|\.gif|\.webp|\.jpeg/i;
 	if(!re.test(url)){
 		return url;
 	}

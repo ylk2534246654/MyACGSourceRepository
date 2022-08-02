@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -37,6 +37,7 @@ function manifest() {
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/cocoManga.js",
 			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/cocoManga.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/cocoManga.js",
+			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/cocoManga.js",
 		},
 
 		//更新时间
@@ -55,7 +56,7 @@ function manifest() {
 		baseUrl: "https://www.cocomanga.com",//onemanhua
 	})
 }
-const setting = "";
+const setting = "@rateLimitHost->1:5000";
 /**
  * 搜索
  * @params {string} key
@@ -77,7 +78,7 @@ function search(key) {
 			summary : jsoup(data,'dd > ul > li:nth-child(3)').text(),
 			
 			//封面
-			cover : jsoup(data,'dt > a').attr('data-original') + '@header->Referer:https://www.cocomanga.com/' + setting,
+			cover : jsoup(data,'dt > a').attr('data-original') + '@header->Referer:https://www.cocomanga.com/',
 			
 			//网址
 			url : ToolUtil.urlJoin(url,jsoup(data,'dt > a').attr('href'))
@@ -106,7 +107,7 @@ function detail(url) {
 		summary: jsoup(response,'p.fed-part-both').text(),
 
 		//封面
-		cover: jsoup(response,'a.fed-list-pics:nth-last-child(1)').attr('data-original') + '@header->Referer:https://www.cocomanga.com/' + setting,
+		cover: jsoup(response,'a.fed-list-pics:nth-last-child(1)').attr('data-original') + '@header->Referer:https://www.cocomanga.com/',
 		
 		//目录是否倒序
 		reverseOrder: true,

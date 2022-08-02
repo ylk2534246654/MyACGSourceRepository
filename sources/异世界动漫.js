@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 3,
+		version: 4,
 
 		//搜索源自动同步更新链接
 		syncList: {
@@ -37,10 +37,11 @@ function manifest() {
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/异世界动漫.js",
 			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/异世界动漫.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/异世界动漫.js",
+			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/异世界动漫.js",
 		},
 		
 		//更新时间
-		updateTime: "2022年6月29日",
+		updateTime: "2022年7月20日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -73,7 +74,7 @@ function search(key) {
 	    var data = list[i];
 		array.push({
 			//标题
-			title : jsoup(data,'div.intro > h6 > a').text(),
+			title : jsoup(data,'div.cover > a > img').attr('alt'),
 			
 			//概览
 			summary : jsoup(data,'div.intro > em:nth-child(4)').text(),
