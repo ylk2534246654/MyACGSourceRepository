@@ -5,7 +5,7 @@ function manifest() {
 		
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
-		id: 1656608055,
+		id: 1660118962,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
 		minMyACG: 20220101,
