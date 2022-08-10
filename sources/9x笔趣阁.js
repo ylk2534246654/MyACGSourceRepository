@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2022年7月1日",
+		updateTime: "2022年8月10日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -53,7 +53,7 @@ function manifest() {
 		tag: ["小说"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "https://nso92.xsafetech.com",
+		baseUrl: "https://gfnormal05at.com",
 	});
 }
 
@@ -64,7 +64,7 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'https://nso92.xsafetech.com/h5/search?word='+ encodeURI(key) + header;
+	var url = 'https://gfnormal05at.com/h5/search?word='+ encodeURI(key) + header;
 	const response = httpRequest(url);
 	
 	const list = jsoupArray(response,'.books-list > li').outerHtml();
