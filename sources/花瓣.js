@@ -5,7 +5,7 @@ function manifest() {
 		
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
-		id: 1648714446,
+		id: 1660827508,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
 		minMyACG: 20220101,
@@ -19,7 +19,7 @@ function manifest() {
 		invalid: false,
 		
 		//@NonNull 搜索源名称
-		name: "堆糖",
+		name: "花瓣",
 
 		//搜索源制作人
 		author: "雨夏",
@@ -32,12 +32,11 @@ function manifest() {
 
 		//搜索源自动同步更新网址
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/堆糖.js",
-			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/堆糖.js",
-			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/堆糖.js",
-			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/堆糖.js",
-			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/堆糖.js",
-			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/堆糖.js",
+			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/花瓣.js",
+			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/花瓣.js",
+			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/花瓣.js",
+			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/花瓣.js",
+			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/花瓣.js",
 		},
 		
 		//更新时间
@@ -53,10 +52,10 @@ function manifest() {
 		tag: ["图片"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "https://www.duitang.com",
+		baseUrl: "https://hbimg.huaban.com",
 	});
 }
-const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
+const header = '';
 
 /**
  * 搜索
@@ -64,37 +63,24 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'https://www.duitang.com/search/?kw='+ encodeURI(key) + '&type=feed' + header;
+	const url = `http://api.huaban.com/search?q=${encodeURI(key)}&per_page=36&page=1&sort=all` + header;
 	const response = httpRequest(url);
-	
-	const list = jsoupArray(response,'div.woo-pcont > div').outerHtml();
 	var array= [];
-	for (var i=0;i<list.length;i++) {
-	    var data = list[i];
+	const $ = JSON.parse(response)
+	$.pins.forEach((child) => {
 		array.push({
-			//标题
-			title : jsoup(data,'div.wooscr > div.g').text(),
-			
-			//概览
-			summary : jsoup(data,'div.wooscr > ul > li > p > span').text(),
-			
-			//封面
-			cover : jsoup(data,'div.mbpho > a > img').attr('src'),
-			
-			//网址
-			url : ToolUtil.urlJoin(url,jsoup(data,'div.mbpho > a').attr('href'))
-			});
-	}
+				//标题
+				title: child.raw_text,
+		
+				//概览
+				summary: child.board.title,
+		
+				//封面
+				cover: ToolUtil.urlJoin('https://hbimg.huaban.com/',child.file.key),//http://img.hb.aicdn.com/
+		
+				//网址
+				url: ToolUtil.urlJoin('https://hbimg.huaban.com/',child.file.key),
+			})
+	  })
 	return JSON.stringify(array);
 }
-
-/**
- * 内容
- * @params {string} url
- * @returns {string} content
- */
-function content(url) {
-	const response = httpRequest(url + header);
-	return jsoup(response,'#pgdetail > div.de-img > a.vieworg').attr('href');
-}
-
