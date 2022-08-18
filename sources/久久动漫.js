@@ -33,7 +33,7 @@ function manifest() {
 		//搜索源自动同步更新链接
 		syncList: {
 			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/久久动漫.js",
-			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/哈久久动漫.js",
+			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/久久动漫.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/久久动漫.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/久久动漫.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/久久动漫.js",
