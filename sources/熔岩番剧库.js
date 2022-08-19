@@ -146,15 +146,3 @@ function catalog(response,url) {
 	});
 	return new_catalogs
 }
-
-/**
- * 内容(InterceptRequest)
- * @params {string} url
- * @returns {string} content
-
-function content(url) {
-	const response = httpRequest(url + header);
-	const tabs = jsoupArray(response,'.navs-tabs > li').outerHtml();
-	return null;
-}
- */
