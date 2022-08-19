@@ -21,7 +21,7 @@ function manifest() {
 		invalid: false,
 		
 		//@NonNull 搜索源名称
-		name: "dmh8樱花动漫",
+		name: "樱花动漫",
 
 		//搜索源制作人
 		author: "雨夏",
