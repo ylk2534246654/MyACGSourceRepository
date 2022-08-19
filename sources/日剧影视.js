@@ -160,23 +160,3 @@ function catalog(response,url) {
 	}
 	return new_catalogs
 }
-
-/**
- * 内容(InterceptRequest)
- * @params {string} url
- * @returns {string} content
- */
-function content(url) {
-	//浏览器请求结果处理，嘻嘻动漫，路漫漫，风车动漫P，樱花动漫P 相似
-	//var re = /kme.whpfl.cn|knr.qjxys.cn|hft.ofooe.cn/i;
-	var re = /[a-z]+:\/\/[a-z]*.[a-z]*.[a-z]*\/[a-z]\/\d/i;
-	//(https:\/\/.*\..*\..*/.*/.*)
-	//https:\/\/knr.qjxys.cn/j\/142610
-	//https:\/\/kme.whpfl.cn/k\/151964
-	//https:\/\/hft.ofooe.cn/j\/142625
-	//这种格式均为广告
-	if(!re.test(url)){
-		return url;
-	}
-	return null;
-}
