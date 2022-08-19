@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 4,
+		version: 5,
 
 		//搜索源自动同步更新链接
 		syncList: {
@@ -201,8 +201,14 @@ function catalog(response,url) {
  * @returns {string} content
  */
 function content(url) {
-	//浏览器请求结果处理，和异世界动漫相似
-	var re = /phk\.|kmo\.|baidu|mbt\.|kumo|yhbsk|viplp|tianvip|yangshengzu|mtyrvc|studylabs|hongmao|cslpf|mmstat|\.png|\.jpg|\.gif|\.svg|\.ico|\.webp|\.jpeg/i;
+	//浏览器请求结果处理，路漫漫，风车动漫P，樱花动漫P 相似
+	//var re = /kme.whpfl.cn|knr.qjxys.cn|hft.ofooe.cn/i;
+	var re = /[a-z]+:\/\/[a-z]*.[a-z]*.[a-z]*\/[a-z]\/\d/i;
+	//(https:\/\/.*\..*\..*/.*/.*)
+	//https:\/\/knr.qjxys.cn/j\/142610
+	//https:\/\/kme.whpfl.cn/k\/151964
+	//https:\/\/hft.ofooe.cn/j\/142625
+	//这种格式均为广告
 	if(!re.test(url)){
 		return url;
 	}
