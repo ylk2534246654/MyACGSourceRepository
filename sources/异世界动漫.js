@@ -19,7 +19,7 @@ function manifest() {
 		invalid: false,
 		
 		//@NonNull 搜索源名称
-		name: "异世界动漫",
+		name: "天使动漫",//天使动漫，酷动漫
 
 		//搜索源制作人
 		author: "雨夏",
@@ -32,12 +32,11 @@ function manifest() {
 
 		//搜索源自动同步更新链接
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/异世界动漫.js",
-			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/异世界动漫.js",
-			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/异世界动漫.js",
-			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/异世界动漫.js",
-			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/异世界动漫.js",
-			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/异世界动漫.js",
+			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/天使动漫.js",
+			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/天使动漫.js",
+			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/天使动漫.js"
+			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/天使动漫.js",
+			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/天使动漫.js",
 		},
 		
 		//更新时间
@@ -53,7 +52,10 @@ function manifest() {
 		tag: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "http://www.sbdm.net",//备用：http://www.kudm.vip/，https://www.gqdm.net/
+		baseUrl: "http://www.sbdm.net",
+		//导航页：http://www.kudm.vip/
+		//同布局备份：http://tv.kudm.net/
+		//备份：https://www.gqdm.net/ ，http://ysjdm.net/
 	});
 }
 const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
