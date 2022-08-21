@@ -1,4 +1,4 @@
-const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
+const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36 iPhone';
 
 function manifest() {
 	return JSON.stringify({
@@ -231,10 +231,23 @@ function catalog(response,url) {
  * @params {string} url
  * @returns {string} content
  *
-*/
+
 function content(url) {
 	//浏览器请求结果处理
 	var re = /axiangboke|cclnuzn|taoquan|lz\.|vxzmok|stgowan|ajzsb|pkg\.|hm\.|pc\.|\.xyz|\.jb|\.jr|app\.|\.add|\.png|\.jpg|\.svg|\.ico|\.gif|\.webp|\.jpeg/i;
+	if(!re.test(url)){
+		return url;
+	}
+	return null;
+}
+/**
+ * 内容(InterceptRequest)
+ * @params {string} url
+ * @returns {string} content
+ */
+function content(url) {
+	//浏览器请求结果处理，嘻嘻动漫，12wo动漫，路漫漫，风车动漫P，樱花动漫P 相似
+	var re = /([a-z]+:\/\/[a-z]*.[a-z]*.[a-z]*\/[a-z]\/\d)|(im.*webp)|\.gif/i;
 	if(!re.test(url)){
 		return url;
 	}
