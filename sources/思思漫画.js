@@ -8,7 +8,7 @@ function manifest() {
 		id: 1648714663,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20211219,
+		minMyACG: 20220902,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -206,9 +206,6 @@ function catalog(response,url) {
  */
 function content(url) {
 	const response = httpRequest(url + header);
-	const src = jsoup(response,'mip-link > mip-img:not([style=display: none;])').attr('src');
-	if(src.indexOf('default') == -1){
-		return JSON.stringify(src.replace('https','http'));
-	}
-	return null;
+	const src = jsoupArray(response,'mip-link > mip-img:not([style=display: none;])').attr('src');
+	return JSON.stringify(src);
 }
