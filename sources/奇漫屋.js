@@ -1,3 +1,5 @@
+const baseUrl = "http://m.qiman57.com";//备份 http://qiman5.com http://qiman57.com http://qiman56.com
+
 function manifest() {
 	return JSON.stringify({
 		//MyACG 最新版本
@@ -28,7 +30,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -53,7 +55,7 @@ function manifest() {
 		tag: ["漫画"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "http://qiman5.com",//备份http://qiman56.com
+		baseUrl: baseUrl,
 		//此源和七夕漫画，六漫画相似
 	});
 }
@@ -65,7 +67,7 @@ const header = '';
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'http://qiman5.com/spotlight/?keyword=' + encodeURI(key) + header;
+	var url = ToolUtil.urlJoin(baseUrl,'/spotlight/?keyword=' + encodeURI(key) + header);
 	const response = httpRequest(url);
 	
 	const list = jsoupArray(response,'div.search-result > div').outerHtml();
@@ -148,7 +150,7 @@ function catalog(response,url) {
 	var id = ToolUtil.substring(response,'id\": ',',');
 	var vid = ToolUtil.substring(response,'id2\": ',',');
 	if(vid.length > 0){
-		var catalog_response = httpRequest('http://qiman56.com/bookchapter/@post->id='+id+'&id2='+vid+ header);
+		var catalog_response = httpRequest(ToolUtil.urlJoin(baseUrl,'/bookchapter/@post->id=' + id + '&id2=' + vid + header) );
 		var response_chapters = jsonPathArray(catalog_response,'$.[*]');
 		for (var ci=0;ci<response_chapters.length;ci++) {
 			var chapter = response_chapters[ci];
