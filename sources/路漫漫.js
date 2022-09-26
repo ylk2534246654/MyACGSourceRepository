@@ -12,7 +12,7 @@ function manifest() {
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
-		priority: 70,
+		priority: 50,
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//搜索源自动同步更新链接
 		syncList: {
@@ -52,7 +52,7 @@ function manifest() {
 		tag: ["动漫"],
 		
 		//@NonNull 详细界面的基本网址
-		baseUrl: "https://www.17skr.com",
+		baseUrl: "https://www.92cj.com",//备份：http://wydy8.com/ ，备份：https://www.17skr.com ，站长联系：wydy8.com@gmail.com
 	});
 }
 const header = '@header->user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36 Edg/92.0.902.55';
@@ -63,7 +63,7 @@ const header = '@header->user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) A
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'https://www.17skr.com/vod/search.html?wd='+ encodeURI(key) + header;
+	var url = 'https://www.92cj.com/vod/search.html?wd='+ encodeURI(key) + header;
 	const response = httpRequest(url);
 	
 	const list = jsoupArray(response,'#mdym> div').outerHtml();
@@ -171,14 +171,8 @@ function catalog(response,url) {
  * @returns {string} content
  */
 function content(url) {
-	//浏览器请求结果处理，路漫漫，风车动漫P，樱花动漫P 相似
-	//var re = /kme.whpfl.cn|knr.qjxys.cn|hft.ofooe.cn/i;
+	//浏览器请求结果处理，嘻嘻动漫，12wo动漫，路漫漫，风车动漫P，樱花动漫P 相似
 	var re = /[a-z]+:\/\/[a-z]*.[a-z]*.[a-z]*\/[a-z]\/\d/i;
-	//(https:\/\/.*\..*\..*/.*/.*)
-	//https:\/\/knr.qjxys.cn/j\/142610
-	//https:\/\/kme.whpfl.cn/k\/151964
-	//https:\/\/hft.ofooe.cn/j\/142625
-	//这种格式均为广告
 	if(!re.test(url)){
 		return url;
 	}

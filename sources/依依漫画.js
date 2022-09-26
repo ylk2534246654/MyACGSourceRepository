@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 3,
 
 		//搜索源自动同步更新链接
 		syncList: {
@@ -201,15 +201,35 @@ function catalog(response,url) {
 }
 
 /**
- * 内容
+ * 内容（部分漫画搜索源通用规则）
+ * @version 2022/09/26
+ * 168,思思，39.360.147.动漫画，依依
  * @params {string} url
  * @returns {string} content
  */
 function content(url) {
 	const response = httpRequest(url + header);
-	const src = jsoup(response,'mip-link > mip-img:not([style=display: none;])').attr('src');
-	if(src.indexOf('default') == -1){
-		return JSON.stringify(src);
+	var imgList =  jsoupArray(response,'mip-link > img:not([style=display: none;])').attr('src');
+	if(imgList.length < 1){
+		imgList = jsoupArray(response,'div.UnderPag > mip-img').attr('src');
 	}
-	return null;
+	if(imgList.length < 1){
+		imgList = jsoupArray(response,'div.erPag > mip-img').attr('src');
+	}
+	if(imgList.length < 1){
+	    imgList =  jsoupArray(response,'mip-link > mip-img:not([style=display: none;])').attr('src');
+	}
+	if(imgList.length < 1){
+		imgList = jsoupArray(response,'div:not([style]) > mip-link > mip-img:not([style],[width])').attr('src');
+	}
+	if(imgList.length < 1){
+		imgList = jsoupArray(response,'mip-link > mip-img').attr('src');
+	}
+	for(var i = 0;i < imgList.length;i++){
+		var re = /default|cover/i;
+		if(re.test(imgList[i])){
+			return null;
+		}
+	}
+	return JSON.stringify(imgList);
 }
