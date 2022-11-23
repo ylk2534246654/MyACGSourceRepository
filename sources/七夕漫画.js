@@ -53,7 +53,7 @@ function manifest() {
 		tag: ["漫画"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "http://qiximh1.com",//此源和六漫画相似
+		baseUrl: "http://qiximh1.com",//此源和六漫画相似，http://m.qiximh2.com/，http://m.qiximh3.com/
 		
 		//发现
 		findList: {

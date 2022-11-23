@@ -230,7 +230,7 @@ function content(url) {
 		imgList = jsoupArray(response,'mip-link > mip-img').attr('src');
 	}
 	for(var i = 0;i < imgList.length;i++){
-		var re = /default|cover/i;
+		var re = /default|cover|\/manhua\//i;
 		if(re.test(imgList[i])){
 			return null;
 		}

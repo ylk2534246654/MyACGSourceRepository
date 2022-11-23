@@ -203,7 +203,7 @@ function catalog(response,url) {
 /**
  * 内容（部分漫画搜索源通用规则）
  * @version 2022/09/26
- * 168,思思，39.360.147.动漫画，依依
+ * 168,思思，39 , 360 , 147 , 动漫画 ，依依
  * @params {string} url
  * @returns {string} content
  */
@@ -226,7 +226,7 @@ function content(url) {
 		imgList = jsoupArray(response,'mip-link > mip-img').attr('src');
 	}
 	for(var i = 0;i < imgList.length;i++){
-		var re = /default|cover/i;
+		var re = /default|cover|\/manhua\//i;
 		if(re.test(imgList[i])){
 			return null;
 		}
