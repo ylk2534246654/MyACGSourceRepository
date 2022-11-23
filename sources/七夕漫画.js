@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2022年3月29日",
+		updateTime: "2022年11月23日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -53,12 +53,12 @@ function manifest() {
 		tag: ["漫画"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "http://qiximh1.com",//此源和六漫画相似，http://m.qiximh2.com/，http://m.qiximh3.com/
+		baseUrl: "http://m.qiximh3.com",//此源和六漫画相似，http://m.qiximh2.com/，http://m.qiximh1.com/
 		
 		//发现
 		findList: {
-			"最近更新": "http://qiximh1.com/rank/5-1.html",
-			"热门榜": "http://qiximh1.com/rank/4-1.html",
+			"最近更新": "http://m.qiximh3.com/rank/5-1.html",
+			"热门榜": "http://m.qiximh3.com/rank/4-1.html",
 		},
 	});
 }
@@ -70,7 +70,7 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'http://qiximh1.com/search.php@post->keyword=' + encodeURI(key) + header;
+	var url = 'http://m.qiximh3.com/search.php@post->keyword=' + encodeURI(key) + header;
 	const response = httpRequest(url);
 	
 	const list = jsonPathArray(response,'$.search_data');
@@ -180,7 +180,7 @@ function catalog(response,url) {
 	}
 	var vid = jsoup(response,'div.catalog_wrap > div.comment_more > button').attr('data-vid');
 	if(vid.length > 0){
-		var catalog_response = httpRequest('http://qiximh1.com/bookchapter/@post->id='+jsoup(response,'div.comic_intro > div > div.menu_pinglun').attr('data-id')+'&id2='+vid+ header);
+		var catalog_response = httpRequest('http://m.qiximh3.com/bookchapter/@post->id='+jsoup(response,'div.comic_intro > div > div.menu_pinglun').attr('data-id')+'&id2='+vid+ header);
 		var response_chapters = jsonPathArray(catalog_response,'$.[*]');
 		for (var ci=0;ci<response_chapters.length;ci++) {
 			var chapter = response_chapters[ci];
