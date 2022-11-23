@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//搜索源自动同步更新链接
 		syncList: {
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2022年8月19日",
+		updateTime: "2022年11月23日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -52,9 +52,9 @@ function manifest() {
 		tag: ["动漫"],
 		
 		//@NonNull 详细界面的基本网址
-		baseUrl: "http://www.qdzhongbei.com",
+		baseUrl: "http://74fan.com",
 		//站点导航：http://www.xixidm.com/
-		//备份：http://www.qdzhongbei.com/
+		//备份：http://74fan.com/
 		//备份：http://www.qdtsdp.com/
 		//备份：http://ppxdm.com/
 	});
@@ -67,7 +67,7 @@ const header = '';
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'http://www.qdzhongbei.com/search/-------------.html@post->wd='+ encodeURI(key) + header;
+	var url = 'http://74fan.com/search/-------------.html@post->wd='+ encodeURI(key) + header;
 	const response = httpRequest(url);
 	
 	const list = jsoupArray(response,'.lists-content > ul > li').outerHtml();
@@ -169,14 +169,8 @@ function catalog(response,url) {
  * @returns {string} content
  */
 function content(url) {
-	//浏览器请求结果处理，嘻嘻动漫，路漫漫，风车动漫P，樱花动漫P 相似
-	//var re = /kme.whpfl.cn|knr.qjxys.cn|hft.ofooe.cn/i;
+	//浏览器请求结果处理，嘻嘻动漫，12wo动漫，路漫漫，风车动漫P，樱花动漫P 相似
 	var re = /[a-z]+:\/\/[a-z]*.[a-z]*.[a-z]*\/[a-z]\/\d/i;
-	//(https:\/\/.*\..*\..*/.*/.*)
-	//https:\/\/knr.qjxys.cn/j\/142610
-	//https:\/\/kme.whpfl.cn/k\/151964
-	//https:\/\/hft.ofooe.cn/j\/142625
-	//这种格式均为广告
 	if(!re.test(url)){
 		return url;
 	}
