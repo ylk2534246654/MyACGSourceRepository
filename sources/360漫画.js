@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2022年3月29日",
+		updateTime: "2022年11月23日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -202,7 +202,7 @@ function catalog(response,url) {
 
 /**
  * 内容（部分漫画搜索源通用规则）
- * @version 2022/09/26
+ * @version 2022/11/23
  * 168,思思，39 , 360 , 147 , 动漫画 ，依依
  * @params {string} url
  * @returns {string} content
@@ -225,11 +225,12 @@ function content(url) {
 	if(imgList.length < 1){
 		imgList = jsoupArray(response,'mip-link > mip-img').attr('src');
 	}
+	var newImgList = [];
 	for(var i = 0;i < imgList.length;i++){
 		var re = /default|cover|\/manhua\//i;
-		if(re.test(imgList[i])){
-			return null;
+		if(!re.test(imgList[i])){
+			newImgList.push(imgList[i]);
 		}
 	}
-	return JSON.stringify(imgList);
+	return JSON.stringify(newImgList);
 }
