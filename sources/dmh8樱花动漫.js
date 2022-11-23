@@ -30,7 +30,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 3,
+		version: 4,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -225,29 +225,14 @@ function catalog(response,url) {
 	}
 	return new_catalogs
 }
-
 /**
- * 内容(InterceptRequest)
- * @params {string} url
- * @returns {string} content
- *
-
-function content(url) {
-	//浏览器请求结果处理
-	var re = /axiangboke|cclnuzn|taoquan|lz\.|vxzmok|stgowan|ajzsb|pkg\.|hm\.|pc\.|\.xyz|\.jb|\.jr|app\.|\.add|\.png|\.jpg|\.svg|\.ico|\.gif|\.webp|\.jpeg/i;
-	if(!re.test(url)){
-		return url;
-	}
-	return null;
-}
-/**
- * 内容(InterceptRequest)
+ * 内容（部分动漫搜索源通用规则）
  * @params {string} url
  * @returns {string} content
  */
 function content(url) {
 	//浏览器请求结果处理，嘻嘻动漫，12wo动漫，路漫漫，风车动漫P，樱花动漫P 相似
-	var re = /([a-z]+:\/\/[a-z]*.[a-z]*.[a-z]*\/[a-z]\/\d)|(im.*webp)|\.gif/i;
+	var re = /([a-z]+:\/\/[a-z]*.[a-z]*.[a-z]*\/[a-z]\/\d)|(\?_r=)/i;
 	if(!re.test(url)){
 		return url;
 	}
