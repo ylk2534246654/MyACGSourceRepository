@@ -30,7 +30,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 3,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -43,7 +43,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2022年7月15日",
+		updateTime: "2022年11月23日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -55,13 +55,13 @@ function manifest() {
 		tag: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "http://www.dmh8.com",//和哆咪动漫相似
+		baseUrl: "http://www.dmh8.me",//和哆咪动漫相似
 		
 		//登录授权是否启用
-		auth: true,
+		auth: false,
 		
 		//登录授权网址
-		authUrl:"http://www.dmh8.com/search.asp" + header,
+		authUrl:"http://www.dmh8.me/search.asp?searchword=" + header,
 		
 		//需要授权的功能（search，detail，content，find）
 		authRequired: ["search"],
@@ -85,7 +85,7 @@ function authCallback(html,url) {
  * @returns 是否授权
  */
 function authVerify() {
-	const response = httpRequest("http://www.dmh8.com/search.asp" + header);
+	const response = httpRequest("http://www.dmh8.me/search.asp?searchword=" + header);
 	if(response.indexOf('搜索结果') != -1){
 		return true;
 	}
@@ -98,7 +98,7 @@ function authVerify() {
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'http://www.dmh8.com/search.asp?searchword='+ encodeURI(key) + header;
+	var url = 'http://www.dmh8.me/search.asp?searchword='+ encodeURI(key) + header;
 	const response = httpRequest(url);
 	
 	const list = jsoupArray(response,'#searchList > li').outerHtml();
