@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 3,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -53,7 +53,7 @@ function manifest() {
 		tag: ["漫画"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "http://m.sixmh7.com",//备份网址6mh9.com，此源和七夕漫画相似
+		baseUrl: "http://m.6mh66.com",//备份网址sixmh7.com，sixmh6.com，6mh9.com，6mh66.com，此源和七夕漫画相似
 	});
 }
 const header = '';
@@ -64,7 +64,7 @@ const header = '';
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'http://m.sixmh6.com/search?keyword=' + encodeURI(key) + header;
+	var url = 'http://m.6mh66.com/search?keyword=' + encodeURI(key) + header;
 	const response = httpRequest(url);
 	
 	const list = jsoupArray(response,'#__layout > div > div > div.search-result > ul > a').outerHtml();
@@ -154,7 +154,7 @@ function catalog(response,url) {
 		
 		var vid = jsoup(catalog,'dd[class]').attr('data-vid');
 		if(vid.length > 0){
-			var catalog_response = httpRequest('http://m.sixmh7.com/bookchapter/@post->id='+jsoup(response,'div.detail_nav > ul > li:nth-child(3)').attr('data-id')+'&id2='+vid+ header);
+			var catalog_response = httpRequest('http://m.6mh66.com/bookchapter/@post->id='+jsoup(response,'div.detail_nav > ul > li:nth-child(3)').attr('data-id')+'&id2='+vid+ header);
 			var response_chapters = jsonPathArray(catalog_response,'$.[*]');
 			for (var ci=0;ci<response_chapters.length;ci++) {
 				var chapter = response_chapters[ci];
