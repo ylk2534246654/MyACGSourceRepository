@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 5,
+		version: 6,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -41,7 +41,7 @@ function manifest() {
 		},
 
 		//更新时间
-		updateTime: "2022年3月29日",
+		updateTime: "2022年11月24日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -56,7 +56,7 @@ function manifest() {
 		baseUrl: "https://www.cocomanga.com",//onemanhua
 	})
 }
-const setting = "@rateLimitHost->1:5000@header->User-Agent:Mozilla/5.0 (Linux; Android 10; SEA-AL10 Build/HUAWEISEA-AL10; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/88.0.4324.93 Mobile Safari/537.36 TimeMillis/" + parseInt(new Date().getTime()/1000000);
+const setting = "@rateLimitHost->1:5000@header->User-Agent:Mozilla/5.0 (Linux; Android 10; SEA-AL10 Build/HUAWEISEA-AL10; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/88.0.4324.93 Mobile Safari/537.36 TimeMillis/" + parseInt(new Date().getTime()/1000);
 /**
  * 搜索
  * @params {string} key
