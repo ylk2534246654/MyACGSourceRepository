@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -40,7 +40,7 @@ function manifest() {
 		},
 
 		//更新时间
-		updateTime: "2022年8月20日",
+		updateTime: "2022年11月24日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -53,7 +53,6 @@ function manifest() {
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: "https://anime-api.5t5.top",
-		//和cocoManga同为集云数据
 	})
 }
 const header = "";
@@ -64,7 +63,7 @@ const header = "";
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = `https://anime-api.5t5.top/v1/search/name/${encodeURI(key)}` + header;
+	var url = `https://anime-api.5t5.top/v2/search?value=${encodeURI(key)}` + header;
 	var response = httpRequest(url);
 	var array= [];
 	const $ = JSON.parse(response)
@@ -74,13 +73,13 @@ function search(key) {
 			title: child.title,
 	
 			//概览
-			summary: child.type + '\n' + child.year,
+			summary: child.index.type + '\n' + child.index.year,
 	
 			//封面
-			cover: child.poster,
+			cover: child.images.large,
 	
 			//网址
-			url: 'https://anime-api.5t5.top/v1/anime/list/' + child.id
+			url: 'https://anime-api.5t5.top/v2/anime/file?id=' + child.id
 		})
 	  })
 	return JSON.stringify(array);
@@ -92,7 +91,6 @@ function search(key) {
  * @returns {[{title, author, date, summary, cover, reverseOrder, catalog:{[{tag, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
-	const response = httpRequest(url + header);
 	return JSON.stringify({
 		//标题
 		//title : jsoup(response,'#name_cn').text(),
@@ -113,7 +111,7 @@ function detail(url) {
 		reverseOrder: false,
 		
 		//目录加载
-		catalog: catalog(response,url)
+		catalog: catalog(url)
 	})
 }
 /**
@@ -122,27 +120,32 @@ function detail(url) {
  * @params {string} url
  * @returns {[{tag, chapter:{[{name, url}]}}]}
  */
-function catalog(response,url) {
-	const $ = JSON.parse(response)
+function catalog(url) {
+	const tagResponse = httpRequest('https://anime-api.5t5.top/v2/drive/all' + header);
+	
 	//创建目录数组
 	var new_catalogs= [];
-	//创建章节数组
-	var newchapters= [];
 	
-	$.data.forEach((child,index) => {
-		newchapters.push({
-				//章节名称
-				name: (index + 1).toString(),
-				//章节网址
-				url: child.url
-			});
+	JSON.parse(tagResponse).data.list.forEach((child,index) => {
+		//创建章节数组
+		var newchapters= [];
+		JSON.parse(httpRequest(url + '&drive=' + child.id + header)).data.forEach((child2,index2) => {
+			newchapters.push({
+					//章节名称
+					name: child2.episode,
+					//章节网址
+					url: child2.url
+				});
+		})
+		//
+		//添加目录
+		new_catalogs.push({
+			//目录名称
+			tag: child.name,
+			//章节
+			chapter : newchapters
+		});
 	})
-	//添加目录
-	new_catalogs.push({
-		//目录名称
-		tag: '目录',
-		//章节
-		chapter : newchapters
-	});
+	
 	return new_catalogs
 }
