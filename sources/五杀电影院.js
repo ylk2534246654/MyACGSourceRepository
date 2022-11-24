@@ -16,7 +16,7 @@ function manifest() {
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		invalid: false,
+		invalid: true,
 		
 		//@NonNull 搜索源名称
 		name: "五杀电影院",
@@ -35,7 +35,6 @@ function manifest() {
 			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/五杀电影院.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/五杀电影院.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/五杀电影院.js",
-			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/五杀电影院.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/五杀电影院.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/五杀电影院.js",
 		},
