@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2022年7月22日",
+		updateTime: "2022年11月24日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -54,11 +54,6 @@ function manifest() {
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: "https://www.scfun.net",
-		
-		//发现
-		findList: {
-			"剧场版": "https://www.scfun.net/show/10.html"
-		},
 	});
 }
 const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
@@ -72,50 +67,22 @@ function search(key) {
 	var url = `https://www.scfun.net/search.html?wd=${encodeURI(key)}`;
 	const response = httpRequest(url);
 	
-	const list = jsoupArray(response,'.hl-list-item').outerHtml();
+	const list = jsoupArray(response,'.search-box').outerHtml();
 	var array= [];
 	for (var i=0;i<list.length;i++) {
 	    var data = list[i];
 		array.push({
 			//标题
-			title : jsoup(data,'.hl-item-title').text(),
+			title : jsoup(data,'.thumb-txt').text(),
 			
 			//概览
-			summary : jsoup(data,'div.hl-item-content > p.hl-item-sub.hl-lc-2').text(),
+			summary : jsoup(data,'.public-list-prb').text(),
 			
 			//封面
-			cover : ToolUtil.urlJoin(url,jsoup(data,'.hl-item-pic > a').attr('data-original')) + '@header->referer: https://www.scfun.net/',
+			cover : ToolUtil.urlJoin(url,jsoup(data,'.gen-movie-img').attr('data-original')) + '@header->referer: https://www.scfun.net/',
 			
 			//网址
-			url : ToolUtil.urlJoin(url,jsoup(data,'.hl-item-title').attr('href'))
-		});
-	}
-	return JSON.stringify(array);
-}
-/**
- * 发现
- * @params string url
- * @returns {[{title, summary, cover, url}]}
- */
-function find(url) {
-	const response = httpRequest(url + header);
-	//目录标签代码
-	const list = jsoupArray(response,'.hl-list-item').outerHtml();
-	var array= [];
-	for (var i=0;i<list.length;i++) {
-	    var data = list[i];
-		array.push({
-			//标题
-			title : jsoup(data,'.hl-item-title').text(),
-			
-			//概览
-			summary : jsoup(data,'.hl-pic-text').text(),
-			
-			//封面
-			cover : ToolUtil.urlJoin(url,jsoup(data,'a').attr('data-original')) + '@header->referer: https://www.scfun.net/',
-			
-			//网址
-			url : ToolUtil.urlJoin(url,jsoup(data,'a').attr('href'))
+			url : ToolUtil.urlJoin(url,jsoup(data,'.public-list-exp').attr('href'))
 		});
 	}
 	return JSON.stringify(array);
@@ -130,19 +97,19 @@ function detail(url) {
 	const response = httpRequest(url+ header);
 	return JSON.stringify({
 		//标题
-		title : jsoup(response,'.hl-dc-title').text(),
+		title : jsoup(response,'.player-title-link').text(),
 		
 		//作者
-		author: jsoup(response,'div.clearfix > ul > li:nth-child(4) > a').text(),
+		//author: jsoup(response,'div.clearfix > ul > li:nth-child(4) > a').text(),
 		
 		//日期
-		date : jsoup(response,'div.clearfix > ul > li:nth-child(11) > :matchText').text(),
+		//date : jsoup(response,'div.clearfix > ul > li:nth-child(11) > :matchText').text(),
 		
 		//概览
-		summary: jsoup(response,'div.clearfix > ul > li:nth-child(12) > :matchText').text(),
+		summary: jsoup(response,'.card-text').text(),
 
 		//封面
-		cover : jsoup(response,'.hl-dc-pic > span').attr('data-original') + '@header->referer: https://www.scfun.net/',
+		cover : jsoup(response,'.left > .lazy').attr('data-original') + '@header->referer: https://www.scfun.net/',
 		
 		//目录是否倒序
 		reverseOrder: false,
@@ -158,11 +125,8 @@ function detail(url) {
  * @returns {[{tag, chapter:{[{name, url}]}}]}
  */
 function catalog(response,url) {
-	//目录标签代码
-	const tabs = jsoupArray(response,'.hl-tabs-btn').outerHtml();
-	
 	//目录代码
-	const catalogs = jsoupArray(response,'.hl-list-wrap > .hl-plays-list').outerHtml();
+	const catalogs = jsoupArray(response,'.anthology-list-box').outerHtml();
 	
 	//创建目录数组
 	var new_catalogs= [];
@@ -189,7 +153,7 @@ function catalog(response,url) {
 		//添加目录
 		new_catalogs.push({
 			//目录名称
-			tag: jsoup(tabs[i],'a').text(),
+			tag: "线路 " + (i + 1),
 			//章节
 			chapter : newchapters
 			});

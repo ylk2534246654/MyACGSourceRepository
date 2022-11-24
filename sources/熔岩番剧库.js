@@ -122,7 +122,6 @@ function search(key) {
 function find(url) {
 	const response = httpRequest(url + header + '@header->content-type:application/json');
 	var array= [];
-	Log(response);
 	const $ = JSON.parse(response)
 	$.data.forEach((child) => {
 		array.push({
