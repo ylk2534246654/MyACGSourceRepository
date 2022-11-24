@@ -234,6 +234,10 @@ function catalog(response,url) {
  * @returns {string} content
  */
 function content(url) {
-	//浏览器请求结果处理
-	return url;
+	//浏览器请求结果处理，嘻嘻动漫，12wo动漫，路漫漫，风车动漫P，樱花动漫P 相似
+	var re = /vpic/i;
+	if(!re.test(url)){
+		return url;
+	}
+	return null;
 }
