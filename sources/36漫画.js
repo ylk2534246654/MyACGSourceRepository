@@ -16,7 +16,7 @@ function manifest() {
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		invalid: false,
+		invalid: true,
 		
 		//@NonNull 搜索源名称
 		name: "36漫画",
@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 3,
+		version: 4,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2022年6月15日",
+		updateTime: "2022年11月24日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
