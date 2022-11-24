@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 3,
+		version: 4,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2022年7月31日",
+		updateTime: "2022年11月24日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -49,8 +49,8 @@ function manifest() {
 		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截的请求处理，3：对内部浏览器拦截的框架处理
 		contentType: 2,
 		
-		//自定义标签
-		tag: ["动漫","影视"],
+		//自定义标签，第一个标签作为发现分类
+		tag: ["影视","动漫"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: "https://www.dmxq.me",
@@ -63,6 +63,11 @@ function manifest() {
 		
 		//需要授权的功能（search，detail，content，find）
 		authRequired: ["search"],
+		
+		//发现
+		findList: {
+			"最近更新": "https://www.dmxq.me/label/new.html",
+		},
 	});
 }
 /*
@@ -72,7 +77,7 @@ function manifest() {
  * @returns 是否授权
  */
 function authCallback(html,url) {
-	if(html.length > 1 && html.indexOf('单击进行搜索验证') == -1){
+	if(html.length > 1 && html.indexOf('安全验证') == -1){
 		return true;
 	}
 	return false;
@@ -83,7 +88,7 @@ function authCallback(html,url) {
  */
 function authVerify() {
 	const response = httpRequest("https://www.dmxq.me/vodsearch/-------------.html?wd=" + header);
-	if(response.indexOf('单击进行搜索验证') == -1){
+	if(response.indexOf('安全验证') == -1){
 		return true;
 	}
 	return false;
@@ -115,6 +120,34 @@ function search(key) {
 			
 			//网址
 			url : ToolUtil.urlJoin(url,jsoup(data,'div > a[href]').attr('href'))
+			});
+	}
+	return JSON.stringify(array);
+}
+/**
+ * 发现
+ * @params string url
+ * @returns {[{title, summary, cover, url}]}
+ */
+function find(url) {
+	const response = httpRequest(url + header);
+	//目录标签代码
+	const list = jsoupArray(response,'.module-main > div > a').outerHtml();
+	var array= [];
+	for (var i=0;i<list.length;i++) {
+	    var data = list[i];
+		array.push({
+			//标题
+			title : jsoup(data,'.module-poster-item-title').text(),
+			
+			//概览
+			summary : jsoup(data,'.module-item-note').text(),
+			
+			//封面
+			cover : ToolUtil.urlJoin(url,ToolUtil.substring(jsoup(data,'.module-item-pic > img').attr('data-original'))),
+			
+			//网址
+			url : ToolUtil.urlJoin(url,jsoup(data,'a').attr('href'))
 			});
 	}
 	return JSON.stringify(array);
