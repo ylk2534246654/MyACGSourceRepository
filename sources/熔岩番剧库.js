@@ -53,6 +53,36 @@ function manifest() {
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: "https://anime-api.5t5.top",
+		
+		//发现
+		findList: {
+			"动漫": {
+				"2017年": {
+					"url":'https://anime-api.5t5.top/v2/index/query@post->{"year":"2017年","type":""}',
+					"function":"find"
+				},
+				"2018年": {
+					"url":'https://anime-api.5t5.top/v2/index/query@post->{"year":"2018年","type":""}',
+					"function":"find"
+				},
+				"2019年": {
+					"url":'https://anime-api.5t5.top/v2/index/query@post->{"year":"2019年","type":""}',
+					"function":"find"
+				},
+				"2020年": {
+					"url":'https://anime-api.5t5.top/v2/index/query@post->{"year":"2020年","type":""}',
+					"function":"find"
+				},
+				"2021年": {
+					"url":'https://anime-api.5t5.top/v2/index/query@post->{"year":"2021年","type":""}',
+					"function":"find"
+				},
+				"2022年": {
+					"url":'https://anime-api.5t5.top/v2/index/query@post->{"year":"2022年","type":""}',
+					"function":"find"
+				}
+			}
+		},
 	})
 }
 const header = "";
@@ -66,6 +96,33 @@ function search(key) {
 	var url = `https://anime-api.5t5.top/v2/search?value=${encodeURI(key)}` + header;
 	var response = httpRequest(url);
 	var array= [];
+	const $ = JSON.parse(response)
+	$.data.forEach((child) => {
+		array.push({
+			//标题
+			title: child.title,
+	
+			//概览
+			summary: child.index.type + '\n' + child.index.year,
+	
+			//封面
+			cover: child.images.large,
+	
+			//网址
+			url: 'https://anime-api.5t5.top/v2/anime/file?id=' + child.id
+		})
+	  })
+	return JSON.stringify(array);
+}
+/**
+ * 发现
+ * @params string url
+ * @returns {[{title, summary, cover, url}]}
+ */
+function find(url) {
+	const response = httpRequest(url + header + '@header->content-type:application/json');
+	var array= [];
+	Log(response);
 	const $ = JSON.parse(response)
 	$.data.forEach((child) => {
 		array.push({
