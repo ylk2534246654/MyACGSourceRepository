@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2022年6月29日",
+		updateTime: "2022年11月24日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -53,15 +53,15 @@ function manifest() {
 		tag: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "https://www.agemys.cc",//备用http://age.tv
+		baseUrl: "https://agemys.net",//备用http://age.tv
 		
 		
 		//发现
 		findList: {
-			"热门": "https://www.agemys.cc/catalog/all-all-all-all-all-%E7%82%B9%E5%87%BB%E9%87%8F-1-%E6%97%A5%E6%9C%AC-all-all",
-			"最近更新": "https://www.agemys.cc/catalog/all-all-all-all-all-time-1-%E6%97%A5%E6%9C%AC-all-all",
-			"剧场版": "https://www.agemys.cc/catalog/%E5%89%A7%E5%9C%BA%E7%89%88-all-all-all-all-time-1-%E6%97%A5%E6%9C%AC-all-all",
-			"完结": "https://www.agemys.cc/catalog/all-all-all-all-all-time-1-%E6%97%A5%E6%9C%AC-all-%E5%AE%8C%E7%BB%93"
+			"热门": "https://agemys.net/catalog/all-all-all-all-all-%E7%82%B9%E5%87%BB%E9%87%8F-1-%E6%97%A5%E6%9C%AC-all-all",
+			"最近更新": "https://agemys.net/catalog/all-all-all-all-all-time-1-%E6%97%A5%E6%9C%AC-all-all",
+			"剧场版": "https://agemys.net/catalog/%E5%89%A7%E5%9C%BA%E7%89%88-all-all-all-all-time-1-%E6%97%A5%E6%9C%AC-all-all",
+			"完结": "https://agemys.net/catalog/all-all-all-all-all-time-1-%E6%97%A5%E6%9C%AC-all-%E5%AE%8C%E7%BB%93"
 		},
 	});
 }
@@ -73,7 +73,7 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'https://www.agemys.cc/search?&query='+ encodeURI(key) + header;
+	var url = 'https://agemys.net/search?&query='+ encodeURI(key) + header;
 	const response = httpRequest(url);
 	
 	const list = jsoupArray(response,'div[class=blockcontent1] > div').outerHtml();
