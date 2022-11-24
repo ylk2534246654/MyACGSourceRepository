@@ -52,14 +52,14 @@ function manifest() {
 		tag: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "https://m.dm530p.cc",//备份：https://m.dm530p.info/ ，和樱花动漫P同一模板
+		baseUrl: "https://m.dm530p.com",//备份：https://m.dm530p.info/ ，和樱花动漫P同一模板
 		
 		//发现
 		findList: {
-			"每日推荐": "https://m.dm530p.cc/recommend/",
-			"最近更新": "https://m.dm530p.cc/list/?region=%E6%97%A5%E6%9C%AC",
-			"剧场版": "https://m.dm530p.cc/list/?region=%E6%97%A5%E6%9C%AC&genre=%E5%89%A7%E5%9C%BA%E7%89%88",
-			"完结": "https://m.dm530p.cc/list/?region=%E6%97%A5%E6%9C%AC&status=%E5%AE%8C%E7%BB%93"
+			"每日推荐": "https://m.dm530p.com/recommend/",
+			"最近更新": "https://m.dm530p.com/list/?region=%E6%97%A5%E6%9C%AC",
+			"剧场版": "https://m.dm530p.com/list/?region=%E6%97%A5%E6%9C%AC&genre=%E5%89%A7%E5%9C%BA%E7%89%88",
+			"完结": "https://m.dm530p.com/list/?region=%E6%97%A5%E6%9C%AC&status=%E5%AE%8C%E7%BB%93"
 		},
 	});
 }
@@ -71,7 +71,7 @@ const header = '';
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'https://m.dm530p.cc/s_all?ex=1&kw='+ encodeURI(key) + header;
+	var url = 'https://m.dm530p.com/s_all?ex=1&kw='+ encodeURI(key) + header;
 	const response = httpRequest(url);
 	
 	const list = jsoupArray(response,'div.list > ul > li').outerHtml();
@@ -196,19 +196,13 @@ function catalog(response,url) {
 }
 
 /**
- * 内容(InterceptRequest)
+ * 内容（部分动漫搜索源通用规则）
  * @params {string} url
  * @returns {string} content
  */
 function content(url) {
-	//浏览器请求结果处理，路漫漫，风车动漫P，樱花动漫P 相似
-	//var re = /kme.whpfl.cn|knr.qjxys.cn|hft.ofooe.cn/i;
+	//浏览器请求结果处理，嘻嘻动漫，12wo动漫，路漫漫，风车动漫P，樱花动漫P 相似
 	var re = /[a-z]+:\/\/[a-z]*.[a-z]*.[a-z]*\/[a-z]\/\d/i;
-	//(https:\/\/.*\..*\..*/.*/.*)
-	//https:\/\/knr.qjxys.cn/j\/142610
-	//https:\/\/kme.whpfl.cn/k\/151964
-	//https:\/\/hft.ofooe.cn/j\/142625
-	//这种格式均为广告
 	if(!re.test(url)){
 		return url;
 	}
