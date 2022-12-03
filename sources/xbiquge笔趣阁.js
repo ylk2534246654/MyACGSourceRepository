@@ -28,20 +28,19 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//搜索源自动同步更新网址
 		syncList: {
 			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/xbiquge笔趣阁.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/xbiquge笔趣阁.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/xbiquge笔趣阁.js",
-			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/xbiquge笔趣阁.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/xbiquge笔趣阁.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/xbiquge笔趣阁.js",
 		},
 		
 		//更新时间
-		updateTime: "2022年3月29日",
+		updateTime: "2022年12月3日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -53,7 +52,7 @@ function manifest() {
 		tag: ["小说"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "https://www.xbiquge.la",
+		baseUrl: "https://www.ibiquge.la",//备用：https://www.xbiquge.la/
 	});
 }
 
@@ -64,7 +63,7 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'https://www.xbiquge.la/modules/article/waps.php@post->searchkey='+ encodeURI(key) + header;
+	var url = 'https://www.ibiquge.la/modules/article/waps.php@post->searchkey='+ encodeURI(key) + header;
 	const response = httpRequest(url);
 	
 	const list = jsoupArray(response,'tbody > tr').outerHtml();
