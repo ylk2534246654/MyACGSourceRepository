@@ -8,11 +8,11 @@ function manifest() {
 		id: 1670054692,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20220101,
+		minMyACG: 20221201,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
-		priority: 60,
+		priority: 70,
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
@@ -65,7 +65,6 @@ const header = '';
 function search(key) {
 	var url = 'https://api.midukanshu.com/fiction/search/search@post->keyword='+ encodeURI(key) + header;
 	const response = httpRequest(url);
-	Log(response);
 	var array = []
 	const $ = JSON.parse(response);
 	$.data.forEach((child) => {
@@ -74,7 +73,7 @@ function search(key) {
 			title: child.title,
 			
 			//概览
-			author: child.author,
+			summary: child.author,
 			
 			//封面
 			cover: child.cover,
@@ -90,8 +89,8 @@ function search(key) {
  * @params {string} url
  * @returns {[{title, author, date, summary, cover, reverseOrder, catalog:{[{tag, chapter:{[{name, url}]}}]}}]}
  */
-function detail(url) {
-	const response = httpRequest('https://api.midukanshu.com/fiction/book/getDetail@post->book_id=' + url + header);
+function detail(id) {
+	const response = httpRequest('https://api.midukanshu.com/fiction/book/getDetail@post->book_id=' + id + header);
 	const $ = JSON.parse(response)
 	
 	return JSON.stringify({
@@ -136,9 +135,11 @@ function catalog(url) {
 	//章节代码
 	$.forEach(chapter => {
 		newchapters.push({
+			//章节名称
 			name: chapter.title,
+			//章节网址
 			url: `https://book.midukanshu.com/book/chapter/segment/master/${chapter.bookId}_${chapter.chapterId}.txt?md5=${chapter.content_md5}`
-      })
+		})
     })
 	
 	//添加目录
