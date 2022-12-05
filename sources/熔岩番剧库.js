@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 3,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -40,7 +40,7 @@ function manifest() {
 		},
 
 		//更新时间
-		updateTime: "2022年11月24日",
+		updateTime: "2022年12月5日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -85,7 +85,7 @@ function manifest() {
 		},
 	})
 }
-const header = "";
+const header = "@header->referer:https://lavani.me/";
 
 /**
  * 搜索

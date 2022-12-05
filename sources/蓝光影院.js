@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2022年8月16日",
+		updateTime: "2022年12月5日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -58,7 +58,7 @@ function manifest() {
 		auth: true,
 		
 		//登录授权网址
-		authUrl:"https://www.lgyy.cc/vodsearch/-------------.html?wd=" + header,
+		authUrl:"https://www.lgyy.cc/vodsearch/-------------.html?wd=动漫" + header,
 		
 		//需要授权的功能（search，detail，content，find）
 		authRequired: ["search"],
@@ -71,7 +71,8 @@ function manifest() {
  * @returns 是否授权
  */
 function authCallback(html,url) {
-	if(html.length > 1 && html.indexOf('系统提示') == -1){
+	var re = /(系统提示|安全验证)/i;
+	if(html.length > 1 && !re.test(html)){
 		return true;
 	}
 	return false;
@@ -81,8 +82,9 @@ function authCallback(html,url) {
  * @returns 是否授权
  */
 function authVerify() {
-	const response = httpRequest("https://www.lgyy.cc/vodsearch/-------------.html?wd=" + header);
-	if(response.indexOf('系统提示') == -1){
+	const response = httpRequest("https://www.lgyy.cc/vodsearch/-------------.html?wd=动漫" + header);
+	var re = /(系统提示|安全验证)/i;
+	if(response.length > 1 && !re.test(response)){
 		return true;
 	}
 	return false;
