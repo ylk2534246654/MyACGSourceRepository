@@ -201,7 +201,7 @@ function catalog(response,url) {
 
 /**
  * 内容（部分漫画搜索源通用规则）
- * @version 2022/11/23
+ * @version 2022/12/8
  * 168,思思，39 , 360 , 147 , 动漫画 ，依依
  * @params {string} url
  * @returns {string} content
@@ -223,6 +223,12 @@ function content(url) {
 	}
 	if(imgList.length < 1){
 		imgList = jsoupArray(response,'mip-link > mip-img').attr('src');
+	}
+	if(imgList.length < 1){
+		imgList = [];
+		imgList = imgList.concat(jsoupArray(response,'#image').attr('src'));
+		imgList = imgList.concat(jsoupArray(response,'#scroll-image > div > [data-src]').attr('data-src'));
+		
 	}
 	var newImgList = [];
 	for(var i = 0;i < imgList.length;i++){

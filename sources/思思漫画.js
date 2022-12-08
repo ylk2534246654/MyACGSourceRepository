@@ -28,14 +28,13 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 4,
+		version: 5,
 
 		//搜索源自动同步更新网址
 		syncList: {
 			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/思思漫画.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/思思漫画.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/思思漫画.js",
-			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/思思漫画.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/思思漫画.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/思思漫画.js",
 		},
@@ -201,7 +200,7 @@ function catalog(response,url) {
 
 /**
  * 内容（部分漫画搜索源通用规则）
- * @version 2022/11/23
+ * @version 2022/12/8
  * 168,思思，39 , 360 , 147 , 动漫画 ，依依
  * @params {string} url
  * @returns {string} content
@@ -223,6 +222,12 @@ function content(url) {
 	}
 	if(imgList.length < 1){
 		imgList = jsoupArray(response,'mip-link > mip-img').attr('src');
+	}
+	if(imgList.length < 1){
+		imgList = [];
+		imgList = imgList.concat(jsoupArray(response,'#image').attr('src'));
+		imgList = imgList.concat(jsoupArray(response,'#scroll-image > div > [data-src]').attr('data-src'));
+		
 	}
 	var newImgList = [];
 	for(var i = 0;i < imgList.length;i++){
