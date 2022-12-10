@@ -28,20 +28,19 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//搜索源自动同步更新网址
 		syncList: {
 			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/多多漫画.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/多多漫画.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/多多漫画.js",
-			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/多多漫画.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/多多漫画.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/多多漫画.js",
 		},
 		
 		//更新时间
-		updateTime: "2022年3月29日",
+		updateTime: "2022年12月10日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -53,7 +52,7 @@ function manifest() {
 		tag: ["漫画"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "https://m.duoduomh.com",
+		baseUrl: "https://m.duoduomh.com",//备用：https://m.zuimh.com
 	});
 }
 const header = '@ip->163.197.43.177';
@@ -83,35 +82,6 @@ function search(key) {
 			
 			//网址
 			url : ToolUtil.urlJoin(url,jsoup(data,'div.itemTxt > a').attr('href'))
-			});
-	}
-	return JSON.stringify(array);
-}
-/**
- * 搜索
- * @params {string} key
- * @returns {[{title, summary, cover, url}]}
- 
-function search(key) {
-	var url = 'https://api.duoduomh.com/comic/search?page=1@post->keywords=' + encodeURI(key) + header;
-	const response = httpRequest(url);
-	
-	const list = jsonPathArray(response,'$.items.*');
-	var array= [];
-	for (var i=0;i<list.length;i++) {
-	    var data = list[i];
-		array.push({
-			//标题
-			title : jsonPath(data,'$.name'),
-			
-			//概览
-			summary : jsonPath(data,'$.author') + jsonPath(data,'$.last_chapter_name'),
-			
-			//封面
-			cover : jsonPath(data,'$.coverUrl'),
-			
-			//网址
-			url : 'https://m.duoduomh.com/manhua/'+jsonPath(data,'$.slug')
 			});
 	}
 	return JSON.stringify(array);
@@ -154,31 +124,44 @@ function detail(url) {
  * @returns {[{tag, chapter:{[{name, url}]}}]}
  */
 function catalog(response,url) {
+	//目录标签代码
+	const tabs = jsoupArray(response,'.caption').outerHtml();
+	
+	//目录代码
+	const catalogs = jsoupArray(response,'div.chapter-warp').outerHtml();
+	
 	//创建目录数组
 	var new_catalogs= [];
+	
+	for (var i=0;i<catalogs.length;i++) {
+	    var catalog = catalogs[i];
 		
-	//创建章节数组
-	var newchapters= [];
-	
-	//章节代码
-	var chapters = jsoupArray(response,'div.chapter-warp > ul > li').outerHtml();
-	
-	for (var ci=0;ci<chapters.length;ci++) {
-		var chapter = chapters[ci];
-		newchapters.push({
-			//章节名称
-			name: jsoup(chapter,'a').text(),
-			//章节网址
-			url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href').replace('.html','-${p}.html@zero->1@start->1'))
-		});
+		//创建章节数组
+		var newchapters= [];
+		
+		//章节代码
+		var chapters = jsoupArray(catalog,'ul > li').outerHtml();
+		
+		for (var ci=0;ci<chapters.length;ci++) {
+			var chapter = chapters[ci];
+			var name = jsoup(chapter,'a').text();
+			if(name.indexOf("下拉式阅读") == -1){
+				newchapters.push({
+					//章节名称
+					name: name,
+					//章节链接
+					url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href').replace('.html','-${p}.html@zero->1@start->1'))
+				});
+			}
+		}
+		//添加目录
+		new_catalogs.push({
+			//目录名称
+			tag: jsoup(tabs[i],'.Title').text(),
+			//章节
+			chapter : newchapters
+			});
 	}
-	//添加目录
-	new_catalogs.push({
-		//目录名称
-		tag: "目录",
-		//章节
-		chapter : newchapters
-		});
 	return new_catalogs
 }
 
