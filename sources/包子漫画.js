@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 3,
+		version: 4,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2022年12月6日",
+		updateTime: "2022年12月10日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -130,7 +130,7 @@ function catalog(response,url) {
 	//章节代码
 	var chapters = jsoupArray(response,'#chapter-items > div,#chapters_other_list > div').outerHtml();
 	
-	for (var ci=0;ci<chapters.length;ci++) {
+	for (var ci = 0;ci < chapters.length;ci++) {
 		var chapter = chapters[ci];
 		
 		newchapters.push({
@@ -144,7 +144,7 @@ function catalog(response,url) {
 		//章节代码
 		var chapters2 = jsoupArray(response,'.comics-chapters').outerHtml();
 		
-		for (var ci = chapters2.length;ci > 0;ci--) {
+		for (var ci = chapters2.length - 1;ci >= 0;ci--) {
 			var chapter = chapters2[ci];
 			
 			newchapters.push({
