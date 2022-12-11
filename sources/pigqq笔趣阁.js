@@ -53,6 +53,16 @@ function manifest() {
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: "https://infosxs.pigqq.com",//备用：apptuxing.com ，pysmei.com ，pigqq.com
+		
+		//发现
+		findList: {
+			"热门榜": "https://scxs.pigqq.com/top/man/top/hot/week/1.html",
+			"完结榜": "https://scxs.pigqq.com/top/man/top/over/week/1.html",
+			"推荐榜": "https://scxs.pigqq.com/top/man/top/commend/week/1.html",
+			"新书榜": "https://scxs.pigqq.com/top/man/top/new/week/1.html",
+			"评分榜": "https://scxs.pigqq.com/top/man/top/vote/week/1.html",
+			"收藏榜": "https://scxs.pigqq.com/top/man/top/collect/week/1.html"
+		},
 	});
 }
 
@@ -66,7 +76,7 @@ function search(key) {
 	//https://souxs.pigqq.com/search.aspx?key=
 	//https://souxs.leeyegy.com/search.aspx?key=
 	var url = `https://souxs.pigqq.com/search.aspx?key=${encodeURI(key)}&page=1&siteid=app2` + header;
-	const response = httpRequest(url);
+	const response = httpRequest(url + header);
 	var array= [];
 	const $ = JSON.parse(response)
 	$.data.forEach((child) => {
@@ -87,12 +97,38 @@ function search(key) {
 	return JSON.stringify(array);
 }
 /**
+ * 发现
+ * @params {string} key
+ * @returns {[{title, summary, cover, url}]}
+ */
+function find(url) {
+	const response = httpRequest(url + header);
+	var array= [];
+	const $ = JSON.parse(response)
+	$.data.BookList.forEach((child) => {
+		array.push({
+		//标题
+		title: child.Name,
+		
+		//概览
+		summary: child.Desc,
+		
+		//封面
+		cover: ToolUtil.urlJoin('https://imgapixs.pigqq.com/BookFiles/BookImages/',child.Img),
+		
+		//网址
+		url: `https://infosxs.pigqq.com/BookFiles/Html/${parseInt(child.Id/1000) + 1}/${child.Id}/info.html`
+		})
+	  })
+	return JSON.stringify(array);
+}
+/**
  * 详情
  * @params {string} url
  * @returns {[{title, author, date, summary, cover, reverseOrder, catalog:{[{tag, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
-	const response = httpRequest(url+ header);
+	const response = httpRequest(url + header);
 	var $ = JSON.parse(response).data;
 	return JSON.stringify({
 		//标题
