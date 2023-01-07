@@ -227,7 +227,7 @@ function content(url) {
 	if(imgList.length < 1){
 		imgList = [];
 		imgList = imgList.concat(jsoupArray(response,'#image').attr('src'));
-		imgList = imgList.concat(jsoupArray(response,'#scroll-image > div > [data-src]').attr('data-src'));
+		imgList = imgList.concat(jsoupArray(response,'#scroll-image > div > [src]').attr('src'));
 		
 	}
 	var newImgList = [];
