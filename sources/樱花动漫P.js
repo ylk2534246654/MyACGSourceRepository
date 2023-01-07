@@ -1,7 +1,7 @@
 function manifest() {
 	return JSON.stringify({
 		//MyACG 最新版本
-		MyACG: 'https://lanzou.com/b07xqlbxc ',
+		MyACG: 'https://pan.baidu.com/s/1kVkWknH',
 		
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
@@ -28,14 +28,13 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 5,
+		version: 6,
 
 		//搜索源自动同步更新链接
 		syncList: {
 			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/樱花动漫P.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/樱花动漫P.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/樱花动漫P.js",
-			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/樱花动漫P.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/樱花动漫P.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/樱花动漫P.js",
 		},
@@ -204,7 +203,7 @@ function catalog(response,url) {
 function content(url) {
 	//浏览器请求结果处理，路漫漫，风车动漫P，樱花动漫P 相似
 	//var re = /kme.whpfl.cn|knr.qjxys.cn|hft.ofooe.cn/i;
-	var re = /[a-z]+:\/\/[a-z]*.[a-z]*.[a-z]*\/[a-z]\/\d/i;
+	var re = /([a-z]+:\/\/[a-z]+.[a-z]+.[a-z]+\/[a-z]\/\d)|([a-z]+:\/\/[a-z]+.\w+.[a-z]+\/[a-z]+\/[a-z]+\/\d)/i;
 	//(https:\/\/.*\..*\..*/.*/.*)
 	//https:\/\/knr.qjxys.cn/j\/142610
 	//https:\/\/kme.whpfl.cn/k\/151964
