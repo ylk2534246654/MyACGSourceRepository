@@ -35,7 +35,6 @@ function manifest() {
 			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/360漫画.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/360漫画.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/360漫画.js",
-			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/360漫画.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/360漫画.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/360漫画.js",
 		},
@@ -53,14 +52,14 @@ function manifest() {
 		tag: ["漫画"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "https://m.100fanwo.com",
+		baseUrl: "https://m.tudoumanhua.com",
 		
 		//发现
 		findList: {
-			"完结": "https://m.100fanwo.com/list/wanjie/",
-			"都市": "https://m.100fanwo.com/list/dushi/",
-			"后宫": "https://m.100fanwo.com/list/hougong/",
-			"穿越": "https://m.100fanwo.com/list/chuanyue/"
+			"完结": "https://m.tudoumanhua.com/list/wanjie/",
+			"都市": "https://m.tudoumanhua.com/list/dushi/",
+			"后宫": "https://m.tudoumanhua.com/list/hougong/",
+			"穿越": "https://m.tudoumanhua.com/list/chuanyue/"
 		},
 	});
 }
@@ -72,7 +71,7 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'https://m.100fanwo.com/search/?keywords=' + encodeURI(key) + header;
+	var url = 'https://m.tudoumanhua.com/search/?keywords=' + encodeURI(key) + header;
 	const response = httpRequest(url);
 	
 	const list = jsoupArray(response,'.UpdateList > div').outerHtml();
