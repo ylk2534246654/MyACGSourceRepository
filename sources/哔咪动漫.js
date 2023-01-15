@@ -12,7 +12,7 @@ function manifest() {
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
-		priority: 70,
+		priority: 0,//资源大部分无法播放，考虑列为失效搜索源
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
@@ -205,7 +205,7 @@ function catalog(response,url) {
  */
 function content(url) {
 	//浏览器请求结果处理
-	var re = /sohu|hm\.|\.gov|\.qq|\.alpha|cpv|360buyimg|suning/i;
+	var re = /sohu|hm\.|\.gov|\.qq|\.alpha|cpv|360buyimg|suning|knmer|qqmail_head|adInnovationResource/i;
 	if(!re.test(url)){
 		return url;
 	}
