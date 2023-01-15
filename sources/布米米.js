@@ -161,15 +161,21 @@ function catalog(response,url) {
 }
 
 /**
- * 内容(InterceptRequest)
+ * 内容（部分动漫搜索源通用规则）
  * @params {string} url
  * @returns {string} content
-*/
+ */
 function content(url) {
-	//浏览器请求结果处理
-	var re = /yzleyzp|adayvquq|hm\.|\.jpg|\.svg|\.ico|\.gif|\.webp|\.jpeg/i;
+	//浏览器请求结果处理，布米米，嘻嘻动漫，12wo动漫，路漫漫，风车动漫P，樱花动漫P 相似
+	var re = /[a-z]+:\/\/[\w.]+\/([a-z]{1}\/\d|[a-z]{3}\/[a-z]{3}\/\d|[a-z]{2}\/\d{4}\?)/i;
+	
+	//这种格式均为广告网址
+	//https://knr.xxxxx.cn/j/140000		#[a-z]{1}\/\d
+	//https://xx.xxx.xx/xxx/xxx/0000	#[a-z]{3}\/[a-z]+\/\d
+	//https://tg.xxx.com/sc/0000?n=xxxx #[a-z]{2}\/\d{4}\?
+	
 	if(!re.test(url)){
 		return url;
 	}
 	return null;
-} 
+}
