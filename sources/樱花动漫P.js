@@ -194,20 +194,19 @@ function catalog(response,url) {
 	}
 	return new_catalogs
 }
-
 /**
- * 内容(InterceptRequest)
+ * 内容（部分动漫搜索源通用规则）
  * @params {string} url
  * @returns {string} content
  */
 function content(url) {
-	//浏览器请求结果处理，路漫漫，风车动漫P，樱花动漫P 相似
-	var re = /([a-z]+:\/\/[a-z]+.[a-z]+.[a-z]+\/[a-z]\/\d)|([a-z]+:\/\/[a-z]+.\w+.[a-z]+\/[a-z]+\/[a-z]+\/\d)|([a-z]+:\/\/[a-z]+.[a-z]+.[a-z]+\/[a-z]{2,2}\/\d{4,4}\?)/i;
+	//浏览器请求结果处理，布米米，嘻嘻动漫，12wo动漫，路漫漫，风车动漫P，樱花动漫P 相似
+	var re = /[a-z]+:\/\/[\w.]+\/([a-z]{1}\/\d|[a-z]{3}\/[a-z]{3}\/\d|[a-z]{2}\/\d{4}\?)/i;
 	
 	//这种格式均为广告网址
-	//https:\/\/xx.xxx.xx/x\/00000
-	//https://xx.xxx.xx/sc/0000?n=xxxx
-	//https://xx.xxx.xx/xxx/xxx/0000
+	//https://knr.xxxxx.cn/j/140000		#[a-z]{1}\/\d
+	//https://xx.xxx.xx/xxx/xxx/0000	#[a-z]{3}\/[a-z]+\/\d
+	//https://tg.xxx.com/sc/0000?n=xxxx #[a-z]{2}\/\d{4}\?
 	
 	if(!re.test(url)){
 		return url;
