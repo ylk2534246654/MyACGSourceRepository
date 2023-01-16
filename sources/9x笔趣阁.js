@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 3,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -53,7 +53,7 @@ function manifest() {
 		tag: ["小说"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "https://gfnormal05at.com",
+		baseUrl: "https://gfnormal05at.com",//备份：https://nso92.xsafetech.com/
 	});
 }
 
@@ -161,7 +161,6 @@ function catalog(url) {
  */
 function content(url) {
 	const response = httpRequest(url + header);
-	const src = jsoup(response,'article > section > p').outerHtml();
-	return src;
+	return jsoup(response,'article > section').outerHtml().replace(jsoup(response,'body > article > section > h4').outerHtml(),'')
 }
 
