@@ -1,14 +1,14 @@
 function manifest() {
 	return JSON.stringify({
 		//MyACG 最新版本
-		MyACG: 'https://lanzou.com/b07xqlbxc ',
+		MyACG: 'https://pan.baidu.com/s/1kVkWknH',
 		
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
 		id: 1652779713,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20211219,
+		minMyACG: 20230122,
 		
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -28,20 +28,19 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 3,
+		version: 5,
 
 		//搜索源自动同步更新网址
 		syncList: {
 			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/六漫画.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/六漫画.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/六漫画.js",
-			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/六漫画.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/六漫画.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/六漫画.js",
 		},
 		
 		//更新时间
-		updateTime: "2022年10月16日",
+		updateTime: "2023年1月7日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -53,9 +52,10 @@ function manifest() {
 		tag: ["漫画"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "http://m.6mh66.com",//备份网址sixmh7.com，sixmh6.com，6mh9.com，6mh66.com，此源和七夕漫画相似
+		baseUrl: baseUrl,//备份网址sixmh7.com，sixmh6.com，6mh9.com，6mh66.com，此源和七夕漫画相似
 	});
 }
+const baseUrl = "http://m.6mh66.com";
 const header = '';
 
 /**
@@ -64,119 +64,112 @@ const header = '';
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'http://m.6mh66.com/search?keyword=' + encodeURI(key) + header;
+	var url = ToolUtil.urlJoin(baseUrl,'/search?keyword=' + encodeURI(key) + header);
 	const response = httpRequest(url);
 	
-	const list = jsoupArray(response,'#__layout > div > div > div.search-result > ul > a').outerHtml();
-	var array= [];
-	for (var i=0;i<list.length;i++) {
-	    var data = list[i];
-		array.push({
+	var result = [];
+    var document = org.jsoup.Jsoup.parse(response,baseUrl);
+    var elements = document.select("#__layout > div > div > div.search-result > ul > a");
+	for (var i = 0;i < elements.size();i++) {
+	    var element = elements.get(i);
+		result.push({
 			//标题
-			title : jsoup(data,'div > h2').text(),
+			title: element.selectFirst('div > h2').text(),
 			
 			//概览
-			summary : jsoup(data,'div > p:nth-child(5)').text(),
+			summary: element.selectFirst('div > p:nth-child(5)').text(),
 			
 			//封面
-			cover : jsoup(data,'li > img').attr('src'),
+			cover: element.selectFirst('li > img').absUrl('src'),
 			
 			//网址
-			url : ToolUtil.urlJoin(url,jsoup(data,'a').attr('href'))
-			});
+			url: element.selectFirst('a').absUrl('href')
+		});
 	}
-	return JSON.stringify(array);
+	return JSON.stringify(result);
 }
 /**
  * 详情
  * @params {string} url
- * @returns {[{title, author, date, summary, cover, reverseOrder, catalog:{[{tag, chapter:{[{name, url}]}}]}}]}
+ * @returns {[{title, author, date, summary, cover, reverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
  */
 function detail(url) {
-	const response = httpRequest(url+ header);
+	const response = httpRequest(url + header);
+    var document = org.jsoup.Jsoup.parse(response,baseUrl);
 	return JSON.stringify({
 		//标题
-		title : jsoup(response,'.cartoon-title').text(),
+		title: document.selectFirst('.cartoon-title').text(),
 		
 		//作者
-		author: jsoup(response,'p.author').text(),
+		author: document.selectFirst('p.author').text(),
+		
+		//日期
+		//date: document.selectFirst('').text(),
 		
 		//概览
-		summary: jsoup(response,'p.introduction').text(),
+		summary: document.selectFirst('p.introduction').text(),
 
 		//封面
-		cover : jsoup(response,'[itemprop=uploadDate]').attr('content'),
+		//cover: document.selectFirst('').absUrl('content'),
 		
 		//目录是否倒序
 		reverseOrder: true,
 		
 		//目录加载
-		catalog: catalog(response,url)
-	})
+		catalogs: catalogs(document,url)
+	});
 }
 
 /**
  * 目录
- * @params {string} response
- * @params {string} url
- * @returns {[{tag, chapter:{[{name, url}]}}]}
+ * @returns {[{name, chapters:{[{name, url}]}}]}
  */
-function catalog(response,url) {
-	//目录标签代码
-	const tabs = jsoupArray(response,'div.detail_nav > ul > li:not([data-nums])').outerHtml();
+function catalogs(document,url) {
+	//目录元素选择器
+	const catalogElements= document.select('dl.cartoon-directory');
 	
-	//目录代码
-	const catalogs = jsoupArray(response,'dl.cartoon-directory').outerHtml();
-	
-	
-		
 	//创建目录数组
-	var new_catalogs= [];
+	var newCatalogs = [];
 	
-	for (var i=0;i<catalogs.length;i++) {
-	    var catalog = catalogs[i];
-		
+	for (var i = 0;i < catalogElements.size();i++) {
 		//创建章节数组
-		var newchapters= [];
+		var newChapters = [];
 		
-		//章节代码
-		var chapters = jsoupArray(catalog,'div.chapter-list > a').outerHtml();
+		//章节元素选择器
+		var chapterElements = catalogElements.get(i).select('div.chapter-list > a');
 		
-		for (var ci=0;ci<chapters.length;ci++) {
-			var chapter = chapters[ci];
-			newchapters.push({
+		for (var i2 = 0;i2 < chapterElements.size();i2++) {
+			var chapterElement = chapterElements.get(i2);
+			newChapters.push({
 				//章节名称
-				name: jsoup(chapter,'a').text(),
+				name: chapterElement.selectFirst('a').text(),
 				//章节网址
-				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href'))
+				url: chapterElement.selectFirst('a').absUrl('href')
 			});
 		}
 		
-		var vid = jsoup(catalog,'dd[class]').attr('data-vid');
-		if(vid.length > 0){
-			var catalog_response = httpRequest('http://m.6mh66.com/bookchapter/@post->id='+jsoup(response,'div.detail_nav > ul > li:nth-child(3)').attr('data-id')+'&id2='+vid+ header);
-			var response_chapters = jsonPathArray(catalog_response,'$.[*]');
-			for (var ci=0;ci<response_chapters.length;ci++) {
-				var chapter = response_chapters[ci];
-				newchapters.push({
+		var vidElement = document.selectFirst('#__layout > div > dl.cartoon-directory.chalist2 > dd');
+		if(vidElement != null){
+			var catalog_response = httpRequest(ToolUtil.urlJoin(baseUrl,'/bookchapter/') + '@post->id=' + vidElement.attr('data-id') + '&id2=' + vidElement.attr('data-vid') + header);
+			JSON.parse(catalog_response).forEach((child) => {
+				newChapters.push({
 					//章节名称
-					name: jsonPath(chapter,'$.chaptername'),
+					name: child.chaptername,
 					//章节网址
-					url: ToolUtil.urlJoin(url,jsonPath(chapter,'$.chapterid'))+'.html'
+					url: ToolUtil.urlJoin(url,child.chapterid) + '.html'
 				});
-			}
-		}
-		//添加目录
-		new_catalogs.push({
-			//目录名称
-			tag: jsoup(tabs[i],'li').text(),
-			//章节
-			chapter : newchapters
 			});
+		}
+		
+		newCatalogs.push({
+			//目录名称
+			name: '目录 ' + (1 + i),
+			//章节
+			chapters : newChapters
+		});
 	}
-	return new_catalogs
+	return newCatalogs;
 }
-
 /**
  * 内容
  * @params {string} url

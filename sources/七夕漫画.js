@@ -1,14 +1,14 @@
 function manifest() {
 	return JSON.stringify({
 		//MyACG 最新版本
-		MyACG: 'https://lanzou.com/b07xqlbxc ',
+		MyACG: 'https://pan.baidu.com/s/1kVkWknH',
 		
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
 		id: 1652791717,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20211219,
+		minMyACG: 20230122,
 		
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -28,20 +28,19 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 3,
 
 		//搜索源自动同步更新网址
 		syncList: {
 			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/七夕漫画.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/七夕漫画.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/七夕漫画.js",
-			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/七夕漫画.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/七夕漫画.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/七夕漫画.js",
 		},
 		
 		//更新时间
-		updateTime: "2022年11月23日",
+		updateTime: "2023年1月7日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -53,7 +52,7 @@ function manifest() {
 		tag: ["漫画"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "http://m.qiximh3.com",//此源和六漫画相似，http://m.qiximh2.com/，http://m.qiximh1.com/
+		baseUrl: baseUrl,//此源和六漫画相似，http://m.qiximh2.com/，http://m.qiximh1.com/
 		
 		//发现
 		findList: {
@@ -62,6 +61,7 @@ function manifest() {
 		},
 	});
 }
+const baseUrl = "http://m.qiximh3.com";
 const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
 
 /**
@@ -70,29 +70,29 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'http://m.qiximh3.com/search.php@post->keyword=' + encodeURI(key) + header;
+	var url = ToolUtil.urlJoin(baseUrl,'/search.php@post->keyword=' + encodeURI(key) + header);
 	const response = httpRequest(url);
 	
-	const list = jsonPathArray(response,'$.search_data');
-	var array= [];
-	for (var i=0;i<list.length;i++) {
-	    var data = list[i];
+	var array = [];
+	const $ = JSON.parse(response);
+	$.search_data.forEach((child) => {
 		array.push({
 			//标题
-			title : jsonPath(data,'$.name'),
-			
+			title: child.name,
+	
 			//概览
-			summary : jsonPath(data,'$.author'),
-			
+			summary: child.author,
+	
 			//封面
-			cover : jsonPath(data,'$.imgs'),
-			
+			cover: child.imgs,
+	
 			//网址
-			url : ToolUtil.urlJoin(url,jsonPath(data,'$.id')) + '/'
-			});
-	}
+			url: ToolUtil.urlJoin(url,child.id) + '/'
+		});
+	});
 	return JSON.stringify(array);
 }
+
 /**
  * 发现
  * @params string url
@@ -100,106 +100,101 @@ function search(key) {
  */
 function find(url) {
 	const response = httpRequest(url + header);
-	//目录标签代码
-	const list = jsoupArray(response,'div.comic_cover_container').outerHtml();
-	var array= [];
-	for (var i=0;i<list.length;i++) {
-	    var data = list[i];
-		array.push({
+	
+	var result = [];
+    var document = org.jsoup.Jsoup.parse(response,baseUrl);
+    var elements = document.select("div.comic_cover_container");
+	for (var i = 0;i < elements.size();i++) {
+	    var element = elements.get(i);
+		result.push({
 			//标题
-			title : jsoup(data,'div.comic_cover_titleBox > a').text(),
+			title: element.selectFirst('div.comic_cover_titleBox > a').text(),
 			
 			//概览
-			summary : jsoup(data,'div.comic_cover_desc').text(),
+			summary: element.selectFirst('div.comic_cover_desc').text(),
 			
 			//封面
-			cover : jsoup(data,'div > a > div').attr('data-original'),
+			cover: element.selectFirst('div > a > div').absUrl('data-original'),
 			
 			//网址
-			url : ToolUtil.urlJoin(url,jsoup(data,'div.comic_cover_titleBox > a').attr('href'))
-			});
+			url: element.selectFirst('div.comic_cover_titleBox > a').absUrl('href')
+		});
 	}
-	return JSON.stringify(array);
+	return JSON.stringify(result);
 }
+
 /**
  * 详情
  * @params {string} url
- * @returns {[{title, author, date, summary, cover, reverseOrder, catalog:{[{tag, chapter:{[{name, url}]}}]}}]}
+ * @returns {[{title, author, date, summary, cover, reverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
  */
 function detail(url) {
-	const response = httpRequest(url+ header);
+	const response = httpRequest(url + header);
+    var document = org.jsoup.Jsoup.parse(response,baseUrl);
 	return JSON.stringify({
 		//标题
-		title: jsoup(response,'h1.name').text(),
+		title: document.selectFirst('h1.name').text(),
 		
 		//作者
-		author: jsoup(response,'.author_name').text(),
+		author: document.selectFirst('.author_name').text(),
 		
 		//日期
-		date : jsoup(response,'div.last_time_chapter > span').text(),
+		date: document.selectFirst('div.last_time_chapter > span').text(),
 		
 		//概览
-		summary: jsoup(response,'div.comic_bottom_content > div.detail_wrap > div.details').text(),
+		summary: document.selectFirst('div.comic_bottom_content > div.detail_wrap > div.details').text(),
 
 		//封面
-		cover : jsoup(response,'div.comic_info.h_comic_info > div.comic_cover').attr('data-original'),
+		cover: document.selectFirst('div.comic_info.h_comic_info > div.comic_cover').absUrl('data-original'),
 		
 		//目录是否倒序
 		reverseOrder: true,
 		
 		//目录加载
-		catalog: catalog(response,url)
-	})
+		catalogs: catalogs(document, url)
+	});
 }
 
 /**
  * 目录
- * @params {string} response
- * @params {string} url
- * @returns {[{tag, chapter:{[{name, url}]}}]}
+ * @returns {[{name, chapters:{[{name, url}]}}]}
  */
-function catalog(response,url) {
-	//创建目录数组
-	var new_catalogs= [];
-		
+function catalogs(document,url) {
 	//创建章节数组
-	var newchapters= [];
-	
-	//章节代码
-	var chapters = jsoupArray(response,'ul.catalog_list > a').outerHtml();
-	
-	for (var ci=0;ci<chapters.length;ci++) {
-		var chapter = chapters[ci];
+	var newChapters = [];
 		
-		newchapters.push({
+	//章节元素选择器
+	var chapterElements = document.select('ul.catalog_list > a');
+	
+	for (var i2 = 0;i2 < chapterElements.size();i2++) {
+		var chapterElement = chapterElements.get(i2);
+		
+		newChapters.push({
 			//章节名称
-			name: jsoup(chapter,'a').text(),
+			name: chapterElement.selectFirst('a').text(),
 			//章节网址
-			url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href'))
+			url: chapterElement.selectFirst('a').absUrl('href')
 		});
 	}
-	var vid = jsoup(response,'div.catalog_wrap > div.comment_more > button').attr('data-vid');
-	if(vid.length > 0){
-		var catalog_response = httpRequest('http://m.qiximh3.com/bookchapter/@post->id='+jsoup(response,'div.comic_intro > div > div.menu_pinglun').attr('data-id')+'&id2='+vid+ header);
-		var response_chapters = jsonPathArray(catalog_response,'$.[*]');
-		for (var ci=0;ci<response_chapters.length;ci++) {
-			var chapter = response_chapters[ci];
-			newchapters.push({
+	
+	var vidElement = document.selectFirst('div.catalog_wrap > div.comment_more > button');
+	if(vidElement != null){
+		var catalog_response = httpRequest(ToolUtil.urlJoin(baseUrl,'/bookchapter/') + '@post->id=' + vidElement.attr('data-id') + '&id2=' + vidElement.attr('data-vid') + header);
+		JSON.parse(catalog_response).forEach((child) => {
+			newChapters.push({
 				//章节名称
-				name: jsonPath(chapter,'$.chaptername'),
+				name: child.chaptername,
 				//章节网址
-				url: ToolUtil.urlJoin(url,jsonPath(chapter,'$.chapterid'))+'.html'
+				url: ToolUtil.urlJoin(url,child.chapterid) + '.html'
 			});
-		}
-	}
-	//添加目录
-	new_catalogs.push({
-		//目录名称
-		tag: "目录",
-		//章节
-		chapter : newchapters
 		});
-	return new_catalogs
+	}
+	return [{
+		//目录名称
+		name: "目录",
+		//章节
+		chapters : newChapters
+	}];
 }
 
 /**

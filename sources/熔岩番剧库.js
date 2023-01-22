@@ -1,14 +1,14 @@
 function manifest() {
 	return JSON.stringify({
 		//MyACG 最新版本
-		MyACG: 'https://lanzou.com/b07xqlbxc ',
+		MyACG: 'https://pan.baidu.com/s/1kVkWknH',
 		
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
 		id: 1660927525,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20220820,//20220820 MyACG修复了处理网址问题
+		minMyACG: 20230122,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 3,
+		version: 4,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -40,7 +40,7 @@ function manifest() {
 		},
 
 		//更新时间
-		updateTime: "2022年12月5日",
+		updateTime: "2023年1月6日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -83,9 +83,47 @@ function manifest() {
 				}
 			}
 		},
-	})
+		
+		//登录授权是否启用
+		auth: true,
+		
+		//登录授权网址
+		authUrl:"https://lavani.me/auth/login",
+		
+		//需要授权的功能（search，detail，content，find）
+		authRequired: ["search","detail","content"],
+	});
 }
-const header = "@header->referer:https://lavani.me/";
+/*
+ * 拦截并验证手动授权数据
+ * @params {string} html	网页源码
+ * @params {string} url		网址
+ * @returns 是否授权
+ */
+function authCallback(html,url) {
+	if(html.length > 1 && html.indexOf('登录成功, 欢迎回来') != -1){
+		return true;
+	}
+	return false;
+}
+/*
+ * 自动验证授权结果
+ * @returns 是否授权
+ */
+function authVerify() {
+	const response = httpRequest("https://anime-api.5t5.top/v2/user/info" + getHeader());
+	if(response.indexOf('成功') != -1){
+		return true;
+	}
+	return false;
+}
+
+var localStorage;
+function getHeader() {
+	if(localStorage == null)localStorage = ToolUtil.localStorage('https://lavani.me/favicon.ico');
+	const authorization = JSON.parse(localStorage.getString('token')).value;
+	return "@header->referer:https://lavani.me/@header->authorization:" + authorization;
+}
 
 /**
  * 搜索
@@ -93,10 +131,10 @@ const header = "@header->referer:https://lavani.me/";
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = `https://anime-api.5t5.top/v2/search?value=${encodeURI(key)}` + header;
+	var url = `https://anime-api.5t5.top/v2/search?value=${encodeURI(key)}` + getHeader();
 	var response = httpRequest(url);
 	var array= [];
-	const $ = JSON.parse(response)
+	const $ = JSON.parse(response);
 	$.data.forEach((child) => {
 		array.push({
 			//标题
@@ -110,19 +148,19 @@ function search(key) {
 	
 			//网址
 			url: 'https://anime-api.5t5.top/v2/anime/file?id=' + child.id
-		})
-	  })
+		});
+	});
 	return JSON.stringify(array);
 }
 /**
  * 发现
- * @params string url
+ * @params {string} url
  * @returns {[{title, summary, cover, url}]}
  */
 function find(url) {
-	const response = httpRequest(url + header + '@header->content-type:application/json');
+	const response = httpRequest(url + getHeader() + '@header->content-type:application/json');
 	var array= [];
-	const $ = JSON.parse(response)
+	const $ = JSON.parse(response);
 	$.data.forEach((child) => {
 		array.push({
 			//标题
@@ -136,72 +174,64 @@ function find(url) {
 	
 			//网址
 			url: 'https://anime-api.5t5.top/v2/anime/file?id=' + child.id
-		})
-	  })
+		});
+	});
 	return JSON.stringify(array);
 }
 
 /**
  * 详情
  * @params {string} url
- * @returns {[{title, author, date, summary, cover, reverseOrder, catalog:{[{tag, chapter:{[{name, url}]}}]}}]}
+ * @returns {[{title, author, date, summary, cover, reverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	return JSON.stringify({
-		//标题
-		//title : jsoup(response,'#name_cn').text(),
-		
-		//作者
-		//author: jsoup(response,'dd > ul > li:nth-child(2) > a').text(),
-		
-		//更新时间
-		//date: jsoup(response,'dd > ul > li:nth-child(3) > a').text(),
-		
-		//概览
-		//summary: jsoup(response,'#rating-box').text(),
-
-		//封面
-		//cover: jsoup(response,'.img_wrap > img').attr('data-original'),
-		
 		//目录是否倒序
 		reverseOrder: false,
 		
 		//目录加载
-		catalog: catalog(url)
-	})
+		catalogs: catalogs(url)
+	});
 }
 /**
  * 目录
- * @params {string} response
- * @params {string} url
- * @returns {[{tag, chapter:{[{name, url}]}}]}
+ * @returns {[{name, chapters:{[{name, url}]}}]}
  */
-function catalog(url) {
-	const tagResponse = httpRequest('https://anime-api.5t5.top/v2/drive/all' + header);
+function catalogs(url) {
+	const tagResponse = httpRequest('https://anime-api.5t5.top/v2/drive/all' + getHeader());
 	
 	//创建目录数组
-	var new_catalogs= [];
+	var newCatalogs = [];
 	
 	JSON.parse(tagResponse).data.list.forEach((child,index) => {
 		//创建章节数组
-		var newchapters= [];
-		JSON.parse(httpRequest(url + '&drive=' + child.id + header)).data.forEach((child2,index2) => {
-			newchapters.push({
+		var newChapters = [];
+		JSON.parse(httpRequest(url + '&drive=' + child.id + getHeader())).data.forEach((child2,index2) => {
+			if (typeof child2.episode == 'string') {
+				newChapters.push({
 					//章节名称
 					name: child2.episode,
 					//章节网址
 					url: child2.url
 				});
-		})
+			}else{
+				newChapters.push({
+					//章节名称
+					name: child2.name,
+					//章节网址
+					url: child2.url
+				});
+			}
+		});
 		//
 		//添加目录
-		new_catalogs.push({
+		newCatalogs.push({
 			//目录名称
-			tag: child.name,
+			name: child.name,
 			//章节
-			chapter : newchapters
+			chapters : newChapters
 		});
-	})
+	});
 	
-	return new_catalogs
+	return newCatalogs;
 }
