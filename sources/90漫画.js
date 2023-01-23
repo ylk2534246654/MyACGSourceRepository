@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 3,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -127,7 +127,7 @@ function catalogs(response) {
 	var newChapters= [];
 	
 	var chapters = com.jayway.jsonpath.JsonPath.parse(response).read('$.data.chapterGroup.*.*');
-	const $ = JSON.parse(chapters.toJSONString())
+	const $ = JSON.parse(chapters)
 	$.forEach((child) => {
 		newChapters.push({
 			//章节名称
