@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 7,
+		version: 8,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年1月22日",
+		updateTime: "2023年1月28日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -58,13 +58,13 @@ function manifest() {
 		auth: false,
 		
 		//登录授权网址
-		authUrl:"http://www.dmh8.me/search.asp?searchword=" + header,
+		authUrl:"http://www.dm88.me/search.asp?searchword=" + header,//http://www.dmh8.me
 		
 		//需要授权的功能（search，detail，content，find）
 		authRequired: ["search"],
 	});
 }
-const baseUrl = "http://www.dmh8.me";//和哆咪动漫类似
+const baseUrl = "http://www.dm88.me";//和哆咪动漫类似
 const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36 iPhone';
 /*
  * 拦截并验证手动授权数据
@@ -83,7 +83,7 @@ function authCallback(html,url) {
  * @returns 是否授权
  */
 function authVerify() {
-	const response = httpRequest("http://www.dmh8.me/search.asp?searchword=" + header);
+	const response = httpRequest("http://www.dm88.me/search.asp?searchword=" + header);
 	if(response.indexOf('搜索结果') != -1){
 		return true;
 	}
@@ -163,7 +163,7 @@ function detail(url) {
 		title: document.selectFirst('h1.title').text(),
 		
 		//作者
-		author: document.selectFirst('div.myui-content__detail > p:nth-child(7) > a').text(),
+		//author: ,
 		
 		//日期
 		date: document.selectFirst('p.data > a:nth-child(8)').text(),
