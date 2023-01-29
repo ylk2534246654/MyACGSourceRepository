@@ -76,7 +76,7 @@ function search(key) {
 	const response = httpRequest(url);
 	
 	var result = [];
-    var document = org.jsoup.Jsoup.parse(response,baseUrl);
+    var document = org.jsoup.Jsoup.parse(response,url);
     var elements = document.select("div.list > ul > li");
 	for (var i = 0;i < elements.size();i++) {
 	    var element = elements.get(i);
@@ -106,7 +106,7 @@ function find(url) {
 	const response = httpRequest(url + header);
 	
 	var result = [];
-    var document = org.jsoup.Jsoup.parse(response,baseUrl);
+    var document = org.jsoup.Jsoup.parse(response,url);
     var elements = document.select("div.list > ul > li");
 	for (var i = 0;i < elements.size();i++) {
 	    var element = elements.get(i);
@@ -133,7 +133,7 @@ function find(url) {
  */
 function detail(url) {
 	const response = httpRequest(url + header);
-    var document = org.jsoup.Jsoup.parse(response,baseUrl);
+    var document = org.jsoup.Jsoup.parse(response,url);
 	return JSON.stringify({
 		//标题
 		title: document.selectFirst('div:nth-child(2) > div > h1').text(),

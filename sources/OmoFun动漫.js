@@ -1,7 +1,7 @@
 function manifest() {
 	return JSON.stringify({
 		//MyACG 最新版本
-		MyACG: 'https://lanzou.com/b07xqlbxc ',
+		MyACG: 'https://pan.baidu.com/s/1kVkWknH',
 		
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）

@@ -77,7 +77,7 @@ function search(key) {
 	const response = httpRequest(url);
 	
 	var result = [];
-    var document = org.jsoup.Jsoup.parse(response,baseUrl);
+    var document = org.jsoup.Jsoup.parse(response,url);
     var elements = document.select("#update_list > div > div");
 	for (var i = 0;i < elements.size();i++) {
 	    var element = elements.get(i);
@@ -107,7 +107,7 @@ function find(url) {
 	const response = httpRequest(url + header);
 	
 	var result= [];
-    var document = org.jsoup.Jsoup.parse(response,baseUrl);
+    var document = org.jsoup.Jsoup.parse(response,url);
     var elements = document.select(".list-comic");
 	for (var i = 0;i < elements.size();i++) {
 	    var element = elements.get(i);
@@ -135,7 +135,7 @@ function find(url) {
  */
 function detail(url) {
 	const response = httpRequest(url + header);
-    var document = org.jsoup.Jsoup.parse(response,baseUrl);
+    var document = org.jsoup.Jsoup.parse(response,url);
 	return JSON.stringify({
 		//标题
 		title: document.selectFirst('h1.title').text(),
@@ -210,7 +210,7 @@ function catalogs(document) {
  */
 function content(url) {
 	const response = httpRequest(url + header);
-    var document = org.jsoup.Jsoup.parse(response,baseUrl);
+    var document = org.jsoup.Jsoup.parse(response,url);
 	var imgList = [];
 	
 	var elements = document.select('\

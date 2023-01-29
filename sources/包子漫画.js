@@ -1,14 +1,14 @@
 function manifest() {
 	return JSON.stringify({
 		//MyACG 最新版本
-		MyACG: 'https://lanzou.com/b07xqlbxc ',
+		MyACG: 'https://pan.baidu.com/s/1kVkWknH',
 		
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
 		id: 1652949783,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20211219,
+		minMyACG: 20230124,
 		
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 4,
+		version: 6,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2022年12月10日",
+		updateTime: "2023年1月28日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -52,9 +52,10 @@ function manifest() {
 		tag: ["漫画"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "https://cn.baozimh.com",//https://cn.webmota.com/
+		baseUrl: baseUrl,//https://cn.webmota.com/
 	});
 }
+const baseUrl = "https://cn.baozimh.com";
 const header = '';
 
 /**
@@ -63,28 +64,29 @@ const header = '';
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'https://cn.baozimh.com/search?q=' + encodeURI(key) + header;
+	var url = ToolUtil.urlJoin(baseUrl,'/search?q='+ encodeURI(key) + header);
 	const response = httpRequest(url);
 	
-	const list = jsoupArray(response,'div.search > div.pure-g > div').outerHtml();
-	var array= [];
-	for (var i=0;i<list.length;i++) {
-	    var data = list[i];
-		array.push({
+	var result = [];
+    var document = org.jsoup.Jsoup.parse(response,url);
+	var elements = document.select("div.search > div.pure-g > div");
+	for (var i = 0;i < elements.size();i++) {
+	    var element = elements.get(i);
+		result.push({
 			//标题
-			title : jsoup(data,'div.comics-card__title').text(),
+			title: element.selectFirst('div.comics-card__title').text(),
 			
 			//概览
-			summary : jsoup(data,'small.tags').text(),
+			summary: element.selectFirst('small.tags').text(),
 			
 			//封面
-			cover : jsoup(data,'a > amp-img').attr('src'),
+			cover: element.selectFirst('a > amp-img').absUrl('src'),
 			
 			//网址
-			url : ToolUtil.urlJoin(url,jsoup(data,'a.text-decoration-none').attr('href'))
-			});
+			url: element.selectFirst('a.text-decoration-none').absUrl('href')
+		});
 	}
-	return JSON.stringify(array);
+	return JSON.stringify(result);
 }
 /**
  * 详情
@@ -93,84 +95,75 @@ function search(key) {
  */
 function detail(url) {
 	const response = httpRequest(url+ header);
+    var document = org.jsoup.Jsoup.parse(response,url);
 	return JSON.stringify({
 		//标题
-		title: jsoup(response,'h1.comics-detail__title').text(),
+		title: document.selectFirst('h1.comics-detail__title').text(),
 		
 		//作者
-		author: jsoup(response,'h2.comics-detail__author').text(),
+		author: document.selectFirst('h2.comics-detail__author').text(),
+		
+		//日期
+		//date: document.selectFirst('').text(),
 		
 		//概览
-		summary: jsoup(response,'div.l-content > div > div > div > p').text(),
+		summary: document.selectFirst('div.l-content > div > div > div > p').text(),
 
 		//封面
-		cover : jsoup(response,'div.l-content > div > div > amp-img').attr('data-media'),
+		cover: document.selectFirst('div.l-content > div > div > amp-img').absUrl('data-media'),
 		
 		//目录是否倒序
 		reverseOrder: false,
 		
 		//目录加载
-		catalog: catalog(response,url)
-	})
+		catalogs: catalogs(document)
+	});
 }
 
 /**
  * 目录
- * @params {string} response
- * @params {string} url
- * @returns {[{tag, chapter:{[{name, url}]}}]}
+ * @returns {[{name, chapters:{[{name, url}]}}]}
  */
-function catalog(response,url) {
-	//创建目录数组
-	var new_catalogs= [];
-		
+function catalogs(document) {
 	//创建章节数组
-	var newchapters= [];
+	var newChapters= [];
 	
-	//章节代码
-	var chapters = jsoupArray(response,'#chapter-items > div,#chapters_other_list > div').outerHtml();
+	//章节元素选择器
+	var chapterElements = document.select('#chapter-items > div,#chapters_other_list > div');
 	
-	for (var ci = 0;ci < chapters.length;ci++) {
-		var chapter = chapters[ci];
+	for (var i2 = 0;i2 < chapterElements.size();i2++) {
+		var chapterElement = chapterElements.get(i2);
 		
-		newchapters.push({
+		var aElement = chapterElement.selectFirst('a');
+		var href = aElement.absUrl('href');
+		newChapters.push({
 			//章节名称
-			name: jsoup(chapter,'a').text(),
+			name: aElement.text(),
 			//章节网址
-			url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href'))
+			url: 'https://cn.webmota.com/comic/chapter/' + ToolUtil.substring(href,'comic_id=','&') + '/0_' + ToolUtil.substring(href + '&','chapter_slot=','&') + '_${p}.html@zero->1@start->1'
 		});
 	}
-	if(newchapters.length < 1){//最新章节
-		//章节代码
-		var chapters2 = jsoupArray(response,'.comics-chapters').outerHtml();
-		
-		for (var ci = chapters2.length - 1;ci >= 0;ci--) {
-			var chapter = chapters2[ci];
+	if(newChapters.length < 1){//最新章节
+		chapterElements = document.select('.comics-chapters');
+		for (var i2 = 0;i2 < chapterElements.size();i2++) {
+			var chapterElement = chapterElements.get(i2);
 			
-			newchapters.push({
+			var aElement = chapterElement.selectFirst('a');
+			var href = aElement.absUrl('href');
+			newChapters.push({
 				//章节名称
-				name: jsoup(chapter,'a').text(),
+				name: aElement.text(),
 				//章节网址
-				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href'))
+				url: 'https://cn.webmota.com/comic/chapter/' + ToolUtil.substring(href,'comic_id=','&') + '/0_' + ToolUtil.substring(href + '&','chapter_slot=','&') + '_${p}.html@zero->1@start->1'
 			});
 		}
 	}
-	//添加目录
-	new_catalogs.push({
+	return [{
 		//目录名称
-		tag: "目录",
+		name: "目录",
 		//章节
-		chapter : newchapters
-		});
-	return new_catalogs
-}
-/**
- * 内容(InterceptRequest)
- * @params {string} url
- * @returns {string} content
-
-function content(url) {
-	return url;
+		chapters: newChapters
+	}];
 }
 /**
  * 内容
@@ -180,12 +173,17 @@ function content(url) {
 function content(url) {
 	const response = httpRequest(url + header);
 	//创建漫画数组
-	var chapterImages= [];
+	var result= [];
 	//漫画列表代码
-	var contents = jsoupArray(response,'[[src]],.comic-contain__item').outerHtml();
-	for (var ci=0;ci<contents.length;ci++) {
-		var content = contents[ci];
-		chapterImages.push(jsoup(content,'[src]').attr('src'));
+    var document = org.jsoup.Jsoup.parse(response,url);
+	var contentElements = document.select('[[src]],.comic-contain__item');
+	for (var i2 = 0;i2 < contentElements.size();i2++) {
+		var contentElement = contentElements.get(i2);
+
+		var srcElement = contentElement.selectFirst('[src]');
+		if(srcElement != null){
+			result.push(srcElement.absUrl('src'));
+		}
 	}
-	return JSON.stringify(chapterImages);
+	return JSON.stringify(result);
 }

@@ -65,7 +65,7 @@ const header = '@header->user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) A
 function search(key) {
 	var url = ToolUtil.urlJoin(baseUrl,'/S6/@post->searchkey=' + encodeURI(key) + '&searchtype=all' + header);
 	const response = httpRequest(url);
-	var document = org.jsoup.Jsoup.parse(response,baseUrl);
+	var document = org.jsoup.Jsoup.parse(response,url);
 	var result = [];
 	if(response.indexOf('开始阅读') != -1){
 		result.push({
@@ -109,7 +109,7 @@ function search(key) {
  */
 function detail(url) {
 	const response = httpRequest(url + header);
-	var document = org.jsoup.Jsoup.parse(response,baseUrl);
+	var document = org.jsoup.Jsoup.parse(response,url);
 	return JSON.stringify({
 		//标题
 		title : document.selectFirst('.book-name').text(),
@@ -140,7 +140,7 @@ function detail(url) {
  */
 function catalogs(url) {
 	const response = httpRequest(url + header);
-	var document = org.jsoup.Jsoup.parse(response,baseUrl);
+	var document = org.jsoup.Jsoup.parse(response,url);
 	//创建章节数组
 	var newChapters= [];
 	
@@ -178,6 +178,6 @@ function catalogs(url) {
  */
 function content(url) {
 	const response = httpRequest(url);
-	var document = org.jsoup.Jsoup.parse(response,baseUrl);
-	return String(document.select('#TextContent,#acontent').outerHtml());
+	var document = org.jsoup.Jsoup.parse(response,url);
+	return document.select('#TextContent,#acontent').outerHtml();
 }

@@ -15,7 +15,7 @@ function manifest() {
 		priority: 80,//加载较慢
 		
 		//是否失效，默认关闭
-		//true: 无法安装，并且已安装的变灰，用于解决失效源
+		//true: 无法添加，并且已安装的无法直接使用，用于解决失效源
 		invalid: false,
 		
 		//@NonNull 搜索源名称

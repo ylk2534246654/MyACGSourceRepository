@@ -68,7 +68,7 @@ function search(key) {
 	const response = httpRequest(url);
 	
 	var result = [];
-    var document = org.jsoup.Jsoup.parse(response,baseUrl);
+    var document = org.jsoup.Jsoup.parse(response,url);
     var elements = document.select("#__layout > div > div > div.search-result > ul > a");
 	for (var i = 0;i < elements.size();i++) {
 	    var element = elements.get(i);
@@ -95,7 +95,7 @@ function search(key) {
  */
 function detail(url) {
 	const response = httpRequest(url + header);
-    var document = org.jsoup.Jsoup.parse(response,baseUrl);
+    var document = org.jsoup.Jsoup.parse(response,url);
 	return JSON.stringify({
 		//标题
 		title: document.selectFirst('.cartoon-title').text(),

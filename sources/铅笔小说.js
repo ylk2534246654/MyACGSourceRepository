@@ -98,7 +98,8 @@ const header = '@header->user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) A
 function search(key) {
 	var url = ToolUtil.urlJoin(baseUrl,'/saerch.php@post->searchkey=' + ToolUtil.encodeURI(key,'gbk') + '&searchtype=all' + header);
 	const response = httpRequest(url);
-	var document = org.jsoup.Jsoup.parse(response,baseUrl);
+	
+	var document = org.jsoup.Jsoup.parse(response,url);
 	var result = [];
     var elements = document.select("#sitebox > dl");
 	for (var i = 0;i < elements.size();i++) {
@@ -126,7 +127,7 @@ function search(key) {
  */
 function detail(url) {
 	const response = httpRequest(url + header);
-	var document = org.jsoup.Jsoup.parse(response,baseUrl);
+	var document = org.jsoup.Jsoup.parse(response,url);
 	return JSON.stringify({
 		//标题
 		title : document.selectFirst('div.d_title').text(),
@@ -186,6 +187,6 @@ function catalogs(document) {
  */
 function content(url) {
 	const response = httpRequest(url);
-	var document = org.jsoup.Jsoup.parse(response,baseUrl);
-	return document.select('#TextContent,#acontent').outerHtml().replace('铅笔小说 23qb.net','').replace('！！禁止转码、禁止阅读模式，下面内容隐藏，请退出浏览器阅读模式！','').replace('（继续下一页）','');
+	var document = org.jsoup.Jsoup.parse(response,url);
+	return document.select('#TextContent > p:not(:matches(铅笔小说|阅读模式|继续下一页))').outerHtml();
 }
