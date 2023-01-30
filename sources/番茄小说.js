@@ -53,6 +53,33 @@ function manifest() {
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,
+
+		//发现
+		findList: {
+			"都市": "1",
+			"玄幻": "7",
+			"科幻": "8",
+			"悬疑": "10",
+			"历史": "12",
+			"武侠": "16",
+			"系统": "19",
+			"神豪": "20",
+			"种田": "23",
+			"赘婿": "25",
+			"神医": "26",
+			"重生": "36",
+			"穿越": "37",
+			"动漫": "57",
+			"末世": "68",
+			"直播": "69",
+			"无限": "70",
+			"诸天": "71",
+			"盗墓": "81",
+			"灵异": "100",
+			"聊天": "381",
+			"无敌": "384",
+			"校花": "385",
+		},
 	});
 }
 
@@ -85,6 +112,34 @@ function search(key) {
 	});
 	return JSON.stringify(array);
 }
+
+/**
+ * 发现
+ * @params {string} url
+ * @returns {[{title, summary, cover, url}]}
+ */
+function find(id) {
+	const response = httpRequest(`https://api5-normal-lf.fqnovel.com/reading/bookapi/new_category/landing/v/?genre_type=0&limit=10&source=front_category&category_id=${id}&offset=%3C,1%3E&query_gender=1&iid=1099935039893805&aid=1967&app_name=novelapp&version_code=287` + header);
+	var array= [];
+	const $ = JSON.parse(response);
+	$.data.book_info.forEach((child) => {
+		array.push({
+			//标题
+			title: child.book_name.replace(new RegExp('<em>','g'),'').replace(new RegExp('</em>','g'),''),
+	
+			//概览
+			summary: child.abstract.replace(new RegExp('<em>','g'),'').replace(new RegExp('</em>','g'),''),
+	
+			//封面
+			cover: child.thumb_url,
+	
+			//网址
+			url: child.book_id
+		});
+	});
+	return JSON.stringify(array);
+}
+
 /**
  * 详情
  * @params {string} url
