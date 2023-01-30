@@ -168,7 +168,8 @@ function catalogs(document) {
 function content(url) {
 	//https://js.tydouke.com/bid?url=
 	//展示图片：https://abb.juntaijiancai.com/file/creative/2022/10/04/6627347.gif.oef
-	if(url.indexOf('tydouke|juntaijiancai') == -1){
+	var re = /tydouke|juntaijiancai/i;
+	if(!re.test(url)){
 		return url;
 	}
 	return null;
