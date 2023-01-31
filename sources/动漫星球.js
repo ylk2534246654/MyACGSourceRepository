@@ -66,7 +66,9 @@ function manifest() {
 		
 		//发现
 		findList: {
-			"最近更新": "https://www.dmxq.me/label/new.html",
+			"影视": {
+				"最近更新": "https://www.dmxq.me/label/new.html"
+			}
 		},
 	});
 }
