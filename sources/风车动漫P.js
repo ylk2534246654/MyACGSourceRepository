@@ -8,7 +8,7 @@ function manifest() {
 		id: 1660803657,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230122,
+		minMyACG: 20230207,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -16,7 +16,7 @@ function manifest() {
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		invalid: false,
+		isInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "风车动漫P",
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年1月7日",
+		updateTime: "2023年2月9日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -49,7 +49,7 @@ function manifest() {
 		contentType: 2,
 		
 		//自定义标签
-		tag: ["动漫"],
+		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,//备份：https://m.dm530p.info/ ，和樱花动漫P同一模板
@@ -69,7 +69,7 @@ const header = '';
 /**
  * 搜索
  * @params {string} key
- * @returns {[{title, summary, cover, url}]}
+ * @returns {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = ToolUtil.urlJoin(baseUrl,'/s_all?ex=1&kw='+ encodeURI(key) + header);
@@ -87,8 +87,8 @@ function search(key) {
 			//概览
 			summary: element.selectFirst('div.itemimgtext').text(),
 			
-			//封面
-			cover: ToolUtil.urlJoin(url,ToolUtil.substring(element.selectFirst('div.imgblock').attr('style'),'\'','\'')),
+			//封面网址
+			coverUrl: ToolUtil.urlJoin(url,ToolUtil.substring(element.selectFirst('div.imgblock').attr('style'),'\'','\'')),
 			
 			//网址
 			url: element.selectFirst('a.itemtext').absUrl('href')
@@ -100,7 +100,7 @@ function search(key) {
 /**
  * 发现
  * @params string url
- * @returns {[{title, summary, cover, url}]}
+ * @returns {[{title, summary, coverUrl, url}]}
  */
 function find(url) {
 	const response = httpRequest(url + header);
@@ -117,8 +117,8 @@ function find(url) {
 			//概览
 			summary: element.selectFirst('div.itemimgtext').text(),
 			
-			//封面
-			cover: ToolUtil.urlJoin(url,ToolUtil.substring(element.selectFirst('div.imgblock').attr('style'),'\'','\'')),
+			//封面网址
+			coverUrl: ToolUtil.urlJoin(url,ToolUtil.substring(element.selectFirst('div.imgblock').attr('style'),'\'','\'')),
 			
 			//网址
 			url: element.selectFirst('a.itemtext').absUrl('href')
@@ -128,8 +128,7 @@ function find(url) {
 }
 /**
  * 详情
- * @params {string} url
- * @returns {[{title, author, date, summary, cover, reverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
+ * @returns {[{title, author, date, summary, coverUrl, isReverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = httpRequest(url + header);
@@ -147,11 +146,11 @@ function detail(url) {
 		//概览
 		summary: document.selectFirst('div.info').text(),
 
-		//封面
-		cover: document.selectFirst('div.show > img').absUrl('src'),
+		//封面网址
+		coverUrl: document.selectFirst('div.show > img').absUrl('src'),
 		
 		//目录是否倒序
-		reverseOrder: false,
+		isReverseOrder: false,
 		
 		//目录加载
 		catalogs: catalogs(document)
@@ -200,7 +199,6 @@ function catalogs(document) {
 
 /**
  * 内容（部分动漫搜索源通用规则）
- * @params {string} url
  * @returns {string} content
  */
 function content(url) {

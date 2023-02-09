@@ -8,7 +8,7 @@ function manifest() {
 		id: 1675045639,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230122,
+		minMyACG: 20230207,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -16,7 +16,7 @@ function manifest() {
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		invalid: false,
+		isInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "番茄小说",
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年1月30日",
+		updateTime: "2023年2月9日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -49,7 +49,7 @@ function manifest() {
 		contentType: 1,
 		
 		//自定义标签
-		tag: ["小说"],
+		group: ["小说"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,
@@ -88,7 +88,7 @@ const header = '@header->user-agent:Mozilla/5.0 (Linux; Android 11; Pixel 5) App
 /**
  * 搜索
  * @params {string} key
- * @returns {[{title, summary, cover, url}]}
+ * @returns {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = ToolUtil.urlJoin(baseUrl,'/api/novel/channel/homepage/search/search/v1/?aid=13&q=' + encodeURI(key) + header);
@@ -103,8 +103,8 @@ function search(key) {
 			//概览
 			summary: child.abstract.replace(new RegExp('<em>','g'),'').replace(new RegExp('</em>','g'),''),
 	
-			//封面
-			cover: child.thumb_url,
+			//封面网址
+			coverUrl: child.thumb_url,
 	
 			//网址
 			url: child.book_id
@@ -116,7 +116,7 @@ function search(key) {
 /**
  * 发现
  * @params {string} url
- * @returns {[{title, summary, cover, url}]}
+ * @returns {[{title, summary, coverUrl, url}]}
  */
 function find(id) {
 	const response = httpRequest(`https://api5-normal-lf.fqnovel.com/reading/bookapi/new_category/landing/v/?genre_type=0&limit=10&source=front_category&category_id=${id}&offset=%3C,1%3E&query_gender=1&iid=1099935039893805&aid=1967&app_name=novelapp&version_code=287` + header);
@@ -130,8 +130,8 @@ function find(id) {
 			//概览
 			summary: child.abstract.replace(new RegExp('<em>','g'),'').replace(new RegExp('</em>','g'),''),
 	
-			//封面
-			cover: child.thumb_url,
+			//封面网址
+			coverUrl: child.thumb_url,
 	
 			//网址
 			url: child.book_id
@@ -142,8 +142,7 @@ function find(id) {
 
 /**
  * 详情
- * @params {string} url
- * @returns {[{title, author, date, summary, cover, reverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
+ * @returns {[{title, author, date, summary, coverUrl, isReverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
  */
 function detail(book_id) {
 	const response = httpRequest(`https://api5-normal-lf.fqnovel.com/reading/bookapi/directory/all_items/v/?need_version=true&book_id=${book_id}&iid=2665637677906061&aid=1967&app_name=novelapp&version_code=495` + header);
@@ -162,11 +161,11 @@ function detail(book_id) {
 		//概览
 		//summary: $.data.book_info.,
 
-		//封面
-		cover: $.data.book_info.thumb_url,
+		//封面网址
+		coverUrl: $.data.book_info.thumb_url,
 		
 		//目录是否倒序
-		reverseOrder: false,
+		isReverseOrder: false,
 		
 		//目录网址/非外链无需使用
 		catalogs: catalogs($.data.item_data_list)
@@ -201,7 +200,6 @@ function catalogs(item_data_list) {
 
 /**
  * 内容
- * @params {string} url
  * @returns {string} content
  */
 function content(url) {

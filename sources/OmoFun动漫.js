@@ -8,7 +8,7 @@ function manifest() {
 		id: 1654703176,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20221201,
+		minMyACG: 20230207,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -16,7 +16,7 @@ function manifest() {
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		invalid: false,
+		isInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "OmoFun动漫",
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2022年12月3日",
+		updateTime: "2023年2月9日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -49,7 +49,7 @@ function manifest() {
 		contentType: 1,
 		
 		//自定义标签
-		tag: ["动漫"],
+		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: "https://www.omofun.tv",
@@ -60,7 +60,7 @@ const header = '';
 /**
  * 搜索
  * @params {string} key
- * @returns {[{title, summary, cover, url}]}
+ * @returns {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = `http://103.91.210.141:2515/xgapp.php/v2/search?pg=1&text=${encodeURI(key)}&token=&csrf=gqcMwzohO0l%2FcuKwQUeYY6TeY8l3M6D0SQwfwzNJTpvfNP2X30FiGs8um0tslhdkVxPTwLLXCGBkTA1ONXAXr6Ajx2fWb7fwHQdNnipq143De%2Brq%2FBAOrJ0Uqb9anV14kUbsbRr8P6ZKLG%2BANj%2BYZEyH%2Flu6a%2FAD4iekfTf9SA8%3D` + header;
@@ -75,8 +75,8 @@ function search(key) {
 			//概览
 			summary: child.vod_class,
 			
-			//封面
-			cover: child.vod_pic,
+			//封面网址
+			coverUrl: child.vod_pic,
 			
 			//网址
 			url: child.vod_id,
@@ -87,8 +87,7 @@ function search(key) {
 
 /**
  * 详情
- * @params {string} url
- * @returns {[{title, author, date, summary, cover, reverseOrder, catalog:{[{tag, chapter:{[{name, url}]}}]}}]}
+ * @returns {[{title, author, date, summary, coverUrl, isReverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
  */
 function detail(id) {
 	const response = httpRequest(`http://103.91.210.141:2515/xgapp.php/v2/video_detail?id=${id}&ck=PmJag8SWhbuByo%2FjYOpOO44qrkaqIKk1Gv4qgT2q47g3X5yfdyUcBmcpQLhBiPmS%2B1uCpYypSeedNYTJjbyESEbIfTaSadOG9keaxpB%2BVmJSOs9Mnt65Xo6QIX4%2Fjtpu2ilHN8%2B1VcVdOHZtVZWYd5bNZg1FrhcsqR7geK9%2BfYkPEjFutBbu2gBmgYJtFsYYN%2FOlMNsEZq8nuZUsx%2Bts9fT%2FzFuQHHBypst5UmcfaJ5PpV0caKgWB2Gcok5NSNe%2B5%2BfZcDe05BwqUG1V6OHTz1iq9IL6zqbY1Y7ukAhdO%2FYYEzXnygWqheM52HU1zABjNDux3K1HpxI9IXvNI3ga4DIGf2EzEQUTcLehdSJQ1IwKK8ZOyqfON9r%2F2S4ZIwI9xGLVs7a9BRKv99Qlf6KxSmqMy%2F4qUEOjoqesuSHcQVga%2F4xq1hNm3B18rf8aVM1g6H7Nu0X1uXSKvCtGeQf5Tdg3omZfwK9BYlx4p0JMkzxapMYZiTOcqLkNdTW3LkSbfQEbgd7QDh9DmFBWceA40XwZgJuIIs1ZvD9DyYurHUVzfrgtP45dFkZ0W4vuWqeDgV30C6kvacoE4SQOYpvITE7UUdgTWRXW6xcZDJRB50QicehcAfYACRDJt32arqSGSiNoNT3MU7il3B%2B%2BbZUNMHe6WQfGDVJvJn1x2JIGVVdabCM1DCpK8nJuwqu6N7ycMN2%2B7QuJ%2FGrU5kze6DmQMid%2FH0JudcYhel3AgNAte81amrO559TvaK%2B5xaxns7XqHcAL4e3cLLX2lbh7uqwZoyNUgCXs2bX9BgPoOnNHJmDrxf4pbw57c6kKmhgEcKu4fYWldh9flAvJB3zztfcQUA%3D%3D&pkid=tv.omofun.app&token=&csrf=o13Tgl%2B3XOGfJjcTsCYGUhvnobNCR0v7njbsw2IooR%2FoArjKrCyogNFpYO9wNtn%2FNgFXBQL2DGFd3zDR7ekTMY%2B0QHU7QR%2Fyl6c%2Boa7A6l7op%2Fn6gtg0jzO7%2FSDDSAvuv56Sg8Y2wo%2FPxDf012ABHeVt8V1%2F3sRtzPvVTUg5t2M%3D`+ header);
@@ -107,35 +106,34 @@ function detail(id) {
 		//概览
 		summary: $.data.vod_info.vod_content,
 
-		//封面
+		//封面网址
 		cover : $.data.vod_info.vod_pic,
 		
 		//目录是否倒序
-		reverseOrder: false,
+		isReverseOrder: false,
 		
 		//目录网址/非外链无需使用
-		catalog: catalog($.data.vod_info.vod_url_with_player)
+		catalogs: catalogs($.data.vod_info.vod_url_with_player)
 	})
 }
+
 /**
  * 目录
- * @params {string} response
- * @params {string} url
- * @returns {[{tag, chapter:{[{name, url}]}}]}
+ * @returns {[{name, chapters:{[{name, url}]}}]}
  */
-function catalog(catalogs) {
+function catalogs(catalogs) {
 	//创建目录数组
-	var new_catalogs= [];
+	var newCatalogs= [];
 	
 	catalogs.forEach(catalog => {
 		//创建章节数组
-		var newchapters= [];
+		var newChapters= [];
 		
 		//章节代码
 		var chapters = catalog.url.split('#');
 		for(var i = 0;i < chapters.length;i++){
 			var chapter = chapters[i].split('$');
-			newchapters.push({
+			newChapters.push({
 				//章节名称
 				name: chapter[0],
 				//章节网址
@@ -144,19 +142,18 @@ function catalog(catalogs) {
 		}
 		
 		//添加目录
-		new_catalogs.push({
+		newCatalogs.push({
 			//目录名称
-			tag: catalog.name,
+			name: catalog.name,
 			//章节
-			chapter : newchapters
+			chapters : newChapters
 		});
     })
-	return new_catalogs;
+	return newCatalogs;
 }
 
 /**
  * 内容(InterceptRequest)
- * @params {string} url
  * @returns {string} content
  */
 function content(url) {

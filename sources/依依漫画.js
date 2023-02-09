@@ -8,7 +8,7 @@ function manifest() {
 		id: 1652779316,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230122,
+		minMyACG: 20230207,
 		
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -16,7 +16,7 @@ function manifest() {
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		invalid: false,
+		isInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "依依漫画",
@@ -49,7 +49,7 @@ function manifest() {
 		contentType: 1,
 		
 		//自定义标签
-		tag: ["漫画"],
+		group: ["漫画"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,
@@ -69,7 +69,7 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
 /**
  * 搜索
  * @params {string} key
- * @returns {[{title, summary, cover, url}]}
+ * @returns {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = ToolUtil.urlJoin(baseUrl,'/search/?keywords=' + encodeURI(key) + header);
@@ -87,8 +87,8 @@ function search(key) {
 			//概览
 			summary: element.selectFirst('a.coll').text(),
 			
-			//封面
-			cover: element.selectFirst('div.itemImg > a > mip-img').absUrl('src'),
+			//封面网址
+			coverUrl: element.selectFirst('div.itemImg > a > mip-img').absUrl('src'),
 			
 			//网址
 			url: element.selectFirst('div.itemTxt > a').absUrl('href')
@@ -99,7 +99,7 @@ function search(key) {
 /**
  * 发现
  * @params {string} url
- * @returns {[{title, summary, cover, url}]}
+ * @returns {[{title, summary, coverUrl, url}]}
  */
 function find(url) {
 	const response = httpRequest(url + header);
@@ -116,8 +116,8 @@ function find(url) {
 			//概览
 			summary: element.selectFirst('span.info').text(),
 			
-			//封面
-			cover: element.selectFirst('mip-img').absUrl('src'),
+			//封面网址
+			coverUrl: element.selectFirst('mip-img').absUrl('src'),
 			
 			//网址
 			url: element.selectFirst('a.ImgA').absUrl('href')
@@ -127,8 +127,7 @@ function find(url) {
 }
 /**
  * 详情
- * @params {string} url
- * @returns {[{title, author, date, summary, cover, reverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
+ * @returns {[{title, author, date, summary, coverUrl, isReverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = httpRequest(url + header);
@@ -146,11 +145,11 @@ function detail(url) {
 		//概览
 		summary: document.selectFirst('div.comic-view.clearfix > p').text(),
 
-		//封面
-		cover: document.selectFirst('div.img > mip-img').absUrl('src'),
+		//封面网址
+		coverUrl: document.selectFirst('div.img > mip-img').absUrl('src'),
 		
 		//目录是否倒序
-		reverseOrder: true,
+		isReverseOrder: true,
 		
 		//目录加载
 		catalogs: catalogs(document)
@@ -201,7 +200,6 @@ function catalogs(document) {
  * 内容（部分漫画搜索源通用规则）
  * @version 2023/1/21
  * 168,思思，39 , 360 , 147 , 动漫画 ，依依
- * @params {string} url
  * @returns {string} content
  */
 function content(url) {

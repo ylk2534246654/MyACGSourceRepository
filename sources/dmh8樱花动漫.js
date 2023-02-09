@@ -8,7 +8,7 @@ function manifest() {
 		id: 1654704919,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230122,
+		minMyACG: 20230207,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -16,7 +16,7 @@ function manifest() {
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		invalid: false,
+		isInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "樱花动漫",
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年1月28日",
+		updateTime: "2023年2月9日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -49,19 +49,19 @@ function manifest() {
 		contentType: 2,
 		
 		//自定义标签
-		tag: ["动漫"],
+		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,
 		
-		//登录授权是否启用
+		//是否启用登录授权
 		auth: false,
 		
 		//登录授权网址
 		authUrl:"http://www.dm88.me/search.asp?searchword=" + header,//http://www.dmh8.me
 		
 		//需要授权的功能（search，detail，content，find）
-		authRequired: ["search"],
+		authRequire: ["search"],
 	});
 }
 const baseUrl = "http://www.dm88.me";//和哆咪动漫类似
@@ -93,7 +93,7 @@ function authVerify() {
 /**
  * 搜索
  * @params {string} key
- * @returns {[{title, summary, cover, url}]}
+ * @returns {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = ToolUtil.urlJoin(baseUrl,'/search.asp?searchword=' + encodeURI(key) + header);
@@ -111,8 +111,8 @@ function search(key) {
 			//概览
 			summary: element.selectFirst('div.detail > p.hidden-xs > :matchText').text(),
 			
-			//封面
-			cover: element.selectFirst('div.thumb > a').absUrl('data-original'),
+			//封面网址
+			coverUrl: element.selectFirst('div.thumb > a').absUrl('data-original'),
 			
 			//网址
 			url: element.selectFirst('.title > a').absUrl('href')
@@ -124,7 +124,7 @@ function search(key) {
 /**
  * 发现
  * @params string url
- * @returns {[{title, summary, cover, url}]}
+ * @returns {[{title, summary, coverUrl, url}]}
  */
 function find(url) {
 	const response = httpRequest(url + header);
@@ -141,8 +141,8 @@ function find(url) {
 			//概览
 			summary: element.selectFirst('div:nth-child(7) > span.cell_imform_value').text(),
 			
-			//封面
-			cover: ToolUtil.urlJoin(url,ToolUtil.substring(element.selectFirst('div.imgblock').attr('style'),'\'','\'')),
+			//封面网址
+			coverUrl: ToolUtil.urlJoin(url,ToolUtil.substring(element.selectFirst('div.imgblock').attr('style'),'\'','\'')),
 			
 			//网址
 			url: element.selectFirst('a.itemtext').absUrl('href')
@@ -152,8 +152,7 @@ function find(url) {
 }
 /**
  * 详情
- * @params {string} url
- * @returns {[{title, author, date, summary, cover, reverseOrder, catalog:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @returns {[{title, author, date, summary, coverUrl, isReverseOrder, catalog:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = httpRequest(url + header);
@@ -171,11 +170,11 @@ function detail(url) {
 		//概览
 		summary: document.selectFirst('div.content').text(),
 
-		//封面
-		cover: document.selectFirst('div.myui-content__thumb > a > img').absUrl('data-original'),
+		//封面网址
+		coverUrl: document.selectFirst('div.myui-content__thumb > a > img').absUrl('data-original'),
 		
 		//目录是否倒序
-		reverseOrder: false,
+		isReverseOrder: false,
 		
 		//目录加载
 		catalogs: catalogs(document)
@@ -222,7 +221,6 @@ function catalogs(document) {
 }
 /**
  * 内容（部分动漫搜索源通用规则）
- * @params {string} url
  * @returns {string} content
  */
 function content(url) {

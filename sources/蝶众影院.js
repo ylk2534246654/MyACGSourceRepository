@@ -8,7 +8,7 @@ function manifest() {
 		id: 1674978871,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230122,
+		minMyACG: 20230207,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -16,7 +16,7 @@ function manifest() {
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		invalid: false,
+		isInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "蝶众影院",
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年1月30日",
+		updateTime: "2023年2月9日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -49,7 +49,7 @@ function manifest() {
 		contentType: 2,
 		
 		//自定义标签
-		tag: ["影视"],
+		group: ["影视"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,
@@ -62,7 +62,7 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
 /**
  * 搜索
  * @params {string} key
- * @returns {[{title, summary, cover, url}]}
+ * @returns {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = ToolUtil.urlJoin(baseUrl,'/vodsearch/-------------.html?wd='+ encodeURI(key) + header);
@@ -80,8 +80,8 @@ function search(key) {
 			//概览
 			summary: element.selectFirst('.pic_text').text(),
 			
-			//封面
-			cover: element.selectFirst('.searchlist_img > a').absUrl('data-original'),
+			//封面网址
+			coverUrl: element.selectFirst('.searchlist_img > a').absUrl('data-original'),
 			
 			//网址
 			url: element.selectFirst('.searchlist_img > a').absUrl('href')
@@ -91,8 +91,7 @@ function search(key) {
 }
 /**
  * 详情
- * @params {string} url
- * @returns {[{title, author, date, summary, cover, reverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
+ * @returns {[{title, author, date, summary, coverUrl, isReverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = httpRequest(url + header);
@@ -110,11 +109,11 @@ function detail(url) {
 		//概览
 		summary: document.selectFirst('.full_text > span').text(),
 
-		//封面
-		cover: document.selectFirst('.content_thumb > a').absUrl('data-original'),
+		//封面网址
+		coverUrl: document.selectFirst('.content_thumb > a').absUrl('data-original'),
 		
 		//目录是否倒序
-		reverseOrder: false,
+		isReverseOrder: false,
 		
 		//目录加载
 		catalogs: catalogs(document)
@@ -162,7 +161,6 @@ function catalogs(document) {
 }
 /**
  * 内容(InterceptRequest)
- * @params {string} url
  * @returns {string} content
  */
 function content(url) {

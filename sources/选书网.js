@@ -8,7 +8,7 @@ function manifest() {
 		id: 1656609292,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230122,
+		minMyACG: 20230207,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -16,7 +16,7 @@ function manifest() {
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		invalid: false,
+		isInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "选书网",
@@ -49,7 +49,7 @@ function manifest() {
 		contentType: 1,
 		
 		//自定义标签
-		tag: ["小说"],
+		group: ["小说"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,
@@ -61,7 +61,7 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
 /**
  * 搜索
  * @params {string} key
- * @returns {[{title, summary, cover, url}]}
+ * @returns {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = ToolUtil.urlJoin(baseUrl,'/search.php@post->searchkey=' + encodeURI(key) + header);
@@ -79,8 +79,8 @@ function search(key) {
 			//概览
 			summary: element.selectFirst('.even:not(:has(a))').text(),
 			
-			//封面
-			//cover: ,
+			//封面网址
+			//coverUrl: ,
 			
 			//网址
 			url: element.selectFirst('.even > a').absUrl('href')
@@ -90,8 +90,7 @@ function search(key) {
 }
 /**
  * 详情
- * @params {string} url
- * @returns {[{title, author, date, summary, cover, reverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
+ * @returns {[{title, author, date, summary, coverUrl, isReverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = httpRequest(url + header);
@@ -109,11 +108,11 @@ function detail(url) {
 		//概览
 		summary: document.selectFirst('div.info_des > div').text(),
 
-		//封面
-		cover: document.selectFirst('div.tupian > a > img').absUrl('src'),
+		//封面网址
+		coverUrl: document.selectFirst('div.tupian > a > img').absUrl('src'),
 		
 		//目录是否倒序
-		reverseOrder: false,
+		isReverseOrder: false,
 		
 		//目录网址/非外链无需使用
 		catalogs: catalogs(document)
@@ -150,11 +149,10 @@ function catalogs(document) {
 
 /**
  * 内容
- * @params {string} url
  * @returns {string} content
  */
 function content(url) {
 	const response = httpRequest(url + header);
 	var document = org.jsoup.Jsoup.parse(response,url);
-	return document.select('#content1:matchText').outerHtml();
+	return document.select('#content1 > :matchText').outerHtml();
 }

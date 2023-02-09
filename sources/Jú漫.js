@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年2月2日",
+		updateTime: "2023年2月9日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -90,8 +90,7 @@ function search(key) {
 
 /**
  * 详情
- * @params {string} url
- * @returns {[{title, author, date, summary, coverUrl, reverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
+ * @returns {[{title, author, date, summary, coverUrl, isReverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
  */
 function detail(id) {
     var timestamp = parseInt(Date.now()/1000);
@@ -113,7 +112,7 @@ function detail(id) {
 		//概览
 		summary: $.data.describe,
 
-		//封面
+		//封面网址
 		coverUrl: $.data.cover,
 		
 		//目录是否倒序
@@ -156,7 +155,6 @@ function catalogs(videoId,catalogs) {
 }
 
 /**
- * 内容(InterceptRequest)
  * @returns {string} content
  */
 function content(json) {

@@ -8,7 +8,7 @@ function manifest() {
 		id: 1654507793,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230122,
+		minMyACG: 20230207,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -16,7 +16,7 @@ function manifest() {
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		invalid: false,
+		isInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "哔哩轻小说",
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年1月7日",
+		updateTime: "2023年2月9日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -49,7 +49,7 @@ function manifest() {
 		contentType: 1,
 		
 		//自定义标签
-		tag: ["轻小说","小说"],
+		group: ["轻小说","小说"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,
@@ -60,7 +60,7 @@ const header = '@header->user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) A
 /**
  * 搜索
  * @params {string} key
- * @returns {[{title, summary, cover, url}]}
+ * @returns {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = ToolUtil.urlJoin(baseUrl,'/S6/@post->searchkey=' + encodeURI(key) + '&searchtype=all' + header);
@@ -75,7 +75,7 @@ function search(key) {
 			//概览
 			summary : document.selectFirst("div.book-dec > p").text(),
 			
-			//封面
+			//封面网址
 			cover : document.selectFirst("div.book-img > img").absUrl('src'),
 			
 			//网址
@@ -93,8 +93,8 @@ function search(key) {
 			//概览
 			summary: element.selectFirst('div > p').text(),
 			
-			//封面
-			cover: element.selectFirst('div > a > img').absUrl('src'),
+			//封面网址
+			coverUrl: element.selectFirst('div > a > img').absUrl('src'),
 			
 			//网址
 			url: element.selectFirst('.tit > a').absUrl('href')
@@ -104,8 +104,7 @@ function search(key) {
 }
 /**
  * 详情
- * @params {string} url
- * @returns {[{title, author, date, summary, cover, reverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
+ * @returns {[{title, author, date, summary, coverUrl, isReverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = httpRequest(url + header);
@@ -123,11 +122,11 @@ function detail(url) {
 		//概览
 		summary: document.selectFirst('div.book-dec > p').text(),
 
-		//封面
-		cover: document.selectFirst('div.book-img > img').absUrl('src'),
+		//封面网址
+		coverUrl: document.selectFirst('div.book-img > img').absUrl('src'),
 		
 		//目录是否倒序
-		reverseOrder: false,
+		isReverseOrder: false,
 		
 		//目录网址/非外链无需使用
 		catalogs: catalogs(document.selectFirst('div.book-info > div.btn-group > a.btn.read-btn').absUrl('href'))
@@ -173,7 +172,6 @@ function catalogs(url) {
 
 /**
  * 内容
- * @params {string} url
  * @returns {string} content
  */
 function content(url) {

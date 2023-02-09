@@ -8,7 +8,7 @@ function manifest() {
 		id: 1652586404,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230122,
+		minMyACG: 20230207,
 		
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -16,7 +16,7 @@ function manifest() {
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		invalid: false,
+		isInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "90漫画",
@@ -49,7 +49,7 @@ function manifest() {
 		contentType: 1,
 		
 		//自定义标签
-		tag: ["漫画"],
+		group: ["漫画"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,
@@ -61,7 +61,7 @@ const header = '';
 /**
  * 搜索
  * @params {string} key
- * @returns {[{title, summary, cover, url}]}
+ * @returns {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = ToolUtil.urlJoin(baseUrl,'/app/comic/search?sort=click&keywords=' + encodeURI(key) + header);
@@ -77,8 +77,8 @@ function search(key) {
 			//概览
 			summary: child.last_chapter_name,
 	
-			//封面
-			cover: ToolUtil.urlJoin('https://js.tingliu.cc/',child.cover),
+			//封面网址
+			coverUrl: ToolUtil.urlJoin('https://js.tingliu.cc/',child.cover),
 	
 			//网址
 			url: ToolUtil.urlJoin(baseUrl,'/app/comic/view?id=' + child.id)
@@ -88,8 +88,7 @@ function search(key) {
 }
 /**
  * 详情
- * @params {string} url
- * @returns {[{title, author, date, summary, cover, reverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
+ * @returns {[{title, author, date, summary, coverUrl, isReverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = httpRequest(url + header);
@@ -107,11 +106,11 @@ function detail(url) {
 		//概览
 		summary: $.data.description,
 
-		//封面
-		cover: ToolUtil.urlJoin('https://js.tingliu.cc/',$.data.cover),
+		//封面网址
+		coverUrl: ToolUtil.urlJoin('https://js.tingliu.cc/',$.data.cover),
 		
 		//目录是否倒序
-		reverseOrder: false,
+		isReverseOrder: false,
 		
 		//目录加载
 		catalogs: catalogs(response)
@@ -146,7 +145,6 @@ function catalogs(response) {
 
 /**
  * 内容
- * @params {string} url
  * @returns {string} content
  */
 function content(url) {

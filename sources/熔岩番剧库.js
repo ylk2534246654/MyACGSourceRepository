@@ -8,7 +8,7 @@ function manifest() {
 		id: 1660927525,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230122,
+		minMyACG: 20230207,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -16,7 +16,7 @@ function manifest() {
 		
 		//是否失效，默认关闭
 		//true: 无法添加，并且已安装的无法直接使用，用于解决失效源
-		invalid: false,
+		isInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "熔岩番剧库",
@@ -49,7 +49,7 @@ function manifest() {
 		contentType: 1,
 		
 		//自定义标签
-		tag: ["动漫"],
+		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: "https://anime-api.5t5.top",
@@ -58,24 +58,24 @@ function manifest() {
 		findList: {
 			"动漫": {
 				"2017年": {
-					"url":'https://anime-api.5t5.top/v2/index/query@post->{"year":"2017年","type":""}',
-					"function":"find"
+					"url": 'https://anime-api.5t5.top/v2/index/query@post->{"year":"2017年","type":""}',
+					"function": "find"
 				},
 				"2018年": {
-					"url":'https://anime-api.5t5.top/v2/index/query@post->{"year":"2018年","type":""}',
-					"function":"find"
+					"url": 'https://anime-api.5t5.top/v2/index/query@post->{"year":"2018年","type":""}',
+					"function": "find"
 				},
 				"2019年": {
-					"url":'https://anime-api.5t5.top/v2/index/query@post->{"year":"2019年","type":""}',
-					"function":"find"
+					"url": 'https://anime-api.5t5.top/v2/index/query@post->{"year":"2019年","type":""}',
+					"function": "find"
 				},
 				"2020年": {
-					"url":'https://anime-api.5t5.top/v2/index/query@post->{"year":"2020年","type":""}',
-					"function":"find"
+					"url": 'https://anime-api.5t5.top/v2/index/query@post->{"year":"2020年","type":""}',
+					"function": "find"
 				},
 				"2021年": {
-					"url":'https://anime-api.5t5.top/v2/index/query@post->{"year":"2021年","type":""}',
-					"function":"find"
+					"url": 'https://anime-api.5t5.top/v2/index/query@post->{"year":"2021年","type":""}',
+					"function": "find"
 				},
 				"2022年": {
 					"url":'https://anime-api.5t5.top/v2/index/query@post->{"year":"2022年","type":""}',
@@ -84,14 +84,14 @@ function manifest() {
 			}
 		},
 		
-		//登录授权是否启用
+		//是否启用登录授权
 		auth: true,
 		
 		//登录授权网址
 		authUrl:"https://lavani.me/auth/login",
 		
 		//需要授权的功能（search，detail，content，find）
-		authRequired: ["search","detail","content"],
+		authRequire: ["search","detail","content"],
 	});
 }
 /*
@@ -128,7 +128,7 @@ function getHeader() {
 /**
  * 搜索
  * @params {string} key
- * @returns {[{title, summary, cover, url}]}
+ * @returns {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = `https://anime-api.5t5.top/v2/search?value=${encodeURI(key)}` + getHeader();
@@ -143,8 +143,8 @@ function search(key) {
 			//概览
 			summary: child.index.type + '\n' + child.index.year,
 	
-			//封面
-			cover: child.images.large,
+			//封面网址
+			coverUrl: child.images.large,
 	
 			//网址
 			url: 'https://anime-api.5t5.top/v2/anime/file?id=' + child.id
@@ -155,7 +155,7 @@ function search(key) {
 /**
  * 发现
  * @params {string} url
- * @returns {[{title, summary, cover, url}]}
+ * @returns {[{title, summary, coverUrl, url}]}
  */
 function find(url) {
 	const response = httpRequest(url + getHeader() + '@header->content-type:application/json');
@@ -169,8 +169,8 @@ function find(url) {
 			//概览
 			summary: child.index.type + '\n' + child.index.year,
 	
-			//封面
-			cover: child.images.large,
+			//封面网址
+			coverUrl: child.images.large,
 	
 			//网址
 			url: 'https://anime-api.5t5.top/v2/anime/file?id=' + child.id
@@ -181,13 +181,12 @@ function find(url) {
 
 /**
  * 详情
- * @params {string} url
- * @returns {[{title, author, date, summary, cover, reverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
+ * @returns {[{title, author, date, summary, coverUrl, isReverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	return JSON.stringify({
 		//目录是否倒序
-		reverseOrder: false,
+		isReverseOrder: false,
 		
 		//目录加载
 		catalogs: catalogs(url)

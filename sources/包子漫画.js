@@ -8,7 +8,7 @@ function manifest() {
 		id: 1652949783,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230124,
+		minMyACG: 20230207,
 		
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -16,7 +16,7 @@ function manifest() {
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		invalid: false,
+		isInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "包子漫画",
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年1月28日",
+		updateTime: "2023年2月9日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -49,7 +49,7 @@ function manifest() {
 		contentType: 1,
 		
 		//自定义标签
-		tag: ["漫画"],
+		group: ["漫画"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,//https://cn.webmota.com/
@@ -61,7 +61,7 @@ const header = '';
 /**
  * 搜索
  * @params {string} key
- * @returns {[{title, summary, cover, url}]}
+ * @returns {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = ToolUtil.urlJoin(baseUrl,'/search?q='+ encodeURI(key) + header);
@@ -79,8 +79,8 @@ function search(key) {
 			//概览
 			summary: element.selectFirst('small.tags').text(),
 			
-			//封面
-			cover: element.selectFirst('a > amp-img').absUrl('src'),
+			//封面网址
+			coverUrl: element.selectFirst('a > amp-img').absUrl('src'),
 			
 			//网址
 			url: element.selectFirst('a.text-decoration-none').absUrl('href')
@@ -90,8 +90,7 @@ function search(key) {
 }
 /**
  * 详情
- * @params {string} url
- * @returns {[{title, author, date, summary, cover, reverseOrder, catalog:{[{tag, chapter:{[{name, url}]}}]}}]}
+ * @returns {[{title, author, date, summary, coverUrl, isReverseOrder, catalog:{[{tag, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = httpRequest(url+ header);
@@ -109,11 +108,11 @@ function detail(url) {
 		//概览
 		summary: document.selectFirst('div.l-content > div > div > div > p').text(),
 
-		//封面
-		cover: document.selectFirst('div.l-content > div > div > amp-img').absUrl('data-media'),
+		//封面网址
+		coverUrl: document.selectFirst('div.l-content > div > div > amp-img').absUrl('data-media'),
 		
 		//目录是否倒序
-		reverseOrder: false,
+		isReverseOrder: false,
 		
 		//目录加载
 		catalogs: catalogs(document)
@@ -167,7 +166,6 @@ function catalogs(document) {
 }
 /**
  * 内容
- * @params {string} url
  * @returns {string} content
  */
 function content(url) {
