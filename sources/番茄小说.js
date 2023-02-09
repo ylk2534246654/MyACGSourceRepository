@@ -168,7 +168,7 @@ function detail(book_id) {
 		isReverseOrder: false,
 		
 		//目录网址/非外链无需使用
-		catalogs: catalogs($.data.item_data_list)
+		catalogs: catalogs($.data)
 	});
 }
 
@@ -176,19 +176,34 @@ function detail(book_id) {
  * 目录
  * @returns {[{name, chapters:{[{name, url}]}}]}
  */
-function catalogs(item_data_list) {
-
+function catalogs(data) {
 	//创建章节数组
 	var newChapters= [];
 	
-	item_data_list.forEach((child) => {
-		newChapters.push({
-            //章节名称
-            name: child.title,
-            //章节网址
-            url: `https://novel.snssdk.com/api/novel/book/reader/full/v1/?group_id=${child.item_id}&item_id=${child.item_id}&aid=2022`
-        });
-	});
+	if(data.catalog_data != null){
+		var groupName;//分组名称
+		data.catalog_data.forEach((child) => {
+			if(child.parent_catalog_id == null){
+				groupName = child.catalog_title;
+			}else{
+				newChapters.push({
+					//章节名称
+					name: groupName + " " + child.catalog_title,
+					//章节网址
+					url: `https://novel.snssdk.com/api/novel/book/reader/full/v1/?group_id=${child.item_id}&item_id=${child.item_id}&aid=2022`
+				});
+			}
+		});
+	}else{
+		data.item_data_list.forEach((child) => {
+			newChapters.push({
+				//章节名称
+				name: child.title,
+				//章节网址
+				url: `https://novel.snssdk.com/api/novel/book/reader/full/v1/?group_id=${child.item_id}&item_id=${child.item_id}&aid=2022`
+			});
+		});
+	}
 	
 	return [{
 		//目录名称
