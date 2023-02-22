@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 8,
+		version: 9,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年2月9日",
+		updateTime: "2023年2月22日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -68,8 +68,8 @@ const baseUrl = "http://www.dm88.me";//和哆咪动漫类似
 const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36 iPhone';
 /*
  * 拦截并验证手动授权数据
- * @params {string} html	网页源码
- * @params {string} url		网址
+ * @param {string} html	网页源码
+ * @param {string} url		网址
  * @returns 是否授权
  */
 function authCallback(html,url) {
@@ -92,7 +92,7 @@ function authVerify() {
 
 /**
  * 搜索
- * @params {string} key
+ * @param {string} key
  * @returns {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
@@ -123,7 +123,7 @@ function search(key) {
 
 /**
  * 发现
- * @params string url
+ * @param string url
  * @returns {[{title, summary, coverUrl, url}]}
  */
 function find(url) {
@@ -219,18 +219,21 @@ function catalogs(document) {
 	}
 	return newCatalogs;
 }
+
 /**
  * 内容（部分动漫搜索源通用规则）
+ * @version 2023/2/22
+ * 布米米、嘻嘻动漫、12wo动漫、路漫漫、风车动漫P、樱花动漫P
  * @returns {string} content
  */
 function content(url) {
-	//浏览器请求结果处理，布米米，嘻嘻动漫，12wo动漫，路漫漫，风车动漫P，樱花动漫P，dmh8樱花动漫 相似
-	var re = /[a-z]+:\/\/[\w.]+\/([a-z]{1}\/\d|[a-z]{3}\/[a-z]{3}\/\d|[a-z]{2}\/\d{4}\?)/i;
+	var re = /[a-z]+:\/\/[\w.]+\/([a-z]{1}\/\d|[a-z]{3}\/[a-z]{3}\/\d|[a-z]{2}\/\d{4}\?|[\w]{3}\/\d{6}$)/i;
 	
 	//这种格式均为广告网址
-	//https://knr.xxxxx.cn/j/140000		#[a-z]{1}\/\d
+	//https://knr.xxxxx.cn/j/140000		#[a-z]{1}\/\d{6}
 	//https://xx.xxx.xx/xxx/xxx/0000	#[a-z]{3}\/[a-z]+\/\d
 	//https://tg.xxx.com/sc/0000?n=xxxx #[a-z]{2}\/\d{4}\?
+	//https://xx.xxx.xyz/vh1/158051 	#[\w]{3}\/\d{6}$
 	
 	if(!re.test(url)){
 		return url;

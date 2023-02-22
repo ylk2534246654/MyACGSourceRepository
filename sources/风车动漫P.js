@@ -68,7 +68,7 @@ const header = '';
 
 /**
  * 搜索
- * @params {string} key
+ * @param {string} key
  * @returns {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
@@ -99,7 +99,7 @@ function search(key) {
 
 /**
  * 发现
- * @params string url
+ * @param string url
  * @returns {[{title, summary, coverUrl, url}]}
  */
 function find(url) {
@@ -199,16 +199,18 @@ function catalogs(document) {
 
 /**
  * 内容（部分动漫搜索源通用规则）
+ * @version 2023/2/22
+ * 布米米、嘻嘻动漫、12wo动漫、路漫漫、风车动漫P、樱花动漫P
  * @returns {string} content
  */
 function content(url) {
-	//浏览器请求结果处理，布米米，嘻嘻动漫，12wo动漫，路漫漫，风车动漫P，樱花动漫P 相似
-	var re = /[a-z]+:\/\/[\w.]+\/([a-z]{1}\/\d|[a-z]{3}\/[a-z]{3}\/\d|[a-z]{2}\/\d{4}\?)/i;
+	var re = /[a-z]+:\/\/[\w.]+\/([a-z]{1}\/\d|[a-z]{3}\/[a-z]{3}\/\d|[a-z]{2}\/\d{4}\?|[\w]{3}\/\d{6}$)/i;
 	
 	//这种格式均为广告网址
-	//https://knr.xxxxx.cn/j/140000		#[a-z]{1}\/\d
+	//https://knr.xxxxx.cn/j/140000		#[a-z]{1}\/\d{6}
 	//https://xx.xxx.xx/xxx/xxx/0000	#[a-z]{3}\/[a-z]+\/\d
 	//https://tg.xxx.com/sc/0000?n=xxxx #[a-z]{2}\/\d{4}\?
+	//https://xx.xxx.xyz/vh1/158051 	#[\w]{3}\/\d{6}$
 	
 	if(!re.test(url)){
 		return url;

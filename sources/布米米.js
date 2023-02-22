@@ -1,7 +1,7 @@
 function manifest() {
 	return JSON.stringify({
 		//MyACG 最新版本
-		MyACG: 'https://lanzou.com/b07xqlbxc ',
+		MyACG: 'https://pan.baidu.com/s/1kVkWknH',
 		
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
@@ -16,7 +16,7 @@ function manifest() {
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		invalid: false,
+		isInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "布米米",
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2022年6月11日",
+		updateTime: "2023年2月22日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -49,10 +49,10 @@ function manifest() {
 		contentType: 2,
 		
 		//自定义标签
-		tag: ["动漫","影视"],
+		group: ["动漫","影视"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "http://bumimi.top",//备用http://bumimi.vip/
+		baseUrl: "http://bumimi3.com",//备用http://bumimi.vip/
 	});
 }
 const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
@@ -161,17 +161,18 @@ function catalog(response,url) {
 
 /**
  * 内容（部分动漫搜索源通用规则）
- * @params {string} url
+ * @version 2023/2/22
+ * 布米米、嘻嘻动漫、12wo动漫、路漫漫、风车动漫P、樱花动漫P
  * @returns {string} content
  */
 function content(url) {
-	//浏览器请求结果处理，布米米，嘻嘻动漫，12wo动漫，路漫漫，风车动漫P，樱花动漫P 相似
-	var re = /[a-z]+:\/\/[\w.]+\/([a-z]{1}\/\d|[a-z]{3}\/[a-z]{3}\/\d|[a-z]{2}\/\d{4}\?)/i;
+	var re = /[a-z]+:\/\/[\w.]+\/([a-z]{1}\/\d|[a-z]{3}\/[a-z]{3}\/\d|[a-z]{2}\/\d{4}\?|[\w]{3}\/\d{6}$)/i;
 	
 	//这种格式均为广告网址
-	//https://knr.xxxxx.cn/j/140000		#[a-z]{1}\/\d
+	//https://knr.xxxxx.cn/j/140000		#[a-z]{1}\/\d{6}
 	//https://xx.xxx.xx/xxx/xxx/0000	#[a-z]{3}\/[a-z]+\/\d
 	//https://tg.xxx.com/sc/0000?n=xxxx #[a-z]{2}\/\d{4}\?
+	//https://xx.xxx.xyz/vh1/158051 	#[\w]{3}\/\d{6}$
 	
 	if(!re.test(url)){
 		return url;
