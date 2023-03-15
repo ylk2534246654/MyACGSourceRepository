@@ -14,9 +14,9 @@ function manifest() {
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
 		priority: 70,
 		
-		//是否失效，默认关闭
+		//是否启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isInvalid: false,
+		isEnabledInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "OmoFun动漫",
@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 3,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年2月9日",
+		updateTime: "2023年3月15日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -49,7 +49,7 @@ function manifest() {
 		contentType: 1,
 		
 		//自定义标签
-		group: ["动漫"],
+		groupName: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: "https://www.omofun.tv",
@@ -59,78 +59,82 @@ const header = '';
 
 /**
  * 搜索
- * @params {string} key
+ * @param {string} key
  * @returns {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = `http://103.91.210.141:2515/xgapp.php/v2/search?pg=1&text=${encodeURI(key)}&token=&csrf=gqcMwzohO0l%2FcuKwQUeYY6TeY8l3M6D0SQwfwzNJTpvfNP2X30FiGs8um0tslhdkVxPTwLLXCGBkTA1ONXAXr6Ajx2fWb7fwHQdNnipq143De%2Brq%2FBAOrJ0Uqb9anV14kUbsbRr8P6ZKLG%2BANj%2BYZEyH%2Flu6a%2FAD4iekfTf9SA8%3D` + header;
-	const response = httpRequest(url);
-	var array = []
-	const $ = JSON.parse(response);
-	$.data.forEach((child) => {
-		array.push({
-			//标题
-			title: child.vod_name,
-			
-			//概览
-			summary: child.vod_class,
-			
-			//封面网址
-			coverUrl: child.vod_pic,
-			
-			//网址
-			url: child.vod_id,
+	const response = HttpRequest(url + header);
+	var result = [];
+	if(response.code() == 200){
+		const $ = JSON.parse(response.html());
+		$.data.forEach((child) => {
+			result.push({
+				//标题
+				title: child.vod_name,
+				
+				//概览
+				summary: child.vod_class,
+				
+				//封面网址
+				coverUrl: child.vod_pic,
+				
+				//网址
+				url: child.vod_id,
+			})
 		})
-	})
-	return JSON.stringify(array)
+	}
+	return JSON.stringify(result)
 }
 
 /**
  * 详情
- * @returns {[{title, author, date, summary, coverUrl, isReverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
+ * @returns {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(id) {
-	const response = httpRequest(`http://103.91.210.141:2515/xgapp.php/v2/video_detail?id=${id}&ck=PmJag8SWhbuByo%2FjYOpOO44qrkaqIKk1Gv4qgT2q47g3X5yfdyUcBmcpQLhBiPmS%2B1uCpYypSeedNYTJjbyESEbIfTaSadOG9keaxpB%2BVmJSOs9Mnt65Xo6QIX4%2Fjtpu2ilHN8%2B1VcVdOHZtVZWYd5bNZg1FrhcsqR7geK9%2BfYkPEjFutBbu2gBmgYJtFsYYN%2FOlMNsEZq8nuZUsx%2Bts9fT%2FzFuQHHBypst5UmcfaJ5PpV0caKgWB2Gcok5NSNe%2B5%2BfZcDe05BwqUG1V6OHTz1iq9IL6zqbY1Y7ukAhdO%2FYYEzXnygWqheM52HU1zABjNDux3K1HpxI9IXvNI3ga4DIGf2EzEQUTcLehdSJQ1IwKK8ZOyqfON9r%2F2S4ZIwI9xGLVs7a9BRKv99Qlf6KxSmqMy%2F4qUEOjoqesuSHcQVga%2F4xq1hNm3B18rf8aVM1g6H7Nu0X1uXSKvCtGeQf5Tdg3omZfwK9BYlx4p0JMkzxapMYZiTOcqLkNdTW3LkSbfQEbgd7QDh9DmFBWceA40XwZgJuIIs1ZvD9DyYurHUVzfrgtP45dFkZ0W4vuWqeDgV30C6kvacoE4SQOYpvITE7UUdgTWRXW6xcZDJRB50QicehcAfYACRDJt32arqSGSiNoNT3MU7il3B%2B%2BbZUNMHe6WQfGDVJvJn1x2JIGVVdabCM1DCpK8nJuwqu6N7ycMN2%2B7QuJ%2FGrU5kze6DmQMid%2FH0JudcYhel3AgNAte81amrO559TvaK%2B5xaxns7XqHcAL4e3cLLX2lbh7uqwZoyNUgCXs2bX9BgPoOnNHJmDrxf4pbw57c6kKmhgEcKu4fYWldh9flAvJB3zztfcQUA%3D%3D&pkid=tv.omofun.app&token=&csrf=o13Tgl%2B3XOGfJjcTsCYGUhvnobNCR0v7njbsw2IooR%2FoArjKrCyogNFpYO9wNtn%2FNgFXBQL2DGFd3zDR7ekTMY%2B0QHU7QR%2Fyl6c%2Boa7A6l7op%2Fn6gtg0jzO7%2FSDDSAvuv56Sg8Y2wo%2FPxDf012ABHeVt8V1%2F3sRtzPvVTUg5t2M%3D`+ header);
-	const $ = JSON.parse(response)
+	const response = HttpRequest(`http://103.91.210.141:2515/xgapp.php/v2/video_detail?id=${id}&ck=PmJag8SWhbuByo%2FjYOpOO44qrkaqIKk1Gv4qgT2q47g3X5yfdyUcBmcpQLhBiPmS%2B1uCpYypSeedNYTJjbyESEbIfTaSadOG9keaxpB%2BVmJSOs9Mnt65Xo6QIX4%2Fjtpu2ilHN8%2B1VcVdOHZtVZWYd5bNZg1FrhcsqR7geK9%2BfYkPEjFutBbu2gBmgYJtFsYYN%2FOlMNsEZq8nuZUsx%2Bts9fT%2FzFuQHHBypst5UmcfaJ5PpV0caKgWB2Gcok5NSNe%2B5%2BfZcDe05BwqUG1V6OHTz1iq9IL6zqbY1Y7ukAhdO%2FYYEzXnygWqheM52HU1zABjNDux3K1HpxI9IXvNI3ga4DIGf2EzEQUTcLehdSJQ1IwKK8ZOyqfON9r%2F2S4ZIwI9xGLVs7a9BRKv99Qlf6KxSmqMy%2F4qUEOjoqesuSHcQVga%2F4xq1hNm3B18rf8aVM1g6H7Nu0X1uXSKvCtGeQf5Tdg3omZfwK9BYlx4p0JMkzxapMYZiTOcqLkNdTW3LkSbfQEbgd7QDh9DmFBWceA40XwZgJuIIs1ZvD9DyYurHUVzfrgtP45dFkZ0W4vuWqeDgV30C6kvacoE4SQOYpvITE7UUdgTWRXW6xcZDJRB50QicehcAfYACRDJt32arqSGSiNoNT3MU7il3B%2B%2BbZUNMHe6WQfGDVJvJn1x2JIGVVdabCM1DCpK8nJuwqu6N7ycMN2%2B7QuJ%2FGrU5kze6DmQMid%2FH0JudcYhel3AgNAte81amrO559TvaK%2B5xaxns7XqHcAL4e3cLLX2lbh7uqwZoyNUgCXs2bX9BgPoOnNHJmDrxf4pbw57c6kKmhgEcKu4fYWldh9flAvJB3zztfcQUA%3D%3D&pkid=tv.omofun.app&token=&csrf=o13Tgl%2B3XOGfJjcTsCYGUhvnobNCR0v7njbsw2IooR%2FoArjKrCyogNFpYO9wNtn%2FNgFXBQL2DGFd3zDR7ekTMY%2B0QHU7QR%2Fyl6c%2Boa7A6l7op%2Fn6gtg0jzO7%2FSDDSAvuv56Sg8Y2wo%2FPxDf012ABHeVt8V1%2F3sRtzPvVTUg5t2M%3D`+ header);
+	if(response.code() == 200){
+		const $ = JSON.parse(response.html())
+		return JSON.stringify({
+			//标题
+			title : $.data.vod_info.vod_name,
+			
+			//作者
+			//author: $.data.author,
+			
+			//日期
+			update : $.data.vod_info.vod_time_add,
+			
+			//概览
+			summary: $.data.vod_info.vod_content,
 	
-	return JSON.stringify({
-		//标题
-		title : $.data.vod_info.vod_name,
-		
-		//作者
-		//author: $.data.author,
-		
-		//日期
-		date : $.data.vod_info.vod_time_add,
-		
-		//概览
-		summary: $.data.vod_info.vod_content,
-
-		//封面网址
-		cover : $.data.vod_info.vod_pic,
-		
-		//目录是否倒序
-		isReverseOrder: false,
-		
-		//目录网址/非外链无需使用
-		catalogs: catalogs($.data.vod_info.vod_url_with_player)
-	})
+			//封面网址
+			cover : $.data.vod_info.vod_pic,
+			
+			//目录是否倒序
+			isEnabledChapterReverseOrder: false,
+			
+			//目录网址/非外链无需使用
+			tocs: tocs($.data.vod_info.vod_url_with_player)
+		})
+	}
+	return null;
 }
 
 /**
  * 目录
  * @returns {[{name, chapters:{[{name, url}]}}]}
  */
-function catalogs(catalogs) {
+function tocs(tocs) {
 	//创建目录数组
-	var newCatalogs= [];
+	var newTocs= [];
 	
-	catalogs.forEach(catalog => {
+	tocs.forEach(toc => {
 		//创建章节数组
 		var newChapters= [];
 		
 		//章节代码
-		var chapters = catalog.url.split('#');
+		var chapters = toc.url.split('#');
 		for(var i = 0;i < chapters.length;i++){
 			var chapter = chapters[i].split('$');
 			newChapters.push({
@@ -142,14 +146,28 @@ function catalogs(catalogs) {
 		}
 		
 		//添加目录
-		newCatalogs.push({
+		newTocs.push({
 			//目录名称
-			name: catalog.name,
+			name: toc.name,
 			//章节
 			chapters : newChapters
 		});
-    })
-	return newCatalogs;
+    });
+	if(newTocs.length > 0){
+		return newTocs;
+	}else{
+		return [
+			{
+				name: "目录",
+				chapters: [
+					{
+						name: "无数据",
+						url: "http://0.0.0.0"
+					}
+				]
+			}
+		]
+	}
 }
 
 /**
@@ -157,8 +175,11 @@ function catalogs(catalogs) {
  * @returns {string} content
  */
 function content(url) {
-	const response = httpRequest(url + header);
-	const $ = JSON.parse(response)
-	//浏览器请求结果处理
-	return $.url;
+	const response = HttpRequest(url + header);
+	if(response.code() == 200){
+		const $ = JSON.parse(response.html())
+		//浏览器请求结果处理
+		return $.url;
+	}
+	return null;
 }
