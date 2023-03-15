@@ -8,15 +8,15 @@ function manifest() {
 		id: 1651504696,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230207,
+		minMyACG: 20230315,
 		
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
 		priority: 1,
 		
-		//是否失效，默认关闭
+		//是否启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isInvalid: false,
+		isEnabledInvalid: true,
 		
 		//@NonNull 搜索源名称
 		name: "39漫画",
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年1月21日",
+		updateTime: "2023年3月15日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -49,7 +49,7 @@ function manifest() {
 		contentType: 1,
 		
 		//自定义标签
-		group: ["漫画"],
+		groupName: ["漫画"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,
@@ -68,7 +68,7 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
 
 /**
  * 搜索
- * @params {string} key
+ * @param {string} key
  * @returns {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
@@ -98,7 +98,7 @@ function search(key) {
 }
 /**
  * 发现
- * @params {string} url
+ * @param {string} url
  * @returns {[{title, summary, coverUrl, url}]}
  */
 function find(url) {

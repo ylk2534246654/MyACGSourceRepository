@@ -16,7 +16,7 @@ function manifest() {
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isInvalid: false,
+		isInvalid: true,
 		
 		//@NonNull 搜索源名称
 		name: "360漫画",
@@ -68,7 +68,7 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
 
 /**
  * 搜索
- * @params {string} key
+ * @param {string} key
  * @returns {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
@@ -98,7 +98,7 @@ function search(key) {
 }
 /**
  * 发现
- * @params {string} url
+ * @param {string} url
  * @returns {[{title, summary, coverUrl, url}]}
  */
 function find(url) {

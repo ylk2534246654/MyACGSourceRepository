@@ -16,7 +16,7 @@ function manifest() {
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isInvalid: false,
+		isInvalid: true,
 		
 		//@NonNull 搜索源名称
 		name: "168漫画",
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年1月21日",
+		updateTime: "2023年2月9日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -69,7 +69,7 @@ const header = '';
 
 /**
  * 搜索
- * @params {string} key
+ * @param {string} key
  * @returns {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
@@ -100,7 +100,7 @@ function search(key) {
 
 /**
  * 发现
- * @params {string} url
+ * @param {string} url
  * @returns {[{title, summary, coverUrl, url}]}
  */
 function find(url) {

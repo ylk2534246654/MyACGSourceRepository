@@ -16,7 +16,7 @@ function manifest() {
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isInvalid: false,
+		isInvalid: true,
 		
 		//@NonNull 搜索源名称
 		name: "147漫画",
@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 10,
+		version: 11,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年1月21日",
+		updateTime: "2023年2月9日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -56,19 +56,19 @@ function manifest() {
 		
 		//发现
 		findList: {
-			"完结": "https://m.i2356.com/list/wanjie/",
-			"都市": "https://m.i2356.com/list/dushi/",
-			"后宫": "https://m.i2356.com/list/hougong/",
-			"穿越": "https://m.i2356.com/list/chuanyue/"
+			"完结": "/list/wanjie/",
+			"都市": "/list/dushi/",
+			"后宫": "/list/hougong/",
+			"穿越": "/list/chuanyue/"
 		},
 	});
 }
-const baseUrl = "https://m.i2356.com";
+const baseUrl = "https://m.xmh124.com";//https://m.i2356.com
 const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
 
 /**
  * 搜索
- * @params {string} key
+ * @param {string} key
  * @returns {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
@@ -98,11 +98,12 @@ function search(key) {
 }
 /**
  * 发现
- * @params {string} url
+ * @param {string} url
  * @returns {[{title, summary, coverUrl, url}]}
  */
 function find(url) {
-	const response = httpRequest(url + header);
+	var url = ToolUtil.urlJoin(baseUrl, url + header);
+	const response = httpRequest(url);
 	
 	var result= [];
     var document = org.jsoup.Jsoup.parse(response,url);
