@@ -105,7 +105,7 @@ function search(key) {
 }
 /**
  * 详情
- * @returns {[{title, author, date, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @returns {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = HttpRequest(url + header);
@@ -145,7 +145,7 @@ function tocs(document) {
 	const tagElements = document.select('div.fed-tabs-info > div > div > div > ul > li');
 	
 	//目录元素选择器
-	const tocElements= document.select('div.fed-tabs-item > div > div > div > ul');
+	const tocElements = document.select('div.fed-tabs-item > div > div > div > ul');
 	
 	//创建目录数组
 	var newTocs = [];

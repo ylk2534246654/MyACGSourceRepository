@@ -8,7 +8,7 @@ function manifest() {
 		id: 1675333474,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230207,
+		minMyACG: 20230315,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -16,7 +16,7 @@ function manifest() {
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isInvalid: false,
+		isEnabledInvalid: true,
 		
 		//@NonNull 搜索源名称
 		name: "Jú漫",
@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年2月9日",
+		updateTime: "2023年3月15日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -49,7 +49,7 @@ function manifest() {
 		contentType: 1,
 		
 		//自定义分组
-		group: ["动漫"],
+		groupName: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: "https://api.jdm66.com",
@@ -59,99 +59,103 @@ const header = '@header->osVersion:7.1.2@header->Content-Type:application/json; 
 
 /**
  * 搜索
- * @params {string} key
+ * @param {string} key
  * @returns {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
     var timestamp = parseInt(Date.now()/1000);
     var sign = md5(`keyWord=${key}&next=0&size=20&timestamp=${timestamp}YUYIN_2021`);
 
-	var url = `https://api.jdm66.com/search/list/android/1.0@post->{"size": 20,"next": "0","timestamp": "${timestamp}","keyWord": "${key}"}` + header + `@header->sign:${sign}`;
-	const response = httpRequest(url);
-	var array = []
-	const $ = JSON.parse(response);
-	$.data.videoList.forEach((child) => {
-		array.push({
-			//标题
-			title: child.name,
-			
-			//概览
-			summary: child.mark,
-			
-			//封面网址
-			coverUrl: child.cover,
-			
-			//网址
-			url: child.videoId,
-		})
-	})
-	return JSON.stringify(array)
+    var url = `https://api.jdm66.com/search/list/android/1.0@post->{"size": 20,"next": "0","timestamp": "${timestamp}","keyWord": "${key}"}` + header + `@header->sign:${sign}`;
+    const response = HttpRequest(url);
+    var result = [];
+    if(response.code() == 200){
+      const $ = JSON.parse(response.html());
+      $.data.videoList.forEach((child) => {
+        result.push({
+          //标题
+          title: child.name,
+          
+          //概览
+          summary: child.mark,
+          
+          //封面网址
+          coverUrl: child.cover,
+          
+          //网址
+          url: child.videoId,
+        })
+      })
+    }
+    return JSON.stringify(result)
 }
 
 /**
  * 详情
- * @returns {[{title, author, date, summary, coverUrl, isReverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
+ * @returns {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(id) {
     var timestamp = parseInt(Date.now()/1000);
     var sign = md5(`timestamp=${timestamp}&videoId=${id}YUYIN_2021`);
 
-	const response = httpRequest(`https://api.jdm66.com/video/detail/android/1.0@post->{"videoId":"${id}","timestamp":"${timestamp}"}` + header + `@header->sign:${sign}`);
-	const $ = JSON.parse(response)
-	
-	return JSON.stringify({
-		//标题
-		title : $.data.name,
-		
-		//作者
-		//author: $.data.,
-		
-		//日期
-		//date : $.data.,
-		
-		//概览
-		summary: $.data.describe,
+    const response = HttpRequest(`https://api.jdm66.com/video/detail/android/1.0@post->{"videoId":"${id}","timestamp":"${timestamp}"}` + header + `@header->sign:${sign}`);
+    if(response.code() == 200){
+      const $ = JSON.parse(response.html())
+      return JSON.stringify({
+        //标题
+        title : $.data.name,
+        
+        //作者
+        //author: $.data.,
+        
+        //日期
+        //update : $.data.,
+        
+        //概览
+        summary: $.data.describe,
 
-		//封面网址
-		coverUrl: $.data.cover,
-		
-		//目录是否倒序
-		isReverseOrder: false,
-		
-		//目录网址/非外链无需使用
-		catalogs: catalogs(id,$.data.videoAnthology)
-	})
+        //封面网址
+        coverUrl: $.data.cover,
+        
+        //目录是否倒序
+        isEnabledChapterReverseOrder: false,
+        
+        //目录网址/非外链无需使用
+        tocs: tocs(id, $.data.videoAnthology)
+      });
+    }
+    return null;
 }
 
 /**
  * 目录
  * @returns {[{name, chapters:{[{name, url}]}}]}
  */
-function catalogs(videoId,catalogs) {
-	//创建目录数组
-	var newCatalogs= [];
-	
-	//创建章节数组
-	var newChapters= [];
-	catalogs.forEach(catalog => {
-		newChapters.push({
-            //章节名称
-            name: catalog.title,
-            //章节网址
-            url: JSON.stringify({
-                "position": catalog.position,
-                "videoId": videoId
-            })
-        })
-    })
-    //添加目录
-    newCatalogs.push({
-        //目录名称
-        name: '目录',
-        //章节
-        chapters : newChapters
-    });
-	return newCatalogs;
+function tocs(videoId, tocs) {
+    //创建目录数组
+    var newTocs= [];
+    
+    //创建章节数组
+    var newChapters= [];
+    tocs.forEach(toc => {
+      newChapters.push({
+              //章节名称
+              name: toc.title,
+              //章节网址
+              url: JSON.stringify({
+                  "position": toc.position,
+                  "videoId": videoId
+              })
+          })
+      })
+      //添加目录
+      newTocs.push({
+          //目录名称
+          name: '目录',
+          //章节
+          chapters : newChapters
+      });
+    return newTocs;
 }
 
 /**
@@ -166,10 +170,14 @@ function content(json) {
     var sign = md5(`anthology=${anthology}&timestamp=${timestamp}&videoId=${videoId}YUYIN_2021`);
     var url = `https://api.jdm66.com/video/detail/sign/android/1.0@post->{"videoId":"${videoId}","timestamp":"${timestamp}","anthology":"${anthology}"}` + header + `@header->sign:${sign}`
 
-	const response = httpRequest(url);
-	const $ = JSON.parse(response)
-	//浏览器请求结果处理
-	return $.data.url;
+    const response = HttpRequest(url);
+    Log('html:' + response.html());
+    if(response.code() == 200){
+      const $ = JSON.parse(response.html())
+      //浏览器请求结果处理
+      return $.data.url;
+    }
+    return null;
 }
 
 //https://blueimp.github.io/JavaScript-MD5/js/md5.js

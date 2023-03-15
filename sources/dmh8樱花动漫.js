@@ -164,7 +164,7 @@ function find(url) {
 }
 /**
  * 详情
- * @returns {[{title, author, date, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @returns {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = HttpRequest(url + header);

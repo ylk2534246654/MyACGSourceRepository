@@ -8,7 +8,7 @@ function manifest() {
 		id: 1654703176,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230207,
+		minMyACG: 20230315,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -116,7 +116,7 @@ function detail(id) {
 			
 			//目录网址/非外链无需使用
 			tocs: tocs($.data.vod_info.vod_url_with_player)
-		})
+		});
 	}
 	return null;
 }
