@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年2月9日",
+		updateTime: "2023年3月15日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -72,7 +72,7 @@ const header = '';
  * @returns {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = ToolUtil.urlJoin(baseUrl,'/s_all?ex=1&kw='+ encodeURI(key) + header);
+	var url = ToolUtils.urlJoin(baseUrl,'/s_all?ex=1&kw='+ encodeURI(key) + header);
 	const response = HttpRequest(url + header);
 	var result= [];
 	if(response.code() == 200){
