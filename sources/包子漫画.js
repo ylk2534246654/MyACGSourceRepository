@@ -14,9 +14,9 @@ function manifest() {
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
 		priority: 10,//加载速度慢
 		
-		//是否失效，默认关闭
+		//是否启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isInvalid: false,
+		isEnabledInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "包子漫画",
@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 6,
+		version: 7,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年2月9日",
+		updateTime: "2023年3月15日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -49,7 +49,7 @@ function manifest() {
 		contentType: 1,
 		
 		//自定义标签
-		group: ["漫画"],
+		groupName: ["漫画"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,//https://cn.webmota.com/
@@ -60,72 +60,76 @@ const header = '';
 
 /**
  * 搜索
- * @params {string} key
+ * @param {string} key
  * @returns {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = ToolUtil.urlJoin(baseUrl,'/search?q='+ encodeURI(key) + header);
-	const response = httpRequest(url);
-	
-	var result = [];
-    var document = org.jsoup.Jsoup.parse(response,url);
-	var elements = document.select("div.search > div.pure-g > div");
-	for (var i = 0;i < elements.size();i++) {
-	    var element = elements.get(i);
-		result.push({
-			//标题
-			title: element.selectFirst('div.comics-card__title').text(),
-			
-			//概览
-			summary: element.selectFirst('small.tags').text(),
-			
-			//封面网址
-			coverUrl: element.selectFirst('a > amp-img').absUrl('src'),
-			
-			//网址
-			url: element.selectFirst('a.text-decoration-none').absUrl('href')
-		});
+	var url = ToolUtils.urlJoin(baseUrl,'/search?q='+ encodeURI(key) + header);
+	const response = HttpRequest(url);
+	var result= [];
+	if(response.code() == 200){
+		var document = response.document();
+		var elements = document.select("div.search > div.pure-g > div");
+		for (var i = 0;i < elements.size();i++) {
+			var element = elements.get(i);
+			result.push({
+				//标题
+				title: element.selectFirst('div.comics-card__title').text(),
+				
+				//概览
+				summary: element.selectFirst('small.tags').text(),
+				
+				//封面网址
+				coverUrl: element.selectFirst('a > amp-img').absUrl('src'),
+				
+				//网址
+				url: element.selectFirst('a.text-decoration-none').absUrl('href')
+			});
+		}
 	}
 	return JSON.stringify(result);
 }
 /**
  * 详情
- * @returns {[{title, author, date, summary, coverUrl, isReverseOrder, catalog:{[{tag, chapter:{[{name, url}]}}]}}]}
+ * @returns {[{title, author, date, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
-	const response = httpRequest(url+ header);
-    var document = org.jsoup.Jsoup.parse(response,url);
-	return JSON.stringify({
-		//标题
-		title: document.selectFirst('h1.comics-detail__title').text(),
-		
-		//作者
-		author: document.selectFirst('h2.comics-detail__author').text(),
-		
-		//日期
-		//date: document.selectFirst('').text(),
-		
-		//概览
-		summary: document.selectFirst('div.l-content > div > div > div > p').text(),
-
-		//封面网址
-		coverUrl: document.selectFirst('div.l-content > div > div > amp-img').absUrl('data-media'),
-		
-		//目录是否倒序
-		isReverseOrder: false,
-		
-		//目录加载
-		catalogs: catalogs(document)
-	});
+	const response = HttpRequest(url + header);
+	if(response.code() == 200){
+		var document = response.document();
+		return JSON.stringify({
+			//标题
+			title: document.selectFirst('h1.comics-detail__title').text(),
+			
+			//作者
+			author: document.selectFirst('h2.comics-detail__author').text(),
+			
+			//更新时间
+			//update: document.selectFirst('').text(),
+			
+			//概览
+			summary: document.selectFirst('div.l-content > div > div > div > p').text(),
+	
+			//封面网址
+			coverUrl: document.selectFirst('div.l-content > div > div > amp-img').absUrl('data-media'),
+			
+			//章节是否倒序
+			isEnabledChapterReverseOrder: false,
+			
+			//目录加载
+			tocs: tocs(document)
+		});
+	}
+	return null;
 }
 
 /**
  * 目录
  * @returns {[{name, chapters:{[{name, url}]}}]}
  */
-function catalogs(document) {
+function tocs(document) {
 	//创建章节数组
-	var newChapters= [];
+	var newTocs= [];
 	
 	//章节元素选择器
 	var chapterElements = document.select('#chapter-items > div,#chapters_other_list > div');
@@ -135,25 +139,25 @@ function catalogs(document) {
 		
 		var aElement = chapterElement.selectFirst('a');
 		var href = aElement.absUrl('href');
-		newChapters.push({
+		newTocs.push({
 			//章节名称
 			name: aElement.text(),
 			//章节网址
-			url: 'https://cn.webmota.com/comic/chapter/' + ToolUtil.substring(href,'comic_id=','&') + '/0_' + ToolUtil.substring(href + '&','chapter_slot=','&') + '_${p}.html@zero->1@start->1'
+			url: 'https://cn.webmota.com/comic/chapter/' + ToolUtils.substring(href,'comic_id=','&') + '/0_' + ToolUtils.substring(href + '&','chapter_slot=','&') + '_${p}.html@zero->1@start->1'
 		});
 	}
-	if(newChapters.length < 1){//最新章节
+	if(newTocs.length < 1){//最新章节
 		chapterElements = document.select('.comics-chapters');
 		for (var i2 = 0;i2 < chapterElements.size();i2++) {
 			var chapterElement = chapterElements.get(i2);
 			
 			var aElement = chapterElement.selectFirst('a');
 			var href = aElement.absUrl('href');
-			newChapters.push({
+			newTocs.push({
 				//章节名称
 				name: aElement.text(),
 				//章节网址
-				url: 'https://cn.webmota.com/comic/chapter/' + ToolUtil.substring(href,'comic_id=','&') + '/0_' + ToolUtil.substring(href + '&','chapter_slot=','&') + '_${p}.html@zero->1@start->1'
+				url: 'https://cn.webmota.com/comic/chapter/' + ToolUtils.substring(href,'comic_id=','&') + '/0_' + ToolUtils.substring(href + '&','chapter_slot=','&') + '_${p}.html@zero->1@start->1'
 			});
 		}
 	}
@@ -161,7 +165,7 @@ function catalogs(document) {
 		//目录名称
 		name: "目录",
 		//章节
-		chapters: newChapters
+		chapters: newTocs
 	}];
 }
 /**
@@ -169,19 +173,22 @@ function catalogs(document) {
  * @returns {string} content
  */
 function content(url) {
-	const response = httpRequest(url + header);
-	//创建漫画数组
-	var result= [];
-	//漫画列表代码
-    var document = org.jsoup.Jsoup.parse(response,url);
-	var contentElements = document.select('[[src]],.comic-contain__item');
-	for (var i2 = 0;i2 < contentElements.size();i2++) {
-		var contentElement = contentElements.get(i2);
+	const response = HttpRequest(url + header);
+	if(response.code() == 200){
+		//创建漫画数组
+		var result= [];
+		//漫画列表代码
+		var document = response.document();
+		var contentElements = document.select('[[src]],.comic-contain__item');
+		for (var i2 = 0;i2 < contentElements.size();i2++) {
+			var contentElement = contentElements.get(i2);
 
-		var srcElement = contentElement.selectFirst('[src]');
-		if(srcElement != null){
-			result.push(srcElement.absUrl('src'));
+			var srcElement = contentElement.selectFirst('[src]');
+			if(srcElement != null){
+				result.push(srcElement.absUrl('src'));
+			}
 		}
+		return JSON.stringify(result);
 	}
-	return JSON.stringify(result);
+	return null;
 }
