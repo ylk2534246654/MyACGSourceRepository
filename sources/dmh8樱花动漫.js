@@ -111,7 +111,6 @@ function search(key) {
 	if(response.code() == 200){
 		var document = response.document();
 		var elements = document.select("#searchList > li");
-		Log('elements -> ' + elements.size());
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			result.push({
@@ -186,7 +185,7 @@ function detail(url) {
 			//封面网址
 			coverUrl: document.selectFirst('div.myui-content__thumb > a > img').absUrl('data-original'),
 			
-			//章节是否倒序
+			//是否启用将章节置为倒序
 			isEnabledChapterReverseOrder: false,
 			
 			//目录加载

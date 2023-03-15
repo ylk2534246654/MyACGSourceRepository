@@ -111,7 +111,7 @@ function detail(url) {
 			//封面网址
 			coverUrl: ToolUtils.urlJoin('https://js.tingliu.cc/',$.data.cover),
 			
-			//目录是否倒序
+			//是否启用将章节置为倒序
 			isEnabledChapterReverseOrder: false,
 			
 			//目录加载

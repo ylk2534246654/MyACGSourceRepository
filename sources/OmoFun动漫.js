@@ -111,7 +111,7 @@ function detail(id) {
 			//封面网址
 			cover : $.data.vod_info.vod_pic,
 			
-			//目录是否倒序
+			//是否启用将章节置为倒序
 			isEnabledChapterReverseOrder: false,
 			
 			//目录网址/非外链无需使用

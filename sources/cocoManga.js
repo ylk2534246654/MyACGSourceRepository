@@ -83,7 +83,6 @@ function search(key) {
 	if(response.code() == 200){
 		var document = response.document();
 		var elements = document.select("div.fed-part-layout > dl");
-		Log('elements -> ' + elements.size());
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			result.push({
@@ -127,7 +126,11 @@ function detail(url) {
 			//封面网址
 			coverUrl: document.selectFirst('a.fed-list-pics:nth-last-child(1)').absUrl('data-original') + '@header->Referer:' + baseUrl,
 			
-			//章节是否倒序
+			//此处在 MyACG_V1.4.3 搞错了，原定使用 isEnabledChapterReverseOrder，
+			//目前暂时使用 isEnabledReverseOrder 进行代替，如果要兼容 MyACG_V1.4.3 建议把两个都加上
+			//是否启用将章节置为倒序
+			isEnabledReverseOrder: true,
+			//是否启用将章节置为倒序
 			isEnabledChapterReverseOrder: true,
 			
 			//目录加载
