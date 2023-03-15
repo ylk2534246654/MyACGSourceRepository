@@ -164,7 +164,7 @@ function find(url) {
 }
 /**
  * 详情
- * @returns {[{title, author, date, summary, coverUrl, isReverseOrder, catalog:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @returns {[{title, author, date, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = HttpRequest(url + header);
@@ -177,8 +177,8 @@ function detail(url) {
 			//作者
 			//author: ,
 			
-			//日期
-			date: document.selectFirst('p.data > a:nth-child(8)').text(),
+			//更新时间
+			update: document.selectFirst('p.data > a:nth-child(8)').text(),
 			
 			//概览
 			summary: document.selectFirst('div.content').text(),
@@ -251,7 +251,7 @@ function content(url) {
 	//https://xx.xxx.xyz/vh1/158051 	#[\w]{3}\/\d{6}$
 	//https://xx.xx.com/0000/00/23030926631.txt 	#[\d]{4}\/\d{2}\/\d{11}\.txt
 	//https://xxxxx.xxxxxx.com/v2/stats/12215/157527 	#[\w]{2}\/\w{5}\/\d{5}\/\d{6}
-	//https://sjc.wsdd11.com/sh/to/853	#sh\/[\w]{2}\/\d{3}
+	//https://xxx.xxxxxx.com/sh/to/853	#sh\/[\w]{2}\/\d{3}
 	
 	if(!re.test(url)){
 		return url;
