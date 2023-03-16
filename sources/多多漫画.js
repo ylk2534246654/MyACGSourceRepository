@@ -55,7 +55,7 @@ function manifest() {
 		baseUrl: baseUrl,
 	});
 }
-const baseUrl = "https://m.duoduomh.com";//备用：https://m.duoduomh.com  #https://m.zuimh.com
+const baseUrl = "https://m.duoximh.com/";//备用：https://m.duoduomh.com  #https://m.zuimh.com
 const header = '';
 
 /**
