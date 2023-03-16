@@ -32,11 +32,11 @@ function manifest() {
 
 		//搜索源自动同步更新网址
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/七夕漫画.js",
-			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/七夕漫画.js",
-			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/七夕漫画.js",
-			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/七夕漫画.js",
-			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/七夕漫画.js",
+			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/酷漫屋.js",
+			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/酷漫屋.js",
+			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/酷漫屋.js",
+			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/酷漫屋.js",
+			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/酷漫屋.js",
 		},
 		
 		//更新时间
