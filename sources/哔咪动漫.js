@@ -66,7 +66,7 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
 /**
  * 搜索
  * @param {string} key
- * @returns {[{title, summary, coverUrl, url}]}
+ * @return {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = ToolUtils.urlJoin(baseUrl,'/vod/search/@post->wd='+ encodeURI(key) + header);
@@ -97,7 +97,7 @@ function search(key) {
 /**
  * 发现
  * @param string url
- * @returns {[{title, summary, coverUrl, url}]}
+ * @return {[{title, summary, coverUrl, url}]}
  */
 function find(url) {
 	const response = HttpRequest(url + header);
@@ -128,7 +128,7 @@ function find(url) {
 
 /**
  * 详情
- * @returns {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = HttpRequest(url+ header);
@@ -162,7 +162,7 @@ function detail(url) {
 
 /**
  * 目录
- * @returns {[{name, chapters:{[{name, url}]}}]}
+ * @return {[{name, chapters:{[{name, url}]}}]}
  */
 function tocs(document) {
 	const tagElements = document.select('.play_source_tab > a');
@@ -202,7 +202,7 @@ function tocs(document) {
 
 /**
  * 内容(InterceptRequest)
- * @returns {string} content
+ * @return {string} content
  */
 function content(url) {
 	if(url.length > 500){

@@ -60,8 +60,8 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
 
 /**
  * 搜索
- * @params {string} key
- * @returns {[{title, summary, cover, url}]}
+ * @param {string} key
+ * @return {[{title, summary, cover, url}]}
  */
 function search(key) {
 	var url = ToolUtils.urlJoin(baseUrl,'/search?keyword=' + encodeURI(key) + header);
@@ -91,7 +91,7 @@ function search(key) {
 }
 /**
  * 详情
- * @returns {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = HttpRequest(url + header);
@@ -111,7 +111,7 @@ function detail(url) {
 			summary: document.selectFirst('.desc-content').text(),
 	
 			//封面网址
-			cover : ToolUtils.urlJoin(url,ToolUtils.substring(document.selectFirst('div.detail-cover > img').attr('style'),'url(\'','\'')),
+			coverUrl : ToolUtils.urlJoin(url,ToolUtils.substring(document.selectFirst('div.detail-cover > img').attr('style'),'url(\'','\'')),
 			
 			//是否启用将章节置为倒序
 			isEnabledChapterReverseOrder: false,
@@ -125,7 +125,7 @@ function detail(url) {
 
 /**
  * 目录
- * @returns {[{name, chapters:{[{name, url}]}}]}
+ * @return {[{name, chapters:{[{name, url}]}}]}
  */
 function tocs(document) {
 	//创建目录数组
@@ -158,8 +158,8 @@ function tocs(document) {
 
 /**
  * @version 2022/12/8
- * @params {string} url
- * @returns {string} content
+ * @param {string} url
+ * @return {string} content
  */
 function content(url) {
 	const response = httpRequest(url + header);

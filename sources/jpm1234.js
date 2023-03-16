@@ -60,8 +60,8 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
 
 /**
  * 搜索
- * @params {string} key
- * @returns {[{title, summary, cover, url}]}
+ * @param {string} key
+ * @return {[{title, summary, cover, url}]}
  */
 function search(key) {
 	var url = ToolUtils.urlJoin(baseUrl,'/Search/Keyword/' + encodeURI(key) + header);
@@ -91,8 +91,8 @@ function search(key) {
 }
 /**
  * 详情
- * @params {string} url
- * @returns {[{title, author, date, summary, cover, reverseOrder, catalog:{[{tag, chapter:{[{name, url}]}}]}}]}
+ * @param {string} url
+ * @return {[{title, author, date, summary, cover, reverseOrder, catalog:{[{tag, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = HttpRequest(url + header);
@@ -126,7 +126,7 @@ function detail(url) {
 
 /**
  * 目录
- * @returns {[{name, chapters:{[{name, url}]}}]}
+ * @return {[{name, chapters:{[{name, url}]}}]}
  */
 function tocs(document) {
 	//创建目录数组
@@ -158,8 +158,8 @@ function tocs(document) {
 }
 /**
  * 内容
- * @params {string} url
- * @returns {string} content
+ * @param {string} url
+ * @return {string} content
  */
 function content(url) {
 	const response = HttpRequest(url+ header);

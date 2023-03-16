@@ -59,8 +59,8 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
 
 /**
  * 搜索
- * @params {string} key
- * @returns {[{title, summary, cover, url}]}
+ * @param {string} key
+ * @return {[{title, summary, cover, url}]}
  */
 function search(key) {
 	var url = 'http://119.91.129.193:7899/sssv.php?top=10&q='+ encodeURI(key) + header + '@header->referer:http://bumimi.com/@header->Origin:http://bumimi.com';
@@ -89,7 +89,7 @@ function search(key) {
 
 /**
  * 详情
- * @returns {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = HttpRequest(url + header);
@@ -124,7 +124,7 @@ function detail(url) {
 
 /**
  * 目录
- * @returns {[{name, chapters:{[{name, url}]}}]}
+ * @return {[{name, chapters:{[{name, url}]}}]}
  */
 function tocs(document) {
 	const tagElements = document.select('.playurl> li,.num-tab > h2');
@@ -166,7 +166,7 @@ function tocs(document) {
  * 内容（部分搜索源通用规则）
  * @version 2023/3/15
  * 布米米、嘻嘻动漫、12wo动漫、路漫漫、风车动漫P、樱花动漫P、COCO漫画
- * @returns {string} content
+ * @return {string} content
  */
 function content(url) {
 	var re = /[a-z]+:\/\/[\w.]+\/(([a-z]{1}\/\d)|([a-z]{3}\/[a-z]{3}\/\d)|([a-z]{2}\/\d{4}\?)|([\w]{3}\/\d{6}$)|([\d]{4}\/\d{2}\/\d{11}\.txt)|([\w]{2}\/\w{5}\/\d{5}\/\d{6})|(sh\/[\w]{2}\/\d{3}))/i;

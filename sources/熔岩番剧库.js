@@ -99,7 +99,7 @@ function manifest() {
  * 是否完成登录
  * @param {string} url		网址
  * @param {string} responseHtml	响应源码
- * @returns {boolean}  登录结果
+ * @return {boolean}  登录结果
  */
 function isUserLoggedIn(url, responseHtml) {
 	if(responseHtml.length > 1 && responseHtml.indexOf('登录成功, 欢迎回来') != -1){
@@ -109,7 +109,7 @@ function isUserLoggedIn(url, responseHtml) {
 }
 /*
  * 验证完成登录
- * @returns {boolean} 登录结果
+ * @return {boolean} 登录结果
  */
 function verifyUserLoggedIn() {
 	try{
@@ -135,7 +135,7 @@ function getHeader() {
 /**
  * 搜索
  * @param {string} key
- * @returns {[{title, summary, coverUrl, url}]}
+ * @return {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = `https://anime-api.5t5.top/v2/search?value=${encodeURI(key)}` + getHeader();
@@ -164,7 +164,7 @@ function search(key) {
 /**
  * 发现
  * @param {string} url
- * @returns {[{title, summary, coverUrl, url}]}
+ * @return {[{title, summary, coverUrl, url}]}
  */
 function find(url) {
 	const response = HttpRequest(url + getHeader() + '@header->content-type:application/json');
@@ -192,7 +192,7 @@ function find(url) {
 
 /**
  * 详情
- * @returns {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	return JSON.stringify({
@@ -205,7 +205,7 @@ function detail(url) {
 }
 /**
  * 目录
- * @returns {[{name, chapters:{[{name, url}]}}]}
+ * @return {[{name, chapters:{[{name, url}]}}]}
  */
 function tocs(url) {
 	const tagResponse = HttpRequest('https://anime-api.5t5.top/v2/drive/all' + getHeader());

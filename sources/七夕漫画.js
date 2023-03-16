@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 3,
+		version: 4,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -67,30 +67,31 @@ const loadBaseUrl = "http://www.qiximh2.com";
 /**
  * 搜索
  * @param {string} key
- * @returns {[{title, summary, coverUrl, url}]}
+ * @return {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = ToolUtils.urlJoin(baseUrl,'/search.php@post->keyword=' + encodeURI(key) + header);
 	const response = HttpRequest(url);
 	var result = [];
 	if(response.code() == 200){
-		Log(response.html());
 		const $ = JSON.parse(response.html());
-		$.search_data.forEach((child) => {
-			result.push({
-				//标题
-				title: child.name,
-		
-				//概览
-				summary: child.author,
-		
-				//封面网址
-				coverUrl: child.imgs,
-		
-				//网址
-				url: ToolUtils.urlJoin(url,child.id) + '/'
+		if($.code != 1){//此处和滴滴漫画相似
+			$.search_data.forEach((child) => {
+				result.push({
+					//标题
+					title: child.name,
+			
+					//概览
+					summary: child.author,
+			
+					//封面网址
+					coverUrl: child.imgs,
+			
+					//网址
+					url: ToolUtils.urlJoin(url,child.id) + '/'
+				});
 			});
-		});
+		}
 	}
 	return JSON.stringify(result);
 }
@@ -98,7 +99,7 @@ function search(key) {
 /**
  * 发现
  * @param string url
- * @returns {[{title, summary, coverUrl, url}]}
+ * @return {[{title, summary, coverUrl, url}]}
  */
 function find(url) {
 	const response = HttpRequest(url + header);
@@ -128,7 +129,7 @@ function find(url) {
 
 /**
  * 详情
- * @returns {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = HttpRequest(url + header);
@@ -167,7 +168,7 @@ function detail(url) {
 
 /**
  * 目录
- * @returns {[{name, chapters:{[{name, url}]}}]}
+ * @return {[{name, chapters:{[{name, url}]}}]}
  */
 function tocs(document, url) {
 	//创建章节数组
@@ -209,7 +210,7 @@ function tocs(document, url) {
 
 /**
  * 内容
- * @returns {string} content
+ * @return {string} content
 
 function content(url) {
 	const response = HttpRequest(url + header);

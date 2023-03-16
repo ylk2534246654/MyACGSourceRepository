@@ -74,7 +74,7 @@ const header = '';
 /**
  * 搜索
  * @param {string} key
- * @returns {[{title, summary, coverUrl, url}]}
+ * @return {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = ToolUtils.urlJoin(baseUrl,'/s_all?ex=1&kw='+ encodeURI(key) + header);
@@ -105,7 +105,7 @@ function search(key) {
 /**
  * 发现
  * @param string url
- * @returns {[{title, summary, coverUrl, url}]}
+ * @return {[{title, summary, coverUrl, url}]}
  */
 function find(url) {
 	const response = HttpRequest(url + header);
@@ -134,7 +134,7 @@ function find(url) {
 }
 /**
  * 详情
- * @returns {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = HttpRequest(url + header);
@@ -168,7 +168,7 @@ function detail(url) {
 
 /**
  * 目录
- * @returns {[{name, chapters:{[{name, url}]}}]}
+ * @return {[{name, chapters:{[{name, url}]}}]}
  */
 function tocs(document) {
 	const tagElements = document.select('#menu0 > li');
@@ -210,7 +210,7 @@ function tocs(document) {
  * 内容（部分搜索源通用规则）
  * @version 2023/3/15
  * 布米米、嘻嘻动漫、12wo动漫、路漫漫、风车动漫P、樱花动漫P、COCO漫画
- * @returns {string} content
+ * @return {string} content
  */
 function content(url) {
 	var re = /[a-z]+:\/\/[\w.]+\/(([a-z]{1}\/\d)|([a-z]{3}\/[a-z]{3}\/\d)|([a-z]{2}\/\d{4}\?)|([\w]{3}\/\d{6}$)|([\d]{4}\/\d{2}\/\d{11}\.txt)|([\w]{2}\/\w{5}\/\d{5}\/\d{6})|(sh\/[\w]{2}\/\d{3}))/i;

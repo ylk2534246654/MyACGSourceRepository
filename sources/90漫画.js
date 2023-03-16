@@ -61,7 +61,7 @@ const header = '';
 /**
  * 搜索
  * @param {string} key
- * @returns {[{title, summary, coverUrl, url}]}
+ * @return {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = ToolUtils.urlJoin(baseUrl,'/app/comic/search?sort=click&keywords=' + encodeURI(key) + header);
@@ -89,7 +89,7 @@ function search(key) {
 }
 /**
  * 详情
- * @returns {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = HttpRequest(url + header);
@@ -123,7 +123,7 @@ function detail(url) {
 
 /**
  * 目录
- * @returns {[{name, chapters:{[{name, url}]}}]}
+ * @return {[{name, chapters:{[{name, url}]}}]}
  */
 function tocs(response) {
 	//创建章节数组
@@ -149,7 +149,7 @@ function tocs(response) {
 
 /**
  * 内容
- * @returns {string} content
+ * @return {string} content
  */
 function content(url) {
 	const response = HttpRequest(url + header);

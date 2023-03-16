@@ -60,7 +60,7 @@ const header = '';
 /**
  * 搜索
  * @param {string} key
- * @returns {[{title, summary, coverUrl, url}]}
+ * @return {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = `http://103.91.210.141:2515/xgapp.php/v2/search?pg=1&text=${encodeURI(key)}&token=&csrf=gqcMwzohO0l%2FcuKwQUeYY6TeY8l3M6D0SQwfwzNJTpvfNP2X30FiGs8um0tslhdkVxPTwLLXCGBkTA1ONXAXr6Ajx2fWb7fwHQdNnipq143De%2Brq%2FBAOrJ0Uqb9anV14kUbsbRr8P6ZKLG%2BANj%2BYZEyH%2Flu6a%2FAD4iekfTf9SA8%3D` + header;
@@ -89,7 +89,7 @@ function search(key) {
 
 /**
  * 详情
- * @returns {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(id) {
 	const response = HttpRequest(`http://103.91.210.141:2515/xgapp.php/v2/video_detail?id=${id}&ck=PmJag8SWhbuByo%2FjYOpOO44qrkaqIKk1Gv4qgT2q47g3X5yfdyUcBmcpQLhBiPmS%2B1uCpYypSeedNYTJjbyESEbIfTaSadOG9keaxpB%2BVmJSOs9Mnt65Xo6QIX4%2Fjtpu2ilHN8%2B1VcVdOHZtVZWYd5bNZg1FrhcsqR7geK9%2BfYkPEjFutBbu2gBmgYJtFsYYN%2FOlMNsEZq8nuZUsx%2Bts9fT%2FzFuQHHBypst5UmcfaJ5PpV0caKgWB2Gcok5NSNe%2B5%2BfZcDe05BwqUG1V6OHTz1iq9IL6zqbY1Y7ukAhdO%2FYYEzXnygWqheM52HU1zABjNDux3K1HpxI9IXvNI3ga4DIGf2EzEQUTcLehdSJQ1IwKK8ZOyqfON9r%2F2S4ZIwI9xGLVs7a9BRKv99Qlf6KxSmqMy%2F4qUEOjoqesuSHcQVga%2F4xq1hNm3B18rf8aVM1g6H7Nu0X1uXSKvCtGeQf5Tdg3omZfwK9BYlx4p0JMkzxapMYZiTOcqLkNdTW3LkSbfQEbgd7QDh9DmFBWceA40XwZgJuIIs1ZvD9DyYurHUVzfrgtP45dFkZ0W4vuWqeDgV30C6kvacoE4SQOYpvITE7UUdgTWRXW6xcZDJRB50QicehcAfYACRDJt32arqSGSiNoNT3MU7il3B%2B%2BbZUNMHe6WQfGDVJvJn1x2JIGVVdabCM1DCpK8nJuwqu6N7ycMN2%2B7QuJ%2FGrU5kze6DmQMid%2FH0JudcYhel3AgNAte81amrO559TvaK%2B5xaxns7XqHcAL4e3cLLX2lbh7uqwZoyNUgCXs2bX9BgPoOnNHJmDrxf4pbw57c6kKmhgEcKu4fYWldh9flAvJB3zztfcQUA%3D%3D&pkid=tv.omofun.app&token=&csrf=o13Tgl%2B3XOGfJjcTsCYGUhvnobNCR0v7njbsw2IooR%2FoArjKrCyogNFpYO9wNtn%2FNgFXBQL2DGFd3zDR7ekTMY%2B0QHU7QR%2Fyl6c%2Boa7A6l7op%2Fn6gtg0jzO7%2FSDDSAvuv56Sg8Y2wo%2FPxDf012ABHeVt8V1%2F3sRtzPvVTUg5t2M%3D`+ header);
@@ -123,7 +123,7 @@ function detail(id) {
 
 /**
  * 目录
- * @returns {[{name, chapters:{[{name, url}]}}]}
+ * @return {[{name, chapters:{[{name, url}]}}]}
  */
 function tocs(tocs) {
 	//创建目录数组
@@ -172,7 +172,7 @@ function tocs(tocs) {
 
 /**
  * 内容(InterceptRequest)
- * @returns {string} content
+ * @return {string} content
  */
 function content(url) {
 	const response = HttpRequest(url + header);
