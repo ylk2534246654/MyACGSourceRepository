@@ -8,7 +8,7 @@ function manifest() {
 		id: 1654704919,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230315,
+		minMyACG: 20230317,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年3月15日",
+		updateTime: "2023年3月17日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -73,10 +73,7 @@ function manifest() {
 		networkRateLimitList: [
 			{
 				"regexUrl": "search\.asp",//表示需要限流的 Url，使用正则表达式格式（不允许为空）
-				//此处在 MyACG_V1.4.3 搞错了，原定使用 maxRequests，暂时使用 permits 进行代替，如果要兼容 MyACG_V1.4.3 建议把两个都加上
-				"permits": 0,//在指定的时间内允许的请求数量（必须 >= 0 才会生效）
 				"maxRequests": 0,//在指定的时间内允许的请求数量（必须 >= 0 才会生效）
-
 				"period": 5000,//时间周期，毫秒（必须 > 0 才会生效）
 			}
 		],

@@ -8,7 +8,7 @@ function manifest() {
 		id: 1654843272,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230315,
+		minMyACG: 20230317,
 		
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 3,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年3月15日",
+		updateTime: "2023年3月17日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -113,10 +113,6 @@ function detail(url) {
 			//封面网址
 			coverUrl: document.selectFirst('#Cover > img,#Cover > mip-img').absUrl('src'),
 			
-			//此处在 MyACG_V1.4.3 搞错了，原定使用 isEnabledChapterReverseOrder，
-			//目前暂时使用 isEnabledReverseOrder 进行代替，如果要兼容 MyACG_V1.4.3 建议把两个都加上
-			//是否启用将章节置为倒序
-			isEnabledReverseOrder: true,
 			//是否启用将章节置为倒序
 			isEnabledChapterReverseOrder: true,
 			
@@ -172,7 +168,7 @@ function tocs(document) {
 /**
  * 内容（部分漫画搜索源通用规则）
  * @version 2023/1/21
- * 168,思思，39 , 360 , 147 , 动漫画 ，依依
+ * 168,思思，39 , 360 , 147 , 动漫画 ，依依 ，多多漫画
  * @returns {string} content
  */
 function content(url) {
