@@ -173,11 +173,13 @@ function tocs(url, document) {
 }
 
 /**
+ * 内容
  * @return {string} content
  */
 function content(url) {
-	const response = httpRequest(url + header);
-	const src = jsoup(response,'#content').outerHtml();
-	return src;
+	const response = HttpRequest(url + header);
+	if(response.code() == 200){
+		return response.document().selectFirst('#content').outerHtml();
+	}
+	return null;
 }
-
