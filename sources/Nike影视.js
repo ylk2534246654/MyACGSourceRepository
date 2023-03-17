@@ -8,15 +8,15 @@ function manifest() {
 		id: 1660663675,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20220101,
+		minMyACG: 20230317,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
 		priority: 35,
 		
-		//是否失效，默认关闭
+		//是否启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		invalid: false,
+		isEnabledInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "Nike影视",
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2022年8月16日",
+		updateTime: "2023年3月17日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -48,126 +48,194 @@ function manifest() {
 		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截的请求处理，3：对内部浏览器拦截的框架处理
 		contentType: 2,
 		
-		//自定义标签
-		tag: ["动漫","影视"],
+		//自定义标签，第一个标签作为发现分类
+		tag: ["影视","动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "https://www.ajeee.com",//和动漫星球结构相似，站长：ajeee.com@gmail.com
+		baseUrl: baseUrl,//和动漫星球结构相似，站长：ajeee.com@gmail.com
+		
+		//发现
+		findList: {
+			"最近更新": "/label/new.html",
+		},
 	});
 }
+const baseUrl = "https://www.ajeee.com";
 const header = '';
 
 /**
  * 搜索
- * @params {string} key
- * @returns {[{title, summary, cover, url}]}
+ * @param {string} key
+ * @return {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = 'https://www.ajeee.com/search.html?wd='+ encodeURI(key) + header;
-	const response = httpRequest(url);
-	
-	const list = jsoupArray(response,'div.module-items > div').outerHtml();
-	var array= [];
-	for (var i=0;i<list.length;i++) {
-	    var data = list[i];
-		array.push({
-			//标题
-			title : jsoup(data,' div.module-card-item-title > a').text(),
-			
-			//概览
-			summary : jsoup(data,'div.module-info-item-content').text(),
-			
-			//封面
-			cover : ToolUtil.urlJoin(url,jsoup(data,'img[data-original]').attr('data-original')),
-			
-			//网址
-			url : ToolUtil.urlJoin(url,jsoup(data,'div > a[href]').attr('href'))
+	var url = ToolUtils.urlJoin(baseUrl,'/search.html?wd=' + encodeURI(key));
+	const response = HttpRequest(url + header);
+	var result= [];
+	if(response.code() == 200){
+		var document = response.document();
+		var elements = document.select("div.module-items > div");
+		for (var i = 0;i < elements.size();i++) {
+			var element = elements.get(i);
+			result.push({
+				//标题
+				title: element.selectFirst('div.module-card-item-title > a').text(),
+				
+				//概览
+				summary: element.selectFirst('div.module-info-item-content').text(),
+				
+				//封面网址
+				coverUrl: element.selectFirst('img[data-original]').absUrl('data-original'),
+				
+				//网址
+				url: element.selectFirst('div > a[href]').absUrl('href')
 			});
+		}
 	}
-	return JSON.stringify(array);
+	return JSON.stringify(result);
+}
+/**
+ * 发现
+ * @param string url
+ * @return {[{title, summary, coverUrl, url}]}
+ */
+function find(url) {
+	url = ToolUtils.urlJoin(baseUrl, url);
+	const response = HttpRequest(url + header);
+	var result= [];
+	if(response.code() == 200){
+		var document = response.document();
+		var elements = document.select(".module-main > div > a");
+		for (var i = 0;i < elements.size();i++) {
+			var element = elements.get(i);
+			result.push({
+				//标题
+				title: element.selectFirst('.module-poster-item-title').text(),
+				
+				//概览
+				summary: element.selectFirst('.module-item-note').text(),
+				
+				//封面网址
+				coverUrl: element.selectFirst('.module-item-pic > img').absUrl('data-original'),
+				
+				//网址
+				url: element.selectFirst('a').absUrl('href')
+			});
+		}
+	}
+	return JSON.stringify(result);
 }
 /**
  * 详情
- * @params {string} url
- * @returns {[{title, author, date, summary, cover, reverseOrder, catalog:{[{tag, chapter:{[{name, url}]}}]}}]}
+ * @return {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
-	const response = httpRequest(url+ header);
-	return JSON.stringify({
-		//标题
-		title : jsoup(response,'div.module-info-heading > h1').text(),
-		
-		//作者
-		author: jsoup(response,'div:nth-child(2) > div.module-info-item-content > a').text(),
-		
-		//日期
-		//date : jsoup(response,'div.module-info-items > div:nth-child(4) > div').text(),
-		
-		//概览
-		summary: jsoup(response,'div.module-info-introduction > div > p').text(),
-
-		//封面
-		cover : jsoup(response,'div.module-info-poster > div > div > img').attr('data-original'),
-		
-		//目录是否倒序
-		reverseOrder: false,
-		
-		//目录网址/非外链无需使用
-		catalog: catalog(response,url)
-	})
+	const response = HttpRequest(url + header);
+	if(response.code() == 200){
+		var document = response.document();
+		return JSON.stringify({
+			//标题
+			title: document.selectFirst('div.module-info-heading > h1').text(),
+			
+			//作者
+			author: document.selectFirst('div:nth-child(2) > div.module-info-item-content > a').text(),
+			
+			//更新时间
+			//update: document.selectFirst('').text(),
+			
+			//概览
+			summary: document.selectFirst('div.module-info-introduction > div > p').text(),
+	
+			//封面网址
+			coverUrl: document.selectFirst('div.module-info-poster > div > div > img').absUrl('data-original'),
+			
+			//是否启用将章节置为倒序
+			isEnabledChapterReverseOrder: false,
+			
+			//目录加载
+			tocs: tocs(document)
+		});
+	}
+	return null;
 }
 /**
  * 目录
- * @params {string} response
- * @params {string} url
- * @returns {[{tag, chapter:{[{name, url}]}}]}
+ * @return {[{name, chapters:{[{name, url}]}}]}
  */
-function catalog(response,url) {
-	//目录标签代码
-	const tabs = jsoupArray(response,'div.tab-item').outerHtml();
-	
-	//目录代码
-	const catalogs = jsoupArray(response,'div.module-list').outerHtml();
+function tocs(document) {
+	//目录元素选择器
+	const tocElements= document.select('div.module-list');
 	
 	//创建目录数组
-	var new_catalogs= [];
+	var newTocs = [];
 	
-	for (var i=0;i<catalogs.length;i++) {
-	    var catalog = catalogs[i];
-		
+	for (var i = 0;i < tocElements.size();i++) {
 		//创建章节数组
-		var newchapters= [];
+		var newChapters = [];
 		
-		//章节代码
-		var chapters = jsoupArray(catalog,'div.module-play-list > div > a').outerHtml();
+		//章节元素选择器
+		var chapterElements = tocElements.get(i).select('div.module-play-list > div > a');
 		
-		for (var ci=0;ci<chapters.length;ci++) {
-			var chapter = chapters[ci];
+		for (var i2 = 0;i2 < chapterElements.size();i2++) {
+			var chapterElement = chapterElements.get(i2);
 			
-			newchapters.push({
+			newChapters.push({
 				//章节名称
-				name: jsoup(chapter,'a').text(),
+				name: chapterElement.selectFirst('a').text(),
 				//章节网址
-				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href'))
+				url: chapterElement.selectFirst('a').absUrl('href') + header
 			});
 		}
-		//添加目录
-		new_catalogs.push({
+		newTocs.push({
 			//目录名称
-			tag: jsoup(tabs[i],'span').text(),
+			name: '线路 ' + (i + 1),
 			//章节
-			chapter : newchapters
-			});
+			chapters : newChapters
+		});
 	}
-	return new_catalogs
+	return newTocs;
 }
 
 /**
- * 内容(InterceptRequest)
- * @params {string} url
- * @returns {string} content
+ * 内容（部分搜索源通用过滤规则）
+ * @version 2023/3/17
+ * 布米米、嘻嘻动漫、12wo动漫、路漫漫、风车动漫P、樱花动漫P、COCO漫画、Nike
+ * @return {string} content
  */
 function content(url) {
-	//浏览器请求结果处理
-	return url;
+	var re = new RegExp(
+		//https://
+		'[a-z]+://[\\w.]+/(' +
+
+		//https://knr.xxxxx.cn/j/140000		#[a-z]{1}\/\d{6}
+		'([a-z]{1}/\\d)|' +
+
+		//https://xx.xxx.xx/xxx/xxx/0000	#[a-z]{3}\/[a-z]{3}\/\d
+		'([a-z]{3}/[a-z]{3}/\\d)|' +
+		
+		//https://tg.xxx.com/sc/0000?n=xxxx #[a-z]{2}\/\d{4}\?
+		'([a-z]{2}/\\d{4}\\?)|' +
+		
+		//https://xx.xxx.xyz/vh1/158051 	#[\w]{3}\/\d{6}$
+		'([\\w]{3}/\\d{6}$)|' +
+		
+		//https://xx.xx.com/0000/00/23030926631.txt 	#[\d]{4}\/\d{2}\/\d{11}\.txt
+		'([\\d]{4}/\\d{2}/\\d{11}\\.txt)|' +
+
+		//https://xxxxx.xxxxxx.com/v2/stats/12215/157527 	#[\w]{2}\/\w{5}\/\d{5}\/\d{6}
+		'([\\w]{2}/\\w{5}/\\d{5}/\\d{6})|' +
+
+		//https://xxx.xxxxxx.com/sh/to/853	#sh\/[\w]{2}\/\d{3}
+		'(sh/[\\w]{2}/\\d{3})|' +
+
+		//https://xxx.rmb.xxxxxxxx.com/xxx/e3c5da206d50f116fc3a8f47502de66d.gif #[\w]{3}\/[\w]{32}\.
+		'([\\w]{3}/[\\w]{32}\\.)' +
+
+		')',
+		'i'
+	);
+	if(!re.test(url)){
+		return url;
+	}
+	return null;
 }
