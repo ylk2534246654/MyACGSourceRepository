@@ -204,4 +204,14 @@ function content(url) {
 		return document.select('#TextContent,#acontent').outerHtml();
 	}
 	return null;
-} */
+}*/
+/**
+ * @return {string} content
+ */
+function content(url) {
+	var re = /googles/i;
+	if(!re.test(url)){
+		return url;
+	}
+	return null;
+}
