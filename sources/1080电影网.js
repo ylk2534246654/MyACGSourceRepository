@@ -1,24 +1,22 @@
-const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
-
 function manifest() {
 	return JSON.stringify({
 		//MyACG 最新版本
-		MyACG: 'https://lanzou.com/b07xqlbxc ',
+		MyACG: 'https://pan.baidu.com/s/1kVkWknH',
 		
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
 		id: 1651480956,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20220705,
+		minMyACG: 20230317,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
-		priority: 1,
+		priority: 10,
 		
-		//是否失效，默认关闭
+		//是否启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		invalid: false,
+		isEnabledInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "1080电影网",
@@ -30,20 +28,20 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 3,
 
 		//搜索源自动同步更新网址
 		syncList: {
 			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/1080电影网.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/1080电影网.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/1080电影网.js",
-			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/1080电影网.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/1080电影网.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/1080电影网.js",
+			"gitlink":"https://code.gitlink.org.cn/api/v1/repos/ylk2534246654/MyACGSourceRepository/raw/sources/1080电影网.js",
 		},
 		
 		//更新时间
-		updateTime: "2022年5月29日",
+		updateTime: "2023年3月18日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -52,161 +50,202 @@ function manifest() {
 		contentType: 2,
 		
 		//自定义标签
-		tag: ["影视"],
+		groupName: ["影视"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "https://www.1080kdy.com",
-		
-		//登录授权是否启用
-		auth: true,
-		
-		//登录授权网址
-		authUrl:"https://www.1080kdy.com" + header,
-		
-		//需要授权的功能（search，detail，content，find）
-		authRequired: ["search","detail"],
+		baseUrl: baseUrl,
 	});
 }
-/*
- * 拦截并验证手动授权数据
- * @params {string} html	网页源码
- * @params {string} url		网址
- * @returns 是否授权
+const baseUrl = "https://www.1080kdy.com";//网站模板相似：1080电影网、哆咪动漫、dmh8樱花动漫
+const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
+
+/**
+ * 是否启用人机身份验证
+ * @param {string} url 网址
+ * @param {string} responseHtml 响应源码
+ * @return {boolean} 返回结果
  */
-function authCallback(html,url) {
-	if(html.length > 1 && html.indexOf('电影') != -1){
+function isEnabledAuthenticator(url, responseHtml) {
+	//对框架进行拦截，检索关键字，
+	if(responseHtml.length > 1 && responseHtml.indexOf('安全验证') != -1){
 		return true;
 	}
 	return false;
 }
-/*
- * 自动验证授权结果
- * @returns 是否授权
- */
-function authVerify() {
-	const response = httpRequest("https://www.1080kdy.com" + header);
-	if(response.indexOf('电影') != -1){
-		return true;
-	}
-	return false;
-}
+
 /**
  * 搜索
- * @params {string} key
- * @returns {[{title, summary, cover, url}]}
+ * @param {string} key
+ * @return {[{title, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = 'https://www.1080kdy.com/index.php/vod/search.html?wd='+ encodeURI(key) + header;
-	const response = httpRequest(url);
-	
-	const list = jsoupArray(response,'#searchList > li').outerHtml();
-	var array= [];
-	for (var i=0;i<list.length;i++) {
-	    var data = list[i];
-		array.push({
-			//标题
-			title : jsoup(data,'.title > a').text(),
-			
-			//概览
-			summary : jsoup(data,'div.detail > p:nth-child(4)').text(),
-			
-			//封面
-			cover : ToolUtil.urlJoin(url,jsoup(data,'div.thumb > a').attr('data-original')),
-			
-			//网址
-			url : ToolUtil.urlJoin(url,jsoup(data,'.title > a').attr('href'))
+	var url = ToolUtils.urlJoin(baseUrl,'/index.php/vod/search.html?wd=' + encodeURI(key));
+	const response = HttpRequest(url + header);
+	var result= [];
+	if(response.code() == 200){
+		var document = response.document();
+		var elements = document.select("#searchList > li");
+		for (var i = 0;i < elements.size();i++) {
+			var element = elements.get(i);
+			result.push({
+				//标题
+				title: element.selectFirst('.title').text(),
+				
+				//概览
+				summary: element.selectFirst('div.detail > p.hidden-xs > :matchText').text(),
+				
+				//封面网址
+				coverUrl: element.selectFirst('div.thumb > a').absUrl('data-original'),
+				
+				//网址
+				url: element.selectFirst('.title > a').absUrl('href')
 			});
+		}
 	}
-	return JSON.stringify(array);
+	return JSON.stringify(result);
+}
+
+/**
+ * 发现
+ * @param string url
+ * @return {[{title, summary, coverUrl, url}]}
+ */
+function find(url) {
+	const response = HttpRequest(url + header);
+	var result= [];
+	if(response.code() == 200){
+		var document = response.document();
+		var elements = document.select("div.list > ul > li");
+		for (var i = 0;i < elements.size();i++) {
+			var element = elements.get(i);
+			result.push({
+				//标题
+				title: element.selectFirst('a.itemtext').text(),
+				
+				//概览
+				summary: element.selectFirst('div:nth-child(7) > span.cell_imform_value').text(),
+				
+				//封面网址
+				coverUrl: ToolUtils.urlJoin(url,ToolUtils.substring(element.selectFirst('div.imgblock').attr('style'),'\'','\'')),
+				
+				//网址
+				url: element.selectFirst('a.itemtext').absUrl('href')
+			});
+		}
+	}
+	return JSON.stringify(result);
 }
 /**
  * 详情
- * @params {string} url
- * @returns {[{title, author, date, summary, cover, reverseOrder, catalog:{[{tag, chapter:{[{name, url}]}}]}}]}
+ * @return {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
-	const response = httpRequest(url+ header);
-	return JSON.stringify({
-		//标题
-		title : jsoup(response,'h1.title').text(),
-		
-		//作者
-		author: jsoup(response,'div.myui-content__detail > p:nth-child(7)').text(),
-		
-		//日期
-		date : jsoup(response,'p.data > span:nth-child(2)').text(),
-		
-		//概览
-		summary: jsoup(response,'span.data').text(),
-
-		//封面
-		cover : jsoup(response,'div.myui-content__thumb > a > img').attr('data-original'),
-		
-		//目录是否倒序
-		reverseOrder: false,
-		
-		//目录网址/非外链无需使用
-		catalog: catalog(response,url)
-	})
+	const response = HttpRequest(url + header);
+	if(response.code() == 200){
+		var document = response.document();
+		return JSON.stringify({
+			//标题
+			title: document.selectFirst('h1.title').text(),
+			
+			//作者
+			//author: ,
+			
+			//更新时间
+			update: document.selectFirst('p.data > a:nth-child(8)').text(),
+			
+			//概览
+			summary: document.selectFirst('div.content').text(),
+	
+			//封面网址
+			coverUrl: document.selectFirst('div.myui-content__thumb > a > img').absUrl('data-original'),
+			
+			//是否启用将章节置为倒序
+			isEnabledChapterReverseOrder: false,
+			
+			//目录加载
+			tocs: tocs(document)
+		});
+	}
+	return null;
 }
 /**
  * 目录
- * @params {string} response
- * @params {string} url
- * @returns {[{tag, chapter:{[{name, url}]}}]}
+ * @return {[{name, chapters:{[{name, url}]}}]}
  */
-function catalog(response,url) {
-	//目录标签代码
-	const tabs = jsoupArray(response,'div:nth-child(4) > div > div.myui-panel_hd > div > ul > li').outerHtml();
+function tocs(document) {
+	const tagElements = document.select('ul.nav-tabs > li');
 	
-	//目录代码
-	const catalogs = jsoupArray(response,'div.tab-content > div').outerHtml();
+	//目录元素选择器
+	const tocElements= document.select('div.tab-pane');
 	
 	//创建目录数组
-	var new_catalogs= [];
+	var newTocs = [];
 	
-	for (var i=0;i<catalogs.length;i++) {
-	    var catalog = catalogs[i];
-		
+	for (var i = 0;i < tocElements.size();i++) {
 		//创建章节数组
-		var newchapters= [];
+		var newChapters = [];
 		
-		//章节代码
-		var chapters = jsoupArray(catalog,'ul > li').outerHtml();
+		//章节元素选择器
+		var chapterElements = tocElements.get(i).select('ul > li');
 		
-		for (var ci=0;ci<chapters.length;ci++) {
-			var chapter = chapters[ci];
+		for (var i2 = 0;i2 < chapterElements.size();i2++) {
+			var chapterElement = chapterElements.get(i2);
 			
-			newchapters.push({
+			newChapters.push({
 				//章节名称
-				name: jsoup(chapter,'a').text(),
+				name: chapterElement.selectFirst('a').text(),
 				//章节网址
-				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href')) + header
+				url: chapterElement.selectFirst('a').absUrl('href') + header
 			});
 		}
-		//添加目录
-		new_catalogs.push({
+		newTocs.push({
 			//目录名称
-			tag: jsoup(tabs[i],'a').text(),
+			name: tagElements.get(i).selectFirst('li').text(),
 			//章节
-			chapter : newchapters
-			});
+			chapters : newChapters
+		});
 	}
-	return new_catalogs
+	return newTocs;
 }
 
 /**
- * 内容(InterceptRequest)
- * @params {string} url
- * @returns {string} content
+ * 内容（部分搜索源通用过滤规则）
+ * @version 2023/3/17
+ * 布米米、嘻嘻动漫、12wo动漫、路漫漫、风车动漫P、樱花动漫P、COCO漫画、Nike
+ * @return {string} content
  */
 function content(url) {
-	//浏览器请求结果处理
-	var re = /1080kdy|ylzy1/i;
-	if(re.test(url)){
-		return url;
-	}
-	var re = /\.png|\.jpg|\.svg|\.ico|\.gif|\.webp|\.jpeg/i;
+	var re = new RegExp(
+		//https://
+		'[a-z]+://[\\w.]+/(' +
+
+		//https://knr.xxxxx.cn/j/140000		#[a-z]{1}\/\d{6}
+		'([a-z]{1}/\\d)|' +
+
+		//https://xx.xxx.xx/xxx/xxx/0000	#[a-z]{3}\/[a-z]{3}\/\d
+		'([a-z]{3}/[a-z]{3}/\\d)|' +
+		
+		//https://tg.xxx.com/sc/0000?n=xxxx #[a-z]{2}\/\d{4}\?
+		'([a-z]{2}/\\d{4}\\?)|' +
+		
+		//https://xx.xxx.xyz/vh1/158051 	#[\w]{3}\/\d{6}$
+		'([\\w]{3}/\\d{6}$)|' +
+		
+		//https://xx.xx.com/0000/00/23030926631.txt 	#[\d]{4}\/\d{2}\/\d{11}\.txt
+		'([\\d]{4}/\\d{2}/\\d{11}\\.txt)|' +
+
+		//https://xxxxx.xxxxxx.com/v2/stats/12215/157527 	#[\w]{2}\/\w{5}\/\d{5}\/\d{6}
+		'([\\w]{2}/\\w{5}/\\d{5}/\\d{6})|' +
+
+		//https://xxx.xxxxxx.com/sh/to/853	#sh\/[\w]{2}\/\d{3}
+		'(sh/[\\w]{2}/\\d{3})|' +
+
+		//https://xxx.rmb.xxxxxxxx.com/xxx/e3c5da206d50f116fc3a8f47502de66d.gif #[\w]{3}\/[\w]{32}\.
+		'([\\w]{3}/[\\w]{32}\\.)' +
+
+		')',
+		'i'
+	);
 	if(!re.test(url)){
 		return url;
 	}
