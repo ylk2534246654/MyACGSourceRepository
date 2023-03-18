@@ -62,6 +62,13 @@ function manifest() {
 				"period": 3000,//时间周期，毫秒（必须 > 0 才会生效）
 			}
 		],
+		
+		//发现
+		findList: {
+			"影视": {
+				"最近更新": "/label/new.html"
+			}
+		},
 	});
 }
 const baseUrl = "https://www.555dd1.com";
