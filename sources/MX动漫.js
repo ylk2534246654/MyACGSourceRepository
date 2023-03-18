@@ -8,15 +8,15 @@ function manifest() {
 		id: 1660668834,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20220101,
+		minMyACG: 20230315,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
 		priority: 70,
 		
-		//是否失效，默认关闭
+		//是否启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		invalid: false,
+		isEnabledInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "MX动漫",
@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 3,
 
 		//搜索源自动同步更新链接
 		syncList: {
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2022年8月17日",
+		updateTime: "2023年3月18日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -49,12 +49,15 @@ function manifest() {
 		contentType: 2,
 		
 		//自定义标签
-		tag: ["动漫"],
+		groupName: ["动漫"],
 		
 		//@NonNull 详细界面的基本网址
-		baseUrl: "http://www.mxdm.cc",
+		baseUrl: baseUrl,
 	});
 }
+const baseUrl = "http://www.mxdmx.com";
+//备用：http://www.mxdm.cc ，备用：http://www.mxdm8.com/
+
 const header = '';
 
 /**
@@ -63,111 +66,144 @@ const header = '';
  * @returns {[{title, summary, cover, url}]}
  */
 function search(key) {
-	var url = 'http://www.mxdm.cc/search/-------------.html?wd='+ encodeURI(key) + header;
-	const response = httpRequest(url);
-	
-	const list = jsoupArray(response,'.module-list > div > div').outerHtml();
-	var array= [];
-	for (var i=0;i<list.length;i++) {
-	    var data = list[i];
-		array.push({
-			//标题
-			title : jsoup(data,'div.video-info-header > h3').text(),
-			
-			//概览
-			summary : jsoup(data,'div.video-info-header > a').text(),
-			
-			//封面
-			cover : ToolUtil.urlJoin(url,jsoup(data,'div.module-item-pic > img').attr('data-src')),
-			
-			//链接
-			url : ToolUtil.urlJoin(url,jsoup(data,'div.video-info-header > h3 > a').attr('href'))
+	var url = ToolUtils.urlJoin(baseUrl,'/search/-------------.html?wd='+ encodeURI(key) + header);
+	const response = HttpRequest(url + header);
+	var result= [];
+	if(response.code() == 200){
+		var document = response.document();
+		var elements = document.select(".module-list > div > div");
+		for (var i = 0;i < elements.size();i++) {
+			var element = elements.get(i);
+			result.push({
+				//标题
+				title: element.selectFirst('div.video-info-header > h3').text(),
+				
+				//概览
+				summary: element.selectFirst('div.video-info-header > a').text(),
+				
+				//封面网址
+				coverUrl: element.selectFirst('div.module-item-pic > img').absUrl('data-src'),
+				
+				//网址
+				url: element.selectFirst('div.video-info-header > h3 > a').absUrl('href')
 			});
+		}
 	}
-	return JSON.stringify(array);
+	return JSON.stringify(result);
 }
 /**
  * 详情
- * @params {string} url
- * @returns {[{author, summary, cover, upDate, reverseOrder, catalog}]}
+ * @return {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
- function detail(url) {
-	const response = httpRequest(url+ header);
-	return JSON.stringify({
-		//作者
-		author: jsoup(response,'div:nth-child(1) > div.video-info-actor > a').text(),
-		
-		//概览
-		summary: jsoup(response,'.video-info-content > p:nth-child(2)').text(),
-
-		//封面
-		cover : jsoup(response,'div.video-cover > div > div > img').attr('data-src'),
-		
-		//目录是否倒序
-		reverseOrder: false,
-		
-		//目录链接/非外链无需使用
-		catalog: catalog(response,url)
-	})
+function detail(url) {
+	const response = HttpRequest(url + header);
+	if(response.code() == 200){
+		var document = response.document();
+		return JSON.stringify({
+			//标题
+			title: document.selectFirst('div:nth-child(1) > div.video-info-actor > a').text(),
+			
+			//作者
+			//author: document.selectFirst('').text(),
+			
+			//更新时间
+			//update: document.selectFirst('').text(),
+			
+			//概览
+			summary: document.selectFirst('.video-info-content > p:nth-child(2)').text(),
+	
+			//封面网址
+			coverUrl: document.selectFirst('div.video-cover > div > div > img').absUrl('data-src'),
+			
+			//是否启用将章节置为倒序
+			isEnabledChapterReverseOrder: false,
+			
+			//目录加载
+			tocs: tocs(document)
+		});
+	}
+	return null;
 }
 /**
  * 目录
- * @params {string} response
- * @params {string} url
- * @returns {tag, chapter:{[{group, name, url}]}}
+ * @return {[{name, chapters:{[{name, url}]}}]}
  */
-function catalog(response,url) {
-	//目录标签代码
-	const tabs = jsoupArray(response,'div.tab-item').outerHtml();
+function tocs(document) {
+	const tagElements = document.select('div.tab-item');
 	
-	//目录代码
-	const catalogs = jsoupArray(response,'div.module-player-list').outerHtml();
+	//目录元素选择器
+	const catalogElements= document.select('div.module-player-list');
 	
 	//创建目录数组
-	var new_catalogs= [];
+	var newCatalogs = [];
 	
-	for (var i=0;i<catalogs.length;i++) {
-	    var catalog = catalogs[i];
-		
+	for (var i = 0;i < catalogElements.size();i++) {
 		//创建章节数组
-		var newchapters= [];
+		var newChapters = [];
 		
-		//章节代码
-		var chapters = jsoupArray(catalog,'div.scroll-content > a').outerHtml();
+		//章节元素选择器
+		var chapterElements = catalogElements.get(i).select('div.scroll-content > a');
 		
-		for (var ci=0;ci<chapters.length;ci++) {
-			var chapter = chapters[ci];
+		for (var i2 = 0;i2 < chapterElements.size();i2++) {
+			var chapterElement = chapterElements.get(i2);
 			
-			newchapters.push({
+			newChapters.push({
 				//章节名称
-				name: jsoup(chapter,'a').text(),
-				//章节链接
-				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href'))
+				name: chapterElement.selectFirst('a').text(),
+				//章节网址
+				url: chapterElement.selectFirst('a').absUrl('href')
 			});
 		}
-		//添加目录
-		new_catalogs.push({
+		newCatalogs.push({
 			//目录名称
-			tag: jsoup(tabs[i],'span').text(),
+			name: tagElements.get(i).selectFirst('span').text(),
 			//章节
-			chapter : newchapters
-			});
+			chapters: newChapters
+		});
 	}
-	return new_catalogs
+	return newCatalogs
 }
 
-
 /**
- * 内容(InterceptRequest)
- * @params {string} url
- * @returns {[{url}]}
-
+ * 内容（部分搜索源通用过滤规则）
+ * @version 2023/3/17
+ * 布米米、嘻嘻动漫、12wo动漫、路漫漫、风车动漫P、樱花动漫P、COCO漫画、Nike、MX动漫
+ * @return {string} content
+ */
 function content(url) {
-	//浏览器请求结果处理
-	var re = /\.png|\.jpg|\.svg|\.ico|\.gif|\.webp|\.jpeg/i;
+	var re = new RegExp(
+		//https://
+		'[a-z]+://[\\w.]+/(' +
+
+		//https://knr.xxxxx.cn/j/140000		#[a-z]{1}\/\d{6}
+		'([a-z]{1}/\\d)|' +
+
+		//https://xx.xxx.xx/xxx/xxx/0000	#[a-z]{3}\/[a-z]{3}\/\d
+		'([a-z]{3}/[a-z]{3}/\\d)|' +
+		
+		//https://tg.xxx.com/sc/0000?n=xxxx #[a-z]{2}\/\d{4}\?
+		'([a-z]{2}/\\d{4}\\?)|' +
+		
+		//https://xx.xxx.xyz/vh1/158051 	#[\w]{3}\/\d{6}$
+		'([\\w]{3}/\\d{6}$)|' +
+		
+		//https://xx.xx.com/0000/00/23030926631.txt 	#[\d]{4}\/\d{2}\/\d{11}\.txt
+		'([\\d]{4}/\\d{2}/\\d{11}\\.txt)|' +
+
+		//https://xxxxx.xxxxxx.com/v2/stats/12215/157527 	#[\w]{2}\/\w{5}\/\d{5}\/\d{6}
+		'([\\w]{2}/\\w{5}/\\d{5}/\\d{6})|' +
+
+		//https://xxx.xxxxxx.com/sh/to/853	#sh\/[\w]{2}\/\d{3}
+		'(sh/[\\w]{2}/\\d{3})|' +
+
+		//https://xxx.rmb.xxxxxxxx.com/xxx/e3c5da206d50f116fc3a8f47502de66d.gif #[\w]{3}\/[\w]{32}\.
+		'([\\w]{3}/[\\w]{32}\\.)' +
+
+		')',
+		'i'
+	);
 	if(!re.test(url)){
 		return url;
 	}
 	return null;
 }
- */
