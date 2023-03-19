@@ -185,7 +185,7 @@ function detail(url) {
 			isEnabledChapterReverseOrder: false,
 			
 			//目录加载
-			catalogs: catalogs(document)
+			tocs: tocs(document)
 		});
 	}
 	return null;
@@ -194,14 +194,14 @@ function detail(url) {
  * 目录
  * @return {[{name, chapters:{[{name, url}]}}]}
  */
-function catalogs(document) {
+function tocs(document) {
 	const tagElements = document.select('div.tab-item');
 	
 	//目录元素选择器
 	const catalogElements= document.select('div.module-list');
 	
 	//创建目录数组
-	var newCatalogs = [];
+	var newTocs = [];
 	
 	for (var i = 0;i < catalogElements.size();i++) {
 		//创建章节数组
@@ -220,14 +220,14 @@ function catalogs(document) {
 				url: chapterElement.selectFirst('a').absUrl('href')
 			});
 		}
-		newCatalogs.push({
+		newTocs.push({
 			//目录名称
 			name: tagElements.get(i).selectFirst('span').text(),
 			//章节
 			chapters: newChapters
 		});
 	}
-	return newCatalogs
+	return newTocs
 }
 
 /**
@@ -235,7 +235,7 @@ function catalogs(document) {
  * @returns {string} content
  */
 function content(url) {
-	var re = /vpic/i;
+	var re = /vpic|yximgs/i;
 	if(!re.test(url)){
 		return url;
 	}
