@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 5,
+		version: 6,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -161,7 +161,7 @@ function tocs(url) {
 	if(response.code() == 200){
 		var document = response.document();
 		//创建章节数组
-		var newTocs= [];
+		var newChapters= [];
 		
 		//章节元素选择器
 		var chapterElements = document.select('ul.chapter-list > div,ul.chapter-list > li');
@@ -172,7 +172,7 @@ function tocs(url) {
 			
 			var aElement = chapterElement.selectFirst('a').text();
 			if(String(aElement).length > 0){
-				newTocs.push({
+				newChapters.push({
 					//章节名称
 					name: group + chapterElement.selectFirst('a').text(),
 					//章节网址
@@ -187,7 +187,7 @@ function tocs(url) {
 			//目录名称
 			name: "目录",
 			//章节
-			chapters: newTocs
+			chapters: newChapters
 		}];
 	}
 	return null;
@@ -209,7 +209,7 @@ function content(url) {
  * @return {string} content
  */
 function content(url) {
-	var re = /googles/i;
+	var re = /google/i;
 	if(!re.test(url)){
 		return url;
 	}
