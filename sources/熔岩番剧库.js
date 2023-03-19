@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 5,
+		version: 6,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -40,7 +40,7 @@ function manifest() {
 		},
 
 		//更新时间
-		updateTime: "2023年3月15日",
+		updateTime: "2023年3月19日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -213,39 +213,37 @@ function tocs(url) {
 	//创建目录数组
 	var newTocs = [];
 	
-	JSON.parse(tagResponse.html()).data.list.forEach((child,index) => {
-		//创建章节数组
-		var newChapters = [];
-		const html = HttpRequest(url + '&drive=' + child.id + getHeader()).html();
-		Log("html " + html);
-		if(html != null){
-			JSON.parse(html).data.forEach((child2,index2) => {
-				if (typeof child2.episode == 'string') {
-					newChapters.push({
-						//章节名称
-						name: child2.episode,
-						//章节网址
-						url: child2.url
-					});
-				}else{
-					newChapters.push({
-						//章节名称
-						name: child2.name,
-						//章节网址
-						url: child2.url
-					});
-				}
-			});
-			//
-			//添加目录
-			newTocs.push({
-				//目录名称
-				name: child.name,
-				//章节
-				chapters : newChapters
-			});
-		}
-	});
+	const child = JSON.parse(tagResponse.html()).data.list[0];
+	//创建章节数组
+	var newChapters = [];
+	const html = HttpRequest(url + '&drive=' + child.id + getHeader()).html();
+	if(html != null){
+		JSON.parse(html).data.forEach((child2,index2) => {
+			if (typeof child2.episode == 'string') {
+				newChapters.push({
+					//章节名称
+					name: child2.episode,
+					//章节网址
+					url: child2.url
+				});
+			}else{
+				newChapters.push({
+					//章节名称
+					name: child2.name,
+					//章节网址
+					url: child2.url
+				});
+			}
+		});
+		//
+		//添加目录
+		newTocs.push({
+			//目录名称
+			name: child.name,
+			//章节
+			chapters : newChapters
+		});
+	}
 	
 	return newTocs;
 }
