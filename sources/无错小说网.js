@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -53,6 +53,22 @@ function manifest() {
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,
+
+		//发现
+		findList: {
+			"女生": '/sort-1-1/',
+			"玄幻": '/sort-2-1/',
+			"奇幻": '/sort-3-1/',
+			"武侠": '/sort-4-1/',
+			"仙侠": '/sort-5-1/',
+			"都市": '/sort-6-1/',
+			"历史": '/sort-7-1/',
+			"军事": '/sort-8-1/',
+			"游戏": '/sort-9-1/',
+			"科幻": '/sort-10-1/',
+			"完结": '/quanben/',
+			"排行": '/top-allvisit/',
+		},
 	});
 }
 const baseUrl = "https://www.wucuoxs.com";
@@ -84,6 +100,37 @@ function search(key) {
 				url: ToolUtils.urlJoin(url, child.book_detail_url),
 			});
 		});
+	}
+	return JSON.stringify(result);
+}
+/**
+ * 发现
+ * @param string url
+ * @return {[{title, summary, coverUrl, url}]}
+ */
+function find(url) {
+	url = ToolUtils.urlJoin(baseUrl, url + header);
+	const response = HttpRequest(url);
+	var result= [];
+	if(response.code() == 200){
+		var document = response.document();
+		var elements = document.select("table > tbody > tr:gt(0)");
+		for (var i = 0;i < elements.size();i++) {
+			var element = elements.get(i);
+			result.push({
+				//标题
+				title: element.selectFirst('td:nth-child(1) > a[target="_blank"]').text(),
+				
+				//概览
+				summary: element.selectFirst('td:nth-child(3)').text(),
+				
+				//封面网址
+				//coverUrl: element.selectFirst('').absUrl('src'),
+				
+				//网址
+				url: element.selectFirst('td:nth-child(1) > a[title]').absUrl('href')
+			});
+		}
 	}
 	return JSON.stringify(result);
 }
