@@ -28,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 3,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -40,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2022年12月11日",
+		updateTime: "2023年4月25日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -52,16 +52,16 @@ function manifest() {
 		tag: ["小说"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "https://infosxs.pigqq.com",//备用：apptuxing.com ，pysmei.com ，pigqq.com
+		baseUrl: "https://infosxs.apptuxing.com",//备用：apptuxing.com ，pysmei.com ，pigqq.com
 		
 		//发现
 		findList: {
-			"热门榜": "https://scxs.pigqq.com/top/man/top/hot/week/1.html",
-			"完结榜": "https://scxs.pigqq.com/top/man/top/over/week/1.html",
-			"推荐榜": "https://scxs.pigqq.com/top/man/top/commend/week/1.html",
-			"新书榜": "https://scxs.pigqq.com/top/man/top/new/week/1.html",
-			"评分榜": "https://scxs.pigqq.com/top/man/top/vote/week/1.html",
-			"收藏榜": "https://scxs.pigqq.com/top/man/top/collect/week/1.html"
+			"热门榜": "https://scxs.apptuxing.com/top/man/top/hot/week/1.html",
+			"完结榜": "https://scxs.apptuxing.com/top/man/top/over/week/1.html",
+			"推荐榜": "https://scxs.apptuxing.com/top/man/top/commend/week/1.html",
+			"新书榜": "https://scxs.apptuxing.com/top/man/top/new/week/1.html",
+			"评分榜": "https://scxs.apptuxing.com/top/man/top/vote/week/1.html",
+			"收藏榜": "https://scxs.apptuxing.com/top/man/top/collect/week/1.html"
 		},
 	});
 }
@@ -91,7 +91,7 @@ function search(key) {
 		cover: child.Img,
 		
 		//网址
-		url: `https://infosxs.pigqq.com/BookFiles/Html/${parseInt(child.Id/1000) + 1}/${child.Id}/info.html`
+		url: `https://infosxs.apptuxing.com/BookFiles/Html/${parseInt(child.Id/1000) + 1}/${child.Id}/info.html`
 		})
 	  })
 	return JSON.stringify(array);
@@ -114,10 +114,10 @@ function find(url) {
 		summary: child.Desc,
 		
 		//封面
-		cover: ToolUtil.urlJoin('https://imgapixs.pigqq.com/BookFiles/BookImages/',child.Img),
+		cover: ToolUtil.urlJoin('https://imgapixs.apptuxing.com/BookFiles/BookImages/',child.Img),
 		
 		//网址
-		url: `https://infosxs.pigqq.com/BookFiles/Html/${parseInt(child.Id/1000) + 1}/${child.Id}/info.html`
+		url: `https://infosxs.apptuxing.com/BookFiles/Html/${parseInt(child.Id/1000) + 1}/${child.Id}/info.html`
 		})
 	  })
 	return JSON.stringify(array);
@@ -160,7 +160,7 @@ function detail(url) {
  * @returns {[{tag, chapter:{[{name, url}]}}]}
  */
 function catalog(id) {
-	const response = httpRequest(`https://infosxs.pigqq.com/BookFiles/Html/${id}/index.html`+ header).replace(new RegExp('},]','g'),'}]');
+	const response = httpRequest(`https://infosxs.apptuxing.com/BookFiles/Html/${id}/index.html`+ header).replace(new RegExp('},]','g'),'}]');
 	const $ = JSON.parse(response)
 	//创建目录数组
 	var new_catalogs= [];
@@ -170,7 +170,7 @@ function catalog(id) {
 		booklet.list.forEach((chapter) => {
 		  newchapters.push({
 			name: chapter.name,
-			url: `https://contentxs.pigqq.com/BookFiles/Html/${id}/${chapter.id}.html`
+			url: `https://contentxs.apptuxing.com/BookFiles/Html/${id}/${chapter.id}.html`
 		  })
 		})
 	})
