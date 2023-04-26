@@ -52,16 +52,16 @@ function manifest() {
 		tag: ["小说"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "https://infosxs.apptuxing.com",//备用：apptuxing.com ，pysmei.com ，pigqq.com
+		baseUrl: "https://infosxs.pysmei.com",//备用：apptuxing_com ，pysmei_com ，pigqq_com
 		
 		//发现
 		findList: {
-			"热门榜": "https://scxs.apptuxing.com/top/man/top/hot/week/1.html",
-			"完结榜": "https://scxs.apptuxing.com/top/man/top/over/week/1.html",
-			"推荐榜": "https://scxs.apptuxing.com/top/man/top/commend/week/1.html",
-			"新书榜": "https://scxs.apptuxing.com/top/man/top/new/week/1.html",
-			"评分榜": "https://scxs.apptuxing.com/top/man/top/vote/week/1.html",
-			"收藏榜": "https://scxs.apptuxing.com/top/man/top/collect/week/1.html"
+			"热门榜": "https://scxs.pysmei.com/top/man/top/hot/week/1.html",
+			"完结榜": "https://scxs.pysmei.com/top/man/top/over/week/1.html",
+			"推荐榜": "https://scxs.pysmei.com/top/man/top/commend/week/1.html",
+			"新书榜": "https://scxs.pysmei.com/top/man/top/new/week/1.html",
+			"评分榜": "https://scxs.pysmei.com/top/man/top/vote/week/1.html",
+			"收藏榜": "https://scxs.pysmei.com/top/man/top/collect/week/1.html"
 		},
 	});
 }
@@ -91,7 +91,7 @@ function search(key) {
 		cover: child.Img,
 		
 		//网址
-		url: `https://infosxs.apptuxing.com/BookFiles/Html/${parseInt(child.Id/1000) + 1}/${child.Id}/info.html`
+		url: `https://infosxs.pysmei.com/BookFiles/Html/${parseInt(child.Id/1000) + 1}/${child.Id}/info.html`
 		})
 	  })
 	return JSON.stringify(array);
@@ -114,10 +114,10 @@ function find(url) {
 		summary: child.Desc,
 		
 		//封面
-		cover: ToolUtil.urlJoin('https://imgapixs.apptuxing.com/BookFiles/BookImages/',child.Img),
+		cover: ToolUtil.urlJoin('https://imgapixs.pysmei.com/BookFiles/BookImages/',child.Img),
 		
 		//网址
-		url: `https://infosxs.apptuxing.com/BookFiles/Html/${parseInt(child.Id/1000) + 1}/${child.Id}/info.html`
+		url: `https://infosxs.pysmei.com/BookFiles/Html/${parseInt(child.Id/1000) + 1}/${child.Id}/info.html`
 		})
 	  })
 	return JSON.stringify(array);
@@ -160,7 +160,7 @@ function detail(url) {
  * @returns {[{tag, chapter:{[{name, url}]}}]}
  */
 function catalog(id) {
-	const response = httpRequest(`https://infosxs.apptuxing.com/BookFiles/Html/${id}/index.html`+ header).replace(new RegExp('},]','g'),'}]');
+	const response = httpRequest(`https://infosxs.pysmei.com/BookFiles/Html/${id}/index.html`+ header).replace(new RegExp('},]','g'),'}]');
 	const $ = JSON.parse(response)
 	//创建目录数组
 	var new_catalogs= [];
@@ -170,7 +170,7 @@ function catalog(id) {
 		booklet.list.forEach((chapter) => {
 		  newchapters.push({
 			name: chapter.name,
-			url: `https://contentxs.apptuxing.com/BookFiles/Html/${id}/${chapter.id}.html`
+			url: `https://contentxs.pysmei.com/BookFiles/Html/${id}/${chapter.id}.html`
 		  })
 		})
 	})
