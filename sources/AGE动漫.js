@@ -51,7 +51,7 @@ function manifest() {
 		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
 		contentProcessType: 2,
 		
-		//自定义标签
+		//分组
 		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
