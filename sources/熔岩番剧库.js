@@ -8,11 +8,14 @@ function manifest() {
 		id: 1660927525,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230315,
+		minMyACG: 20230428,
+		
+		//编译版本
+		compileVersion: JavaUtils.JS_VERSION_1_7,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
-		priority: 80,//加载较慢
+		priority: 50,//加载较慢
 		
 		//是否启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
@@ -28,7 +31,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 6,
+		version: 7,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -40,46 +43,46 @@ function manifest() {
 		},
 
 		//更新时间
-		updateTime: "2023年3月19日",
+		updateTime: "2023年4月29日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
 		
-		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截的请求处理，3：对内部浏览器拦截的框架处理
-		contentType: 1,
+		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
+		contentProcessType: 1,
 		
-		//自定义标签
-		groupName: ["动漫"],
+		//分组
+		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "https://anime-api.5t5.top",
+		baseUrl: baseUrl,
 		
 		//发现
 		findList: {
 			"动漫": {
 				"2017年": {
-					"url": 'https://anime-api.5t5.top/v2/index/query@post->{"year":"2017年","type":""}',
+					"url": '/v2/index/query@post->{"year":"2017年","type":""}',
 					"function": "find"
 				},
 				"2018年": {
-					"url": 'https://anime-api.5t5.top/v2/index/query@post->{"year":"2018年","type":""}',
+					"url": '/v2/index/query@post->{"year":"2018年","type":""}',
 					"function": "find"
 				},
 				"2019年": {
-					"url": 'https://anime-api.5t5.top/v2/index/query@post->{"year":"2019年","type":""}',
+					"url": '/v2/index/query@post->{"year":"2019年","type":""}',
 					"function": "find"
 				},
 				"2020年": {
-					"url": 'https://anime-api.5t5.top/v2/index/query@post->{"year":"2020年","type":""}',
+					"url": '/v2/index/query@post->{"year":"2020年","type":""}',
 					"function": "find"
 				},
 				"2021年": {
-					"url": 'https://anime-api.5t5.top/v2/index/query@post->{"year":"2021年","type":""}',
+					"url": '/v2/index/query@post->{"year":"2021年","type":""}',
 					"function": "find"
 				},
 				"2022年": {
-					"url":'https://anime-api.5t5.top/v2/index/query@post->{"year":"2022年","type":""}',
-					"function":"find"
+					"url": '/v2/index/query@post->{"year":"2022年","type":""}',
+					"function": "find"
 				}
 			}
 		},
@@ -94,6 +97,7 @@ function manifest() {
 		requiresLoginList: ["search","detail","content"],
 	});
 }
+const baseUrl = "https://anime-api.5t5.top";
 
 /*
  * 是否完成登录
@@ -102,8 +106,8 @@ function manifest() {
  * @return {boolean}  登录结果
  */
 function isUserLoggedIn(url, responseHtml) {
-	if(responseHtml.length > 1 && responseHtml.indexOf('登录成功, 欢迎回来') != -1){
-		return true;
+	if(url != null && url.indexOf('total') != -1){
+		return verifyUserLoggedIn();
 	}
 	return false;
 }
@@ -113,9 +117,9 @@ function isUserLoggedIn(url, responseHtml) {
  */
 function verifyUserLoggedIn() {
 	try{
-		const response = HttpRequest("https://anime-api.5t5.top/v2/user/info" + getHeader());
+		const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, "/v2/user/info" + getHeader()));
 		if(response.code() == 200){
-			if(response.html().indexOf('成功') != -1){
+			if(response.body().string().indexOf('成功') != -1){
 				return true;
 			}
 		}
@@ -126,7 +130,7 @@ function verifyUserLoggedIn() {
 }
 
 function getHeader() {
-	var localStorage = ToolUtils.localStorage('https://lavani.me/favicon.ico');
+	var localStorage = JavaUtils.localStorage('https://lavani.me/favicon.ico');
 	const token = localStorage.getString('token');
 	const authorization = JSON.parse(token).value;
 	return "@header->referer:https://lavani.me/@header->authorization:" + authorization;
@@ -135,18 +139,17 @@ function getHeader() {
 /**
  * 搜索
  * @param {string} key
- * @return {[{title, summary, coverUrl, url}]}
+ * @return {[{name, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = `https://anime-api.5t5.top/v2/search?value=${encodeURI(key)}` + getHeader();
-	var response = HttpRequest(url);
 	var result = [];
+	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, `/v2/search?value=${encodeURI(key)}` + getHeader()));
 	if(response.code() == 200){
-		const $ = JSON.parse(response.html());
+		const $ = JSON.parse(response.body().string());
 		$.data.forEach((child) => {
 			result.push({
-				//标题
-				title: child.title,
+				//名称
+				name: child.title,
 		
 				//概览
 				summary: child.index.type + '\n' + child.index.year,
@@ -155,7 +158,7 @@ function search(key) {
 				coverUrl: child.images.large,
 		
 				//网址
-				url: 'https://anime-api.5t5.top/v2/anime/file?id=' + child.id
+				url: JavaUtils.urlJoin(baseUrl, '/v2/anime/file?id=' + child.id)
 			});
 		});
 	}
@@ -164,17 +167,17 @@ function search(key) {
 /**
  * 发现
  * @param {string} url
- * @return {[{title, summary, coverUrl, url}]}
+ * @return {[{name, summary, coverUrl, url}]}
  */
 function find(url) {
-	const response = HttpRequest(url + getHeader() + '@header->content-type:application/json');
+	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, url + getHeader() + '@header->content-type:application/json'));
 	var result = [];
 	if(response.code() == 200){
-		const $ = JSON.parse(response.html());
+		const $ = JSON.parse(response.body().string());
 		$.data.forEach((child) => {
 			result.push({
-				//标题
-				title: child.title,
+				//名称
+				name: child.title,
 		
 				//概览
 				summary: child.index.type + '\n' + child.index.year,
@@ -183,7 +186,7 @@ function find(url) {
 				coverUrl: child.images.large,
 		
 				//网址
-				url: 'https://anime-api.5t5.top/v2/anime/file?id=' + child.id
+				url: JavaUtils.urlJoin(baseUrl, '/v2/anime/file?id=' + child.id)
 			});
 		});
 	}
@@ -192,7 +195,7 @@ function find(url) {
 
 /**
  * 详情
- * @return {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	return JSON.stringify({
@@ -208,42 +211,39 @@ function detail(url) {
  * @return {[{name, chapters:{[{name, url}]}}]}
  */
 function tocs(url) {
-	const tagResponse = HttpRequest('https://anime-api.5t5.top/v2/drive/all' + getHeader());
-	
 	//创建目录数组
 	var newTocs = [];
-	
-	const child = JSON.parse(tagResponse.html()).data.list[0];
-	//创建章节数组
-	var newChapters = [];
-	const html = HttpRequest(url + '&drive=' + child.id + getHeader()).html();
-	if(html != null){
-		JSON.parse(html).data.forEach((child2,index2) => {
-			if (typeof child2.episode == 'string') {
-				newChapters.push({
-					//章节名称
-					name: child2.episode,
-					//章节网址
-					url: child2.url
-				});
-			}else{
-				newChapters.push({
-					//章节名称
-					name: child2.name,
-					//章节网址
-					url: child2.url
-				});
-			}
-		});
-		//
-		//添加目录
-		newTocs.push({
-			//目录名称
-			name: child.name,
-			//章节
-			chapters : newChapters
-		});
-	}
-	
+
+	//目录标签请求
+	//const tagResponse = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, '/v2/drive/all' + getHeader()));
+	//if(tagResponse.code() == 200){
+		const defaultDrive = '2AG_CHUN_CDN'
+		//const defaultDrive = JSON.parse(tagResponse.body().string()).data.default;
+		//创建章节数组
+		var newChapters = [];
+
+		//目录请求
+		const tocResponse = JavaUtils.httpRequest(url + '&drive=' + defaultDrive + getHeader());
+		if(tocResponse.code() == 200){
+			JSON.parse(tocResponse.body().string()).data.forEach((child2, index2) => {
+				if(child2.extensionName.type == 'video'){
+					newChapters.push({
+						//章节名称
+						name: String(child2.episode),
+						//章节网址
+						url: child2.url
+					});
+				}
+			});
+			//
+			//添加目录
+			newTocs.push({
+				//目录名称
+				name: defaultDrive,
+				//章节
+				chapters : newChapters
+			});
+		}
+	//}
 	return newTocs;
 }
