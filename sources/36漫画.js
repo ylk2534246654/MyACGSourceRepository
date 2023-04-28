@@ -11,7 +11,7 @@ function manifest() {
 		minMyACG: 20230428,
 		
 		//编译版本
-		compileVersion: JavaUtils.JS_VERSION_ES6,
+		compileVersion: JavaUtils.JS_VERSION_1_7,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -120,7 +120,7 @@ function find(url) {
 		$.data.BookList.forEach((child) => {
 			array.push({
 				//标题
-				title: _toString(child.Name),
+				name: _toString(child.Name),
 				
 				//概览
 				summary: _toString(child.Desc),

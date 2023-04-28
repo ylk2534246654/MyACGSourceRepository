@@ -83,7 +83,7 @@ const baseUrl = "https://www.agemys.vip";
 /**
  * 搜索
  * @param {string} key
- * @return {[{title, summary, coverUrl, url}]}
+ * @return {[{name, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = JavaUtils.urlJoin(baseUrl,'/search?&query='+ encodeURI(key));
@@ -177,7 +177,7 @@ function find2(url) {
 
 /**
  * 详情
- * @return {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = JavaUtils.httpRequest(url);
@@ -185,7 +185,7 @@ function detail(url) {
 		const document = response.body().cssDocument();
 		return JSON.stringify({
 			//标题
-			title: document.selectFirst('.detail_imform_name').text(),
+			name: document.selectFirst('.detail_imform_name').text(),
 			
 			//作者
 			author: document.selectFirst('li:nth-child(5) > span.detail_imform_value').text(),
