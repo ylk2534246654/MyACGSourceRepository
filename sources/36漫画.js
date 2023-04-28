@@ -76,17 +76,16 @@ function manifest() {
 	});
 }
 
-const header = '';
 /**
  * 搜索
  * @param {string} key
  * @return {[{name, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = `https://soumh.pigqq.com/search.aspx?key=${encodeURI(key)}&page=1&siteid=manhuaapp2` + header;
+	var url = `https://soumh.pigqq.com/search.aspx?key=${encodeURI(key)}&page=1&siteid=manhuaapp2`;
 	
 	var array= [];
-	const response = JavaUtils.httpRequest(url + header);
+	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const $ = JSON.parse(response.body().string());
 		$.data.forEach((child) => {
@@ -115,7 +114,7 @@ function search(key) {
  */
 function find(url) {
 	var array= [];
-	const response = JavaUtils.httpRequest(url + header);
+	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const $ = JSON.parse(response.body().string());
 		$.data.BookList.forEach((child) => {
@@ -142,7 +141,7 @@ function find(url) {
  * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
-	const response = JavaUtils.httpRequest(url + header);
+	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		var $ = JSON.parse(response.body().string()).data;
 		return JSON.stringify({
@@ -179,7 +178,7 @@ function tocs(id) {
 	//创建章节数组
 	var newChapters= [];
 
-	const response = JavaUtils.httpRequest(`https://infosmanhua.pysmei.com/BookFiles/Html/${id}/index.html`+ header);
+	const response = JavaUtils.httpRequest(`https://infosmanhua.pysmei.com/BookFiles/Html/${id}/index.html`);
 	if(response.code() == 200){
 		const $ = JSON.parse(String(response.body().string()).replace(new RegExp('},]','g'),'}]'));
 		$.data.list.forEach((booklet) => {
@@ -206,7 +205,7 @@ function tocs(id) {
  * @return {string} content
  */
 function content(url) {
-	const response = JavaUtils.httpRequest(url + header);
+	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		var content = JSON.parse(response.body().string()).data.content;
 		return _toString(content);
