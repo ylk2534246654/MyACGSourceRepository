@@ -8,7 +8,10 @@ function manifest() {
 		id: 1655214571,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230315,
+		minMyACG: 20230428,
+
+		//编译版本
+		compileVersion: JavaUtils.JS_VERSION_1_7,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
@@ -28,7 +31,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 6,
+		version: 7,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -40,46 +43,52 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年3月18日",
+		updateTime: "2023年4月28日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
 		
-		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截的请求处理，3：对内部浏览器拦截的框架处理
-		contentType: 2,
+		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
+		contentProcessType: 2,
 		
-		//自定义标签
-		groupName: ["动漫"],
+		//分组
+		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,
 		
 		//发现
 		findList: {
-			"最近更新": ToolUtils.urlJoin(baseUrl,"/type/riman/")
+			"最近更新": "/type/riman/",
+			"剧场版": "/type/juchang/",
+			"大陆动漫": "/type/guoman/",
 		},
 	});
 }
-const baseUrl = "http://bimiacg4.net";//http://bimiacg.one/
+const baseUrl = "http://bimiacg4.net";
+/**
+ * 备份：
+ * http://bimiacg.one/
+ */
 const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
 
 /**
  * 搜索
  * @param {string} key
- * @return {[{title, summary, coverUrl, url}]}
+ * @return {[{name, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = ToolUtils.urlJoin(baseUrl,'/vod/search/@post->wd='+ encodeURI(key) + header);
-	const response = HttpRequest(url + header);
-	var result= [];
+	var url = JavaUtils.urlJoin(baseUrl, '/vod/search/@post->wd='+ encodeURI(key));
+	var result = [];
+	const response = JavaUtils.httpRequest(url + header);
 	if(response.code() == 200){
-		var document = response.document();
-		var elements = document.select("ul.tab-cont > li");
+		const document = response.body().cssDocument();
+		const elements = document.select("ul.tab-cont > li");
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			result.push({
-				//标题
-				title: element.selectFirst('div.info > a').text(),
+				//名称
+				name: element.selectFirst('div.info > a').text(),
 				
 				//概览
 				summary: element.selectFirst('div.info > p').text(),
@@ -97,20 +106,19 @@ function search(key) {
 /**
  * 发现
  * @param string url
- * @return {[{title, summary, coverUrl, url}]}
+ * @return {[{name, summary, coverUrl, url}]}
  */
 function find(url) {
-	const response = HttpRequest(url + header);
-	var result= [];
+	var result = [];
+	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, url) + header);
 	if(response.code() == 200){
-		var result = [];
-		var document = response.document();
-		var elements = document.select("ul.tab-cont > li");
+		const document = response.body().cssDocument();
+		const elements = document.select("ul.tab-cont > li");
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			result.push({
-				//标题
-				title: element.selectFirst('div.info > a').text(),
+				//名称
+				name: element.selectFirst('div.info > a').text(),
 				
 				//概览
 				summary: element.selectFirst('div.info > p').text(),
@@ -128,15 +136,15 @@ function find(url) {
 
 /**
  * 详情
- * @return {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
-	const response = HttpRequest(url+ header);
+	const response = JavaUtils.httpRequest(url + header);
 	if(response.code() == 200){
-		var document = response.document();
+		const document = response.body().cssDocument();
 		return JSON.stringify({
-			//标题
-			title: document.selectFirst('div.tit > h1').text(),
+			//名称
+			name: document.selectFirst('div.tit > h1').text(),
 			
 			//作者
 			author: document.selectFirst('div.txt_intro_con > ul > li:nth-child(4) > storng > a').text(),
@@ -165,6 +173,7 @@ function detail(url) {
  * @return {[{name, chapters:{[{name, url}]}}]}
  */
 function tocs(document) {
+	//目录标签元素选择器
 	const tagElements = document.select('.play_source_tab > a');
 	
 	//目录元素选择器
@@ -216,6 +225,18 @@ function content(url) {
 
 	if(!re.test(url)){
 		return url;
+	}
+	return null;
+}
+/**
+ * 对网页注入 JS 脚本（contentProcessType == 2）
+ * @return  {string} url
+ * @param  {boolean} isStart：运行时机{true：页面加载前，false：页面加载完成后}
+ * @return  {string} js 代码
+ */
+function webPageLoadJavaScript(url, isStart) {
+	if(!isStart){
+		return `document.write(document.querySelector("#playleft > iframe").outerHTML);`;
 	}
 	return null;
 }
