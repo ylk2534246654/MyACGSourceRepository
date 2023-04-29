@@ -1,22 +1,25 @@
 function manifest() {
 	return JSON.stringify({
 		//MyACG 最新版本
-		MyACG: 'https://lanzou.com/b07xqlbxc ',
+		MyACG: 'https://pan.baidu.com/s/1kVkWknH',
 		
-		//@NonNull 搜索源ID标识，设置后不建议更改
+		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
 		id: 1660756417,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20220101,
+		minMyACG: 20230428,
+
+		//编译版本
+		compileVersion: JavaUtils.JS_VERSION_1_7,
 
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
 		priority: 70,
 		
-		//是否失效，默认关闭
+		//是否启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		invalid: false,
+		isEnabledInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "哈哩哈哩",
@@ -28,7 +31,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//搜索源自动同步更新链接
 		syncList: {
@@ -40,122 +43,144 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2022年8月17日",
+		updateTime: "2023年4月29日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
 		
-		//内容处理方式： 0：链接处理并浏览器访问{url}，1：链接处理{url}，2：浏览器拦截请求{url}，3：浏览器拦截框架{html}
-		contentType: 2,
+		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
+		contentProcessType: 2,
 		
-		//自定义标签
-		tag: ["动漫"],
+		//分组
+		group: ["动漫"],
 		
 		//@NonNull 详细界面的基本网址
-		baseUrl: "https://halihali7.com",
+		baseUrl: baseUrl,
 	});
 }
-const header = '';
+const baseUrl = 'https://m.feijisu21.com';
+/**
+ * 备用：
+ * 哈哩哈哩
+ * s5.quelingfei.com:4438
+ * halihali7.com
+ * halihali1.com
+ * halihali3.com
+ * halihali5.com
+ * halihali.icu
+ * halihali.li
+ * 站长联系方式：rosamondcurtis6028@gmail.com
+ * 
+ * 重定向-飞极速
+ * http://m.feijisu21.com
+ * 
+ * 重定向-补丁动画
+ * https://m.feijisu21.com
+ * 
+ */
 
 /**
  * 搜索
- * @params {string} key
- * @returns {[{title, summary, cover, url}]}
+ * @param {string} key
+ * @return {[{name, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = 'https://s5.quelingfei.com:4438/ssszz.php?top=10&q='+ encodeURI(key) + header;
-	const response = httpRequest(url);
-	
-	var array= [];
-	const $ = JSON.parse(response)
-	$.forEach((child) => {
-		array.push({
-			//标题
-			title: child.title,
-	
-			//概览
-			summary: child.time,
-	
-			//封面
-			cover: ToolUtil.urlJoin(url,child.thumb),
-	
-			//网址
-			url: ToolUtil.urlJoin(url,child.url)
+	var url = 'https://s5.quelingfei.com:4438/ssszz.php?top=10&q='+ encodeURI(key);
+	var result = [];
+	const response = JavaUtils.httpRequest(url);
+	if(response.code() == 200){
+		const $ = JSON.parse(response.body().string());
+		$.forEach((child) => {
+			result.push({
+				//名称
+				name: child.title,
+		
+				//概览
+				summary: child.time,
+		
+				//封面网址
+				coverUrl: JavaUtils.urlJoin(url, child.thumb),
+		
+				//网址
+				url: JavaUtils.urlJoin(url, child.url)
+			})
 		})
-	  })
-	return JSON.stringify(array);
+	}
+	return JSON.stringify(result);
 }
 /**
  * 详情
- * @params {string} url
- * @returns {[{author, summary, cover, upDate, reverseOrder, catalog}]}
+ * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
  function detail(url) {
-	const response = httpRequest(url+ header);
-	return JSON.stringify({
-		//标题
-		title : jsoup(response,'dt.name').text(),
-		
-		//作者
-		//author: jsoup(response,'div:nth-child(1) > div.video-info-actor > a').text(),
-		
-		//概览
-		summary: jsoup(response,'.des2').text(),
-
-		//封面
-		cover : jsoup(response,'.pic > img').attr('data-src'),
-		
-		//目录是否倒序
-		reverseOrder: true,
-		
-		//目录链接/非外链无需使用
-		catalog: catalog(response,url)
-	})
+	const response = JavaUtils.httpRequest(url);
+	if(response.code() == 200){
+		var document = response.body().cssDocument();
+		return JSON.stringify({
+			//名称
+			name: document.selectFirst('dt.name').text(),
+			
+			//作者
+			//author: document.selectFirst('').text(),
+			
+			//更新时间
+			//update: document.selectFirst('').text(),
+			
+			//概览
+			summary: document.selectFirst('.des2').text(),
+	
+			//封面网址
+			coverUrl: document.selectFirst('.pic > img').absUrl('data-src'),
+			
+			//是否启用将章节置为倒序
+			isEnabledChapterReverseOrder: true,
+			
+			//目录加载
+			tocs: tocs(document)
+		});
+	}
+	return null;
 }
+
 /**
  * 目录
- * @params {string} response
- * @params {string} url
- * @returns {tag, chapter:{[{group, name, url}]}}
+ * @returns {[{name, chapters:{[{name, url}]}}]}
  */
-function catalog(response,url) {
-	//目录标签代码
-	const tabs = jsoupArray(response,'ul > li[id]').outerHtml();
+function tocs(document) {
+	//目录标签元素选择器
+	const tagElements = document.select('ul > li[id]');
 	
-	//目录代码
-	const catalogs = jsoupArray(response,'.urlli > div > ul[id]').outerHtml();
+	//目录元素选择器
+	const catalogElements= document.select('.urlli > div > ul[id]');
 	
 	//创建目录数组
-	var new_catalogs= [];
+	var newCatalogs = [];
 	
-	for (var i=0;i<catalogs.length;i++) {
-	    var catalog = catalogs[i];
-		
+	for (var i = 0;i < catalogElements.size();i++) {
 		//创建章节数组
-		var newchapters= [];
+		var newChapters = [];
 		
-		//章节代码
-		var chapters = jsoupArray(catalog,'ul > li').outerHtml();
+		//章节元素选择器
+		var chapterElements = catalogElements.get(i).select('ul > li');
 		
-		for (var ci=0;ci<chapters.length;ci++) {
-			var chapter = chapters[ci];
+		for (var i2 = 0;i2 < chapterElements.size();i2++) {
+			var chapterElement = chapterElements.get(i2);
 			
-			newchapters.push({
+			newChapters.push({
 				//章节名称
-				name: jsoup(chapter,'a').text(),
-				//章节链接
-				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href'))
+				name: chapterElement.selectFirst('a').text(),
+				//章节网址
+				url: chapterElement.selectFirst('a').absUrl('href')
 			});
 		}
-		//添加目录
-		new_catalogs.push({
+		newCatalogs.push({
 			//目录名称
-			tag: jsoup(tabs[i],'li').text(),
+			name: tagElements.get(i).selectFirst('li').text(),
 			//章节
-			chapter : newchapters
-			});
+			chapters : newChapters
+		});
 	}
-	return new_catalogs
+	return newCatalogs;
 }
 
  /**
