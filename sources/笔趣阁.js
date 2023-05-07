@@ -31,7 +31,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 4,
+		version: 5,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -207,7 +207,7 @@ function content(url) {
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		var $ = JSON.parse(response.body().string());
-		return $.data.content.replace(new RegExp('@@﻿@@','g'),'').replace(new RegExp('正在更新中，请稍等片刻，内容更新后，重新进来即可获取最新章节！亲，如果觉得APP不错，别忘了点右上角的分享给您好友哦！','g'),'')
+		return _toString($.data.content.replace(new RegExp('@@﻿@@','g'),'').replace(new RegExp('正在更新中，请稍等片刻，内容更新后，重新进来即可获取最新章节！亲，如果觉得APP不错，别忘了点右上角的分享给您好友哦！','g'),''))
 	}
 	return null;
 }
