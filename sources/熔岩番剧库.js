@@ -31,7 +31,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 7,
+		version: 8,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -43,7 +43,7 @@ function manifest() {
 		},
 
 		//更新时间
-		updateTime: "2023年4月29日",
+		updateTime: "2023年6月25日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -130,8 +130,7 @@ function verifyUserLoggedIn() {
 }
 
 function getHeader() {
-	var localStorage = JavaUtils.localStorage('https://lavani.me/favicon.ico');
-	const token = localStorage.getString('token');
+	const token = JavaUtils.getLocalStorage('https://lavani.me', 'token');
 	const authorization = JSON.parse(token).value;
 	return "@header->referer:https://lavani.me/@header->authorization:" + authorization;
 }
@@ -226,10 +225,10 @@ function tocs(url) {
 		const tocResponse = JavaUtils.httpRequest(url + '&drive=' + defaultDrive + getHeader());
 		if(tocResponse.code() == 200){
 			JSON.parse(tocResponse.body().string()).data.forEach((child2, index2) => {
-				if(child2.extensionName.type == 'video'){
+				if(child2.parseResult.extensionName.type == 'video'){
 					newChapters.push({
 						//章节名称
-						name: String(child2.episode),
+						name: String(child2.parseResult.episode),
 						//章节网址
 						url: child2.url
 					});
