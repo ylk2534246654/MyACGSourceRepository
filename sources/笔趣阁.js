@@ -31,7 +31,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 5,
+		version: 6,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -178,7 +178,7 @@ function tocs(id) {
 
 	const response = JavaUtils.httpRequest(`https://infosxs.pysmei.com/BookFiles/Html/${id}/index.html`);
 	if(response.code() == 200){
-		const $ = JSON.parse(String(response.body().string()).replace(new RegExp('},]','g'),'}]'));
+		const $ = JSON.parse(String(response.body().string()).replace(new RegExp('},]','g'),'}]').replace(new RegExp('style=','g'),''));
 		$.data.list.forEach((booklet) => {
 			booklet.list.forEach((chapter) => {
 				newChapters.push({
@@ -188,6 +188,13 @@ function tocs(id) {
 					url: `https://contentxs.pysmei.com/BookFiles/Html/${id}/${chapter.id}.html`
 				})
 			})
+		})
+	}else{
+		newChapters.push({
+			//章节名称
+			name: "无资源",
+			//章节网址
+			url: ""
 		})
 	}
 	return [{
