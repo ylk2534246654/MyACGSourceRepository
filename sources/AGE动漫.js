@@ -10,9 +10,6 @@ function manifest() {
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
 		minMyACG: 20230428,
 
-		//编译版本
-		compileVersion: JavaUtils.JS_VERSION_1_7,
-
 		//优先级1~100，数值越大越靠前
 		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
 		priority: 80,
@@ -31,7 +28,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 3,
+		version: 4,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -43,7 +40,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年4月28日",
+		updateTime: "2023年7月7日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -74,11 +71,11 @@ function manifest() {
 
 		//全局 HTTP 请求头列表
 		httpRequestHeaderList: {
-			"user-agent-system": "Windows NT 10.0; Win64; x64"
+			//"user-agent-system": "Windows NT 10.0; Win64; x64"
 		}
 	});
 }
-const baseUrl = "https://www.agemys.vip";
+const baseUrl = "https://www.agemys.org";
 
 /**
  * 搜索
@@ -86,26 +83,26 @@ const baseUrl = "https://www.agemys.vip";
  * @return {[{name, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl,'/search?&query='+ encodeURI(key));
+	var url = JavaUtils.urlJoin(baseUrl, '/search?&query=' + encodeURI(key));
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
-		var elements = document.select("div[class=blockcontent1] > div");
+		var elements = document.select("#cata_video_list > div > div");
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			result.push({
 				//名称
-				name: element.selectFirst('a[class=cell_poster] > img').attr('alt'),
+				name: element.selectFirst('.card-title').text(),
 				
 				//概览
-				summary: element.selectFirst('div:nth-child(7) > span.cell_imform_value').text(),
+				summary: element.selectFirst('div.video_cover > div > span').text(),
 				
 				//封面网址
-				coverUrl: element.selectFirst('a[class=cell_poster] > img').absUrl('src'),
+				coverUrl: element.selectFirst('div.video_cover > div > a > img').absUrl('data-original'),
 				
 				//网址
-				url: element.selectFirst('a[class=cell_poster]').absUrl('href')
+				url: element.selectFirst('.card-title > a').absUrl('href')
 			});
 		}
 	}
@@ -122,21 +119,21 @@ function find(url) {
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
-		var elements = document.select("div[class=blockcontent1] > div");
+		const elements = document.select("#cata_video_list > div > div");
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			result.push({
 				//名称
-				name: element.selectFirst('a[class=cell_poster] > img').attr('alt'),
+				name: element.selectFirst('.card-title').text(),
 				
 				//概览
-				summary: element.selectFirst('div:nth-child(7) > span.cell_imform_value').text(),
+				summary: element.selectFirst('div.video_cover > div > span').text(),
 				
 				//封面网址
-				coverUrl: element.selectFirst('a[class=cell_poster] > img').absUrl('src'),
+				coverUrl: element.selectFirst('div.video_cover > div > a > img').absUrl('data-original'),
 				
 				//网址
-				url: element.selectFirst('a[class=cell_poster]').absUrl('href')
+				url: element.selectFirst('.card-title > a').absUrl('href')
 			});
 		}
 	}
@@ -144,7 +141,7 @@ function find(url) {
 }
 
 /**
- * 发现
+ * 发现2
  * @param {string} url
  * @return {[{name, summary, coverUrl, url}]}
  */
@@ -154,21 +151,21 @@ function find2(url) {
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
-		var elements = document.select(".baseblock > div > ul > li");
+		var elements = document.select("div.video_item");
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			result.push({
 				//名称
-				name: element.selectFirst('h4 > a').text(),
+				name: element.selectFirst('.video_item-title > a').text(),
 				
 				//概览
-				summary: element.selectFirst('a > span').text(),
+				summary: element.selectFirst('.video_item--image > span').text(),
 				
 				//封面网址
-				coverUrl: element.selectFirst('a > img').absUrl('src'),
+				coverUrl: element.selectFirst('.video_item--image > img').absUrl('data-original'),
 				
 				//网址
-				url: element.selectFirst('h4 > a').absUrl('href')
+				url: element.selectFirst('.video_item-title > a').absUrl('href')
 			});
 		}
 	}
@@ -185,19 +182,19 @@ function detail(url) {
 		const document = response.body().cssDocument();
 		return JSON.stringify({
 			//标题
-			name: document.selectFirst('.detail_imform_name').text(),
+			name: document.selectFirst('.video_detail_title').text(),
 			
 			//作者
 			author: document.selectFirst('li:nth-child(5) > span.detail_imform_value').text(),
 			
 			//更新时间
-			update: document.selectFirst('ul.blockcontent > li:nth-child(7)').text(),
+			update: document.selectFirst('li:nth-child(7) > span.detail_imform_value').text(),
 			
 			//概览
-			summary: document.selectFirst('div.detail_imform_desc_pre > p').text(),
+			summary: document.selectFirst('div.video_detail_desc').text(),
 	
 			//封面网址
-			coverUrl: document.selectFirst('img.poster').absUrl('src'),
+			coverUrl: document.selectFirst('div.video_detail_cover > img').absUrl('data-original'),
 			
 			//是否启用将章节置为倒序
 			isEnabledChapterReverseOrder: false,
@@ -215,10 +212,10 @@ function detail(url) {
  */
 function tocs(document) {
 	//目录标签元素选择器
-	const tagElements = document.select('#menu0 > li');
+	const tagElements = document.select('.nav-item');
 	
 	//目录元素选择器
-	const catalogElements= document.select('#main0 > div.movurl');
+	const catalogElements= document.select('.tab-pane');
 	
 	//创建目录数组
 	var newCatalogs = [];
