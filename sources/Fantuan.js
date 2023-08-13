@@ -59,12 +59,13 @@ function manifest() {
 		},
 	});
 }
-const baseUrl = getBaseUrl();
+const baseUrl = "https://acgfta.com";
 /**
  * https://acgfantuan.com
  * 
  * 导航：https://fantuantv.com
  */
+/*
 function getBaseUrl() {
 	var preference = JavaUtils.getPreference();
 	var baseUrlTime = preference.getLong("baseUrlTime");

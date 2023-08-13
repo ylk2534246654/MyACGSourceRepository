@@ -89,8 +89,8 @@ function manifest() {
 	});
 }
 
-const baseUrl = getBaseUrl();
-
+const baseUrl = "https://www.agemys.org";
+/*
 function getBaseUrl() {
 	var preference = JavaUtils.getPreference();
 	var baseUrlTime = preference.getLong("baseUrlTime");

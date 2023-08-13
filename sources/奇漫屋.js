@@ -102,13 +102,14 @@ function find(label) {
 }
 
 //此源和七夕漫画，六漫画相似
-const baseUrl = getBaseUrl();
+const baseUrl = "http://m.qiman51.com";
 /**
  * http://qiman5.com
  * http://qiman56.com
  * http://qiman57.com
  * http://m.qiman59.com
  */
+/*
 function getBaseUrl() {
 	var preference = JavaUtils.getPreference();
 	var baseUrlTime = preference.getLong("baseUrlTime");

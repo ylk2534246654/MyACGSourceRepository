@@ -70,8 +70,8 @@ function manifest() {
 	});
 }
 
-const baseUrl = getBaseUrl();
-
+const baseUrl = "http://m.6mh67.com";
+/*
 function getBaseUrl() {
 	var preference = JavaUtils.getPreference();
 	var baseUrlTime = preference.getLong("baseUrlTime");
