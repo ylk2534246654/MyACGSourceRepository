@@ -1,20 +1,13 @@
 function manifest() {
 	return JSON.stringify({
-		//MyACG 最新版本
-		MyACG: 'https://pan.baidu.com/s/1kVkWknH',
-		
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
 		id: 1660927525,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230428,
-		
-		//编译版本
-		compileVersion: JavaUtils.JS_VERSION_1_7,
+		minMyACG: 20230804,
 
-		//优先级1~100，数值越大越靠前
-		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
+		//优先级 1~100，数值越大越靠前
 		priority: 50,//加载较慢
 		
 		//是否启用失效#默认关闭
@@ -31,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 8,
+		version: 9,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -43,7 +36,7 @@ function manifest() {
 		},
 
 		//更新时间
-		updateTime: "2023年6月25日",
+		updateTime: "2023年8月5日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -59,32 +52,11 @@ function manifest() {
 		
 		//发现
 		findList: {
-			"动漫": {
-				"2017年": {
-					"url": '/v2/index/query@post->{"year":"2017年","type":""}',
-					"function": "find"
-				},
-				"2018年": {
-					"url": '/v2/index/query@post->{"year":"2018年","type":""}',
-					"function": "find"
-				},
-				"2019年": {
-					"url": '/v2/index/query@post->{"year":"2019年","type":""}',
-					"function": "find"
-				},
-				"2020年": {
-					"url": '/v2/index/query@post->{"year":"2020年","type":""}',
-					"function": "find"
-				},
-				"2021年": {
-					"url": '/v2/index/query@post->{"year":"2021年","type":""}',
-					"function": "find"
-				},
-				"2022年": {
-					"url": '/v2/index/query@post->{"year":"2022年","type":""}',
-					"function": "find"
-				}
-			}
+			category: {
+				"type": ["全部","1月冬","4月春","7月夏","10月秋","SP、OVA、OAD等","三次元","其他地区","剧场版","网络动画"],
+				"year": ["全部","2023年","2022年","2021年","2020年","2019年","2018年","2017年","2016年","2015年","2014年","2013年","2012年","2011年","2010年","2009年","2008年","2007年","2006年","2005年","1999年","1998年","1997年","1987年"],
+			},
+			"动漫": ["type","year"]
 		},
 		
 		//是否启用登录
@@ -116,17 +88,16 @@ function isUserLoggedIn(url, responseHtml) {
  * @return {boolean} 登录结果
  */
 function verifyUserLoggedIn() {
-	try{
-		const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, "/v2/user/info" + getHeader()));
-		if(response.code() == 200){
-			if(response.body().string().indexOf('成功') != -1){
-				return true;
-			}
+	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, "/v2/user/info" + getHeader()));
+	if(response.code() == 200){
+		if(response.body().string().indexOf('成功') != -1){
+			return true;
+		}else{
+			return false;
 		}
-	} catch (err){
-		//抛出错误
+	}else{
+		return true;
 	}
-	return false;
 }
 
 function getHeader() {
@@ -165,11 +136,18 @@ function search(key) {
 }
 /**
  * 发现
- * @param {string} url
  * @return {[{name, summary, coverUrl, url}]}
  */
-function find(url) {
-	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, url + getHeader() + '@header->content-type:application/json'));
+function find(type, year) {
+	if(type == "全部"){
+		if(year == "全部"){
+			year = "2023年";
+		}
+		type = ""
+	}else if(year == "全部"){
+		year = "";
+	}
+	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, `/v2/index/query@post->{"year":"${year}","type":"${type}"}${getHeader()}@header->content-type:application/json`));
 	var result = [];
 	if(response.code() == 200){
 		const $ = JSON.parse(response.body().string());

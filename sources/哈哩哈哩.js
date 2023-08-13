@@ -1,20 +1,13 @@
 function manifest() {
 	return JSON.stringify({
-		//MyACG 最新版本
-		MyACG: 'https://pan.baidu.com/s/1kVkWknH',
-		
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
 		id: 1660756417,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230428,
+		minMyACG: 20230810,
 
-		//编译版本
-		compileVersion: JavaUtils.JS_VERSION_1_7,
-
-		//优先级1~100，数值越大越靠前
-		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
+		//优先级 1~100，数值越大越靠前
 		priority: 70,
 		
 		//是否启用失效#默认关闭
@@ -31,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 3,
 
 		//搜索源自动同步更新链接
 		syncList: {
@@ -43,7 +36,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年4月29日",
+		updateTime: "2023年8月10日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -52,14 +45,24 @@ function manifest() {
 		contentProcessType: 2,
 		
 		//分组
-		group: ["动漫"],
+		group: ["动漫", "影视"],
 		
 		//@NonNull 详细界面的基本网址
 		baseUrl: baseUrl,
+
+		//发现
+		findList: {
+			"动漫": "/acg/",
+			"电视剧": "/tv/",
+			"电影": "/mov/",
+			"综艺": "/zongyi/"
+		},
 	});
 }
 const baseUrl = 'https://m.feijisu21.com';
 /**
+ * buidng2.com
+ * 
  * 备用：
  * 哈哩哈哩
  * s5.quelingfei.com:4438
@@ -108,6 +111,39 @@ function search(key) {
 	}
 	return JSON.stringify(result);
 }
+
+
+/**
+ * 发现
+ * @param string url
+ * @return {[{name, summary, coverUrl, url}]}
+ */
+function find(url) {
+	var result = [];
+	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, url));
+	if(response.code() == 200){
+		const document = response.body().cssDocument();
+		const elements = document.select("ul > li.mb");
+		for (var i = 0;i < elements.size();i++) {
+			var element = elements.get(i);
+			result.push({
+				//名称
+				name: element.selectFirst('.li-hv').text(),
+				
+				//概览
+				summary: element.selectFirst('.bz').text(),
+				
+				//封面网址
+				coverUrl: element.selectFirst('img.lazy').absUrl('data-original'),
+				
+				//网址
+				url: element.selectFirst('.li-hv').absUrl('href')
+			});
+		}
+	}
+	return JSON.stringify(result);
+}
+
 /**
  * 详情
  * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
@@ -154,7 +190,7 @@ function tocs(document) {
 	const catalogElements= document.select('.urlli > div > ul[id]');
 	
 	//创建目录数组
-	var newCatalogs = [];
+	var newTocs = [];
 	
 	for (var i = 0;i < catalogElements.size();i++) {
 		//创建章节数组
@@ -173,14 +209,14 @@ function tocs(document) {
 				url: chapterElement.selectFirst('a').absUrl('href')
 			});
 		}
-		newCatalogs.push({
+		newTocs.push({
 			//目录名称
 			name: tagElements.get(i).selectFirst('li').text(),
 			//章节
 			chapters : newChapters
 		});
 	}
-	return newCatalogs;
+	return newTocs;
 }
 
  /**

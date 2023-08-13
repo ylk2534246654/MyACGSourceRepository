@@ -1,22 +1,18 @@
 function manifest() {
 	return JSON.stringify({
-		//MyACG 最新版本
-		MyACG: 'https://pan.baidu.com/s/1kVkWknH',
-		
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
 		id: 1674978871,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230207,
+		minMyACG: 20230804,
 
-		//优先级1~100，数值越大越靠前
-		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
+		//优先级 1~100，数值越大越靠前
 		priority: 1,
 		
-		//是否失效，默认关闭
+		//是否启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isInvalid: false,
+		isEnabledInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "蝶众影院",
@@ -28,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 3,
 
 		//搜索源自动同步更新链接
 		syncList: {
@@ -40,105 +36,201 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年2月9日",
+		updateTime: "2023年8月4日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
 		
-		//内容处理方式： -1: 搜索相似，0：对链接处理并调用外部APP访问，1：对链接处理，2：对内部浏览器拦截的请求处理，3：对内部浏览器拦截的框架处理
-		contentType: 2,
+		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
+		contentProcessType: 2,
 		
-		//自定义标签
+		//分组
 		group: ["影视"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,
+
+		//发现
+		findList: {
+			category: {
+				"dy_region": ["全部","大陆","香港","台湾","美国","韩国","日本","泰国","新加坡","马来西亚","印度","英国","法国","加拿大","西班牙","俄罗斯","德国","其它"],
+				"zy_region": ["全部","大陆","港台","韩国","欧美","日本","台湾","日韩","香港","内地"],
+				"dm_region": ["全部","大陆","日本","欧美","其他"],
+				"dy_label": ["全部","动作","喜剧","爱情","恐怖","科幻","剧情","战争","警匪","犯罪","动画","奇幻","魔幻","武侠","冒险","枪战","悬疑","惊悚","经典","青春","歌舞","文艺","微电影","古装","历史","运动","农村","儿童","网络电影","记录","预告"],
+				"dsj_label": ["全部","国产","港台","日韩","海外","欧美","古装","战争","青春","偶像","喜剧","家庭","犯罪","动作","奇幻","剧情","历史","经典","乡村","情景","商战","网剧","言情","伦理","悬疑","都市","军事","警匪","励志","神话","谍战","武侠","科幻","其他"],
+				"zy_label": ["全部","脱口秀","真人秀","选秀","八卦","访谈","情感","生活","晚会","搞笑","音乐","时尚","游戏","少儿","体育","纪实","科教","曲艺","歌舞","财经","汽车","播报","旅游","美食","纪实","求职","其他"],
+				"dm_label": ["全部","热血","科幻","美少女","魔幻","经典","励志","情感","萝莉","少年","少女","原创","少儿","冒险","搞笑","推理","恋爱","治愈","幻想","校园","动物","机战","亲子","儿歌","运动","悬疑","怪物","战争","益智","青春","童话","竞技","动作","社会","友情","真人版","电影版","OVA版","TV版","新番动画","完结动画","其他"],
+				"year": ["全部","2023","2022","2021","2020","2019","2018","2017","2016","2015","2014","2013","2012","2011","2010","2009","2008","2007","2006","2004"],
+				"order": {
+					"按最新": "time",
+					"按最热": "hits",
+					"按评分": "score",
+				},
+			},
+			"电影": ["1","dy_region","dy_label","year","order"],
+			"电视剧": ["2","dy_region","dsj_label","year","order"],
+			"综艺": ["3","zy_region","zy_label","year","order"],
+			"动漫": ["4","dm_region","dm_label","year","order"]
+		},
+
+		//网络限流 - 如果{regexUrl}匹配网址，则限制其{period}毫秒内仅允许{maxRequests}个请求
+		networkRateLimitList: [
+			{
+				regexUrl: "\/vodsearch\/",//表示需要限流的 Url，使用正则表达式格式（不允许为空）
+				maxRequests: 0,//在指定的时间内允许的请求数量（必须 >= 0 才会生效）
+				period: 10000,//时间周期，毫秒（必须 > 0 才会生效）
+			}
+		],
+
+		//全局 HTTP 请求头列表
+		httpRequestHeaderList: {
+			//"user-agent-system": "Windows NT 10.0; Win64; x64"
+		}
 	});
 }
 
-const baseUrl = "https://www.diezz.net";
-const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
+const baseUrl = "https://www.dzvod.cc";
+/**
+ * diezz.net
+ * dzvod.cc
+ */
+
+/**
+ * 是否启用人机身份验证
+ * @param {string} url 网址
+ * @param {string} responseHtml 响应源码
+ * @return {boolean} 返回结果
+ */
+function isEnabledAuthenticator(url, responseHtml) {
+	//对框架进行拦截，检索关键字，
+	if(responseHtml != null && responseHtml.indexOf('请输入验证码') != -1){
+		return true;
+	}
+	return false;
+}
 
 /**
  * 搜索
- * @params {string} key
- * @returns {[{title, summary, coverUrl, url}]}
+ * @param {string} key
+ * @return {[{name, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = ToolUtil.urlJoin(baseUrl,'/vodsearch/-------------.html?wd='+ encodeURI(key) + header);
-	const response = httpRequest(url);
-	
+	var url = JavaUtils.urlJoin(baseUrl, '/vodsearch/-------------.html?wd=' + encodeURI(key));
 	var result = [];
-    var document = org.jsoup.Jsoup.parse(response,url);
-    var elements = document.select(".searchlist_item");
-	for (var i = 0;i < elements.size();i++) {
-	    var element = elements.get(i);
-		result.push({
-			//标题
-			title: element.selectFirst('.vodlist_title > a > :matchText').text(),
-			
-			//概览
-			summary: element.selectFirst('.pic_text').text(),
-			
-			//封面网址
-			coverUrl: element.selectFirst('.searchlist_img > a').absUrl('data-original'),
-			
-			//网址
-			url: element.selectFirst('.searchlist_img > a').absUrl('href')
-		});
+	const response = JavaUtils.httpRequest(url);
+	if(response.code() == 200){
+		const document = response.body().cssDocument();
+		var elements = document.select(".hl-one-list > li");
+		for (var i = 0;i < elements.size();i++) {
+			var element = elements.get(i);
+			result.push({
+				//名称
+				name: element.selectFirst('.hl-item-title').text(),
+				
+				//概览
+				summary: element.selectFirst('.hl-pic-text').text(),
+				
+				//封面网址
+				coverUrl: element.selectFirst('.hl-item-thumb').absUrl('data-original'),
+				
+				//网址
+				url: element.selectFirst('.hl-item-thumb').absUrl('href')
+			});
+		}
 	}
 	return JSON.stringify(result);
 }
+
+
+/**
+ * 发现
+ * @return {[{name, summary, coverUrl, url}]}
+ */
+function find(type, region, label, year, order) {
+	if(region == "全部")region = "";
+	if(label == "全部")label = "";
+	if(year == "全部")year = "";
+	
+	var url = JavaUtils.urlJoin(baseUrl, `/vodshow/${type}-${region}-${order}-${label}--------${year}.html`);
+	var result = [];
+	const response = JavaUtils.httpRequest(url);
+	if(response.code() == 200){
+		const document = response.body().cssDocument();
+		const elements = document.select(".hl-vod-list > li");
+		for (var i = 0;i < elements.size();i++) {
+			var element = elements.get(i);
+			result.push({
+				//名称
+				name: element.selectFirst('.hl-item-title').text(),
+				
+				//概览
+				summary: element.selectFirst('.hl-pic-text').text(),
+				
+				//封面网址
+				coverUrl: element.selectFirst('.hl-item-thumb').absUrl('data-original'),
+				
+				//网址
+				url: element.selectFirst('.hl-item-title > a').absUrl('href')
+			});
+		}
+	}
+	return JSON.stringify(result);
+}
+
 /**
  * 详情
- * @returns {[{title, author, date, summary, coverUrl, isReverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
+ * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
-	const response = httpRequest(url + header);
-    var document = org.jsoup.Jsoup.parse(response,url);
-	return JSON.stringify({
-		//标题
-		title: document.selectFirst('.title').text(),
-		
-		//作者
-		//author: document.selectFirst('').text(),
-		
-		//日期
-		date: document.selectFirst('.content_detail > ul > li:nth-child(2) > em').text(),
-		
-		//概览
-		summary: document.selectFirst('.full_text > span').text(),
-
-		//封面网址
-		coverUrl: document.selectFirst('.content_thumb > a').absUrl('data-original'),
-		
-		//目录是否倒序
-		isReverseOrder: false,
-		
-		//目录加载
-		catalogs: catalogs(document)
-	});
+	const response = JavaUtils.httpRequest(url);
+	if(response.code() == 200){
+		const document = response.body().cssDocument();
+		return JSON.stringify({
+			//标题
+			name: document.selectFirst('.hl-dc-title').text(),
+			
+			//作者
+			//author: document.selectFirst('').text(),
+			
+			//更新时间
+			update: document.selectFirst('.clearfix > ul > li:nth-child(11) > :matchText').text(),
+			
+			//概览
+			summary: document.selectFirst('.clearfix > ul > li:nth-child(12) > :matchText').text(),
+	
+			//封面网址
+			coverUrl: document.selectFirst('.hl-dc-pic > span').absUrl('data-original'),
+			
+			//是否启用将章节置为倒序
+			isEnabledChapterReverseOrder: false,
+			
+			//目录加载
+			tocs: tocs(document)
+		});
+	}
+	return null;
 }
 
 /**
  * 目录
  * @returns {[{name, chapters:{[{name, url}]}}]}
  */
-function catalogs(document) {
-	const tagElements = document.select('.play_source_tab > a');
+function tocs(document) {
+	//目录标签元素选择器
+	const tagElements = document.select('.hl-tabs-btn');
 	
 	//目录元素选择器
-	const catalogElements= document.select('.play_list_box > .playlist_full');
+	const tocElements = document.select('.hl-plays-list');
 	
 	//创建目录数组
-	var newCatalogs = [];
+	var newTocs = [];
 	
-	for (var i = 0;i < catalogElements.size();i++) {
+	for (var i = 0;i < tocElements.size();i++) {
 		//创建章节数组
 		var newChapters = [];
 		
 		//章节元素选择器
-		var chapterElements = catalogElements.get(i).select('ul > li');
+		var chapterElements = tocElements.get(i).select('ul > li');
 		
 		for (var i2 = 0;i2 < chapterElements.size();i2++) {
 			var chapterElement = chapterElements.get(i2);
@@ -150,25 +242,29 @@ function catalogs(document) {
 				url: chapterElement.selectFirst('a').absUrl('href')
 			});
 		}
-		newCatalogs.push({
+		var text = "线路 " + i;
+		if(i < tagElements.size()){
+			text = tagElements.get(i).text();
+		}
+		newTocs.push({
 			//目录名称
-			name: tagElements.get(i).attr('alt'),
+			name: text,
 			//章节
-			chapters: newChapters
+			chapters : newChapters
 		});
 	}
-	return newCatalogs
+	return newTocs;
 }
+
 /**
  * 内容(InterceptRequest)
  * @returns {string} content
- */
+
 function content(url) {
-	//https://js.tydouke.com/bid?url=
-	//展示图片：https://abb.juntaijiancai.com/file/creative/2022/10/04/6627347.gif.oef
 	var re = /tydouke|juntaijiancai/i;
 	if(!re.test(url)){
 		return url;
 	}
 	return null;
 }
+ */

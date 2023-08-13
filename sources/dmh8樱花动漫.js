@@ -1,20 +1,13 @@
 function manifest() {
 	return JSON.stringify({
-		//MyACG 最新版本
-		MyACG: 'https://pan.baidu.com/s/1kVkWknH',
-		
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
 		id: 1654704919,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230428,
-		
-		//编译版本
-		compileVersion: JavaUtils.JS_VERSION_1_7,
+		minMyACG: 20230810,
 
-		//优先级1~100，数值越大越靠前
-		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
+		//优先级 1~100，数值越大越靠前
 		priority: 30,
 		
 		//是否启用失效#默认关闭
@@ -31,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 13,
+		version: 14,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -43,7 +36,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年4月29日",
+		updateTime: "2023年8月10日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -72,6 +65,21 @@ function manifest() {
 		},
 		*/
 
+		//发现
+		findList: {
+			category: {
+				"region": ["全部","日本","大陆","美国","英国","台湾","韩国","香港","法国"],
+				"label": ["全部","热血","格斗","恋爱","校园","搞笑","LOLI","神魔","机战","科幻","真人","青春","魔法","美少女","神话","冒险","运动","竞技","童话","亲子","教育","励志","剧情","社会","后宫","战争","吸血鬼","历史"],
+				"year": ["全部","2023","2022","2021","2020","2019","2018","2017","2016","2015","2014","2013","2012","2011","2010","2009"],
+				"order": {
+					"时间": "time",
+					"人气": "hit",
+					"评分": "score",
+				},
+			},
+			"动漫": ["region","label","year","order"]
+		},
+
 		//网络限流 - 如果{regexUrl}匹配网址，则限制其{period}毫秒内仅允许{maxRequests}个请求
 		networkRateLimitList: [
 			{
@@ -88,7 +96,9 @@ function manifest() {
 		}
 	});
 }
-const baseUrl = "http://www.dm88.me";//网站模板相似：1080电影网、哆咪动漫、dmh8樱花动漫
+const baseUrl = "http://www.dm99.me";//网站模板相似：1080电影网、哆咪动漫、dmh8樱花动漫
+//dm88.me
+//dm99.me
 
 /**
  * 是否启用人机身份验证
@@ -141,26 +151,27 @@ function search(key) {
  * @param string url
  * @return {[{name, summary, coverUrl, url}]}
  */
-function find(url) {
+function find(region, label, year, order) {
+	var url = JavaUtils.urlJoin(baseUrl, `/so.asp?id=2&page=1&nf=${year}&gj=${label}&dq=${region}&pl=${order}`);
 	var result= [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
-		const elements = document.select("div.list > ul > li");
+		const elements = document.select(".myui-vodlist > li");
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			result.push({
 				//名称
-				name: element.selectFirst('a.itemtext').text(),
+				name: element.selectFirst('.title').text(),
 				
 				//概览
-				summary: element.selectFirst('div:nth-child(7) > span.cell_imform_value').text(),
+				summary: element.selectFirst('.pic-text').text(),
 				
 				//封面网址
-				coverUrl: JavaUtils.urlJoin(url, JavaUtils.substring(element.selectFirst('div.imgblock').attr('style'),'\'','\'')),
+				coverUrl: element.selectFirst('.myui-vodlist__thumb').absUrl('data-original'),
 				
 				//网址
-				url: element.selectFirst('a.itemtext').absUrl('href')
+				url: element.selectFirst('.title > a').absUrl('href')
 			});
 		}
 	}

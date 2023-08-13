@@ -1,20 +1,13 @@
 function manifest() {
 	return JSON.stringify({
-		//MyACG 最新版本
-		MyACG: 'https://lanzou.com/b07xqlbxc ',
-		
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
 		id: 1652589052,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230428,
-		
-		//编译版本
-		compileVersion: JavaUtils.JS_VERSION_1_7,
+		minMyACG: 20230810,
 
-		//优先级1~100，数值越大越靠前
-		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
+		//优先级 1~100，数值越大越靠前
 		priority: 1,
 		
 		//是否启用失效#默认关闭
@@ -31,28 +24,27 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 3,
+		version: 4,
 
 		//搜索源自动同步更新网址
 		syncList: {
 			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/EDD动漫.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/EDD动漫.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/EDD动漫.js",
-			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/EDD动漫.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/EDD动漫.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/EDD动漫.js",
 		},
 		
 		//更新时间
-		updateTime: "2023年4月29日",
+		updateTime: "2023年8月10日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
 		
 		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
-		contentType: 2,
+		contentProcessType: 2,
 		
-		//分组
+		//自定义标签
 		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
@@ -60,20 +52,79 @@ function manifest() {
 
 		//发现
 		findList: {
-			"新番": 'https://www.hdddex.com/?s=home-vod-type-id-97',
-			"剧场版": 'https://www.hdddex.com/?s=home-vod-type-id-85.html',
-		}
+			category: {
+				"region": {
+					"全部": "id-3",
+					"国产动漫": "id-87",
+					"欧美动漫": "id-99",
+				},
+				"label": {
+					"全部": "mcid-0",
+					"冒险": "mcid-129",
+					"站长推荐": "mcid-240",
+					"热血": "mcid-127",
+					"萌": "mcid-241",
+					"搞笑": "mcid-130",
+					"少女": "mcid-125",
+					"恋爱": "mcid-148",
+					"魔幻": "mcid-126",
+					"推理": "mcid-128",
+					"神魔": "mcid-146",
+					"竞技": "mcid-133",
+					"游戏": "mcid-149",
+					"益智": "mcid-131",
+					"机战": "mcid-151",
+					"宠物": "mcid-153",
+					"格斗": "mcid-155",
+					"魔法": "mcid-156",
+					"亲子": "mcid-150",
+					"励志": "mcid-141",
+					"青春": "mcid-138",
+					"都市": "mcid-137",
+					"惊悚": "mcid-143",
+					"经典": "mcid-132",
+					"童话": "mcid-134",
+					"真人": "mcid-154",
+					"校园": "mcid-152",
+					"文艺": "mcid-139",
+					"生活": "mcid-140",
+					"古装": "mcid-142",
+					"科幻": "mcid-144",
+					"动画": "mcid-136"
+				},
+				"year": {
+					"全部": "year-0",
+					"2024": "year-2024",
+					"2023": "year-2023",
+					"2022": "year-2022",
+					"2021": "year-2021",
+					"2020": "year-2020",
+					"2019": "year-2019",
+					"2018": "year-2018",
+					"2017": "year-2017",
+					"2009-1999": "year-1999,2009",
+					"90年代": "year-1990,1999",
+					"80年代": "year-1980,1989",
+					"更早": "year-1900,1980"
+				},
+				"order": {
+					"按时间": "order-addtime",
+					"按人气": "order-hits",
+					"按评分": "order-gold",
+				}
+			},
+			"动漫": ["region","label","year","order"],
+		},
 	});
 }
 const baseUrl = "https://www.hdddex.com";
-
 /**
  * 搜索
  * @param {string} key
  * @return {[{name, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl,'/index.php?s=home-search-index.html@post->wd='+ encodeURI(key));
+	var url = JavaUtils.urlJoin(baseUrl, '/index.php?s=home-search-index.html@post->wd='+ encodeURI(key));
 	var result= [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -98,13 +149,14 @@ function search(key) {
 	}
 	return JSON.stringify(result);
 }
+
 /**
  * 发现
  * @param {string} url
  * @return {[{name, summary, coverUrl, url}]}
  */
-function find(url) {
-	var url = JavaUtils.urlJoin(baseUrl, url);
+function find(region, label, year, order) {
+	var url = JavaUtils.urlJoin(baseUrl, `/index.php?s=home-vod-type-${encodeURI(region)}-${encodeURI(label)}-${encodeURI(year)}-${encodeURI(order)}-picm-1-p-1`);
 	var result= [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -129,6 +181,7 @@ function find(url) {
 	}
 	return JSON.stringify(result);
 }
+
 /**
  * 详情
  * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
@@ -171,17 +224,17 @@ function tocs(document) {
 	const tagElements = document.select('ul.hidden-sm.nav-tabs> li:gt(0)');
 	
 	//目录元素选择器
-	const catalogElements= document.select('div.playlist > ul');
+	const tocElements= document.select('div.playlist > ul');
 	
 	//创建目录数组
-	var newCatalogs = [];
+	var newTocs = [];
 	
-	catalogFor:for (var i = 0;i < catalogElements.size();i++) {
+	catalogFor:for (var i = 0;i < tocElements.size();i++) {
 		//创建章节数组
 		var newChapters = [];
 		
 		//章节元素选择器
-		var chapterElements = catalogElements.get(i).select('ul > li');
+		var chapterElements = tocElements.get(i).select('ul > li');
 		
 		for (var i2 = 0;i2 < chapterElements.size();i2++) {
 			var chapterElement = chapterElements.get(i2);
@@ -197,12 +250,12 @@ function tocs(document) {
 				url: chapterElement.selectFirst('a').absUrl('href')
 			});
 		}
-		newCatalogs.push({
+		newTocs.push({
 			//目录名称
 			name: tagElements.get(i).selectFirst('a').text(),
 			//章节
 			chapters : newChapters
 		});
 	}
-	return newCatalogs;
+	return newTocs;
 }

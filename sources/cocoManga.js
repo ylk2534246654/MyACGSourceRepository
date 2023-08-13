@@ -1,17 +1,13 @@
 function manifest() {
 	return JSON.stringify({
-		//MyACG 最新版本
-		MyACG: 'https://pan.baidu.com/s/1kVkWknH',
-		
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
 		id: 1648714186,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230317,
+		minMyACG: 20230804,
 
-		//优先级1~100，数值越大越靠前
-		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
+		//优先级 1~100，数值越大越靠前
 		priority: 60,
 		
 		//是否启用失效#默认关闭
@@ -21,14 +17,14 @@ function manifest() {
 		//@NonNull 搜索源名称
 		name: "COCO漫画",
 
-		//搜索源制作人
+		//搜索源作者
 		author: "雨夏",
 
 		//电子邮箱
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 10,
+		version: 11,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -40,51 +36,133 @@ function manifest() {
 		},
 
 		//更新时间
-		updateTime: "2023年3月18日",
+		updateTime: "2023年8月4日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
 		
-		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截的请求处理，3：对内部浏览器拦截的框架处理
-		contentType: 2,
+		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
+		contentProcessType: 2,
+
+		//首选项配置 type：（1:文本框，2:开关，3:单选框，4:编辑框，5:跳转链接）
+		preferenceOptionList: [
+			{
+				type: 4,
+				key: "headerTimeStamp",
+				name: "请求头时间戳",
+				defaultValue: "0"
+			}
+		],
 		
 		//自定义标签
-		groupName: ["漫画"],
+		group: ["漫画"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,
+
+		//发现
+		findList: {
+			category: {
+				"state": {
+					"全部": "",
+					"连载中": "1",
+					"已完结": "2",
+				},
+				"type": {
+					"全部": "",
+					"恋爱": "10126",
+					"古风": "10143",
+					"剧情": "10480",
+					"科幻": "10181",
+					"奇幻": "10242",
+					"玄幻": "10024",
+					"穿越": "10129",
+					"冒险": "10210",
+					"战斗": "10309",
+					"冒险热血": "11224",
+					"爆笑": "10201",
+					"少男": "10641",
+					"少女": "10301",
+					"重生": "10461",
+					"热血": "10023",
+					"搞笑": "10122",
+					"大女主": "10706",
+					"都市": "10124",
+					"后宫": "10138",
+					"逆袭": "10943",
+					"少年": "10321",
+					"动作": "10125",
+					"校园": "10131",
+					"修真": "10133",
+					"系统": "10722",
+					"修仙": "10453",
+					"霸总": "10127",
+					"生活": "10142",
+					"连载": "11062",
+					"其它": "10560",
+				},
+				"orderBy": {
+					"更新日": "update",
+					"日点击": "dailyCount",
+					"周点击": "weeklyCount",
+					"月点击": "monthlyCount",
+				},
+			},
+			"漫画": ["state","type","orderBy"]
+		},
 		
 		//网络限流 - 如果{regexUrl}匹配网址，则限制其{period}毫秒内仅允许{maxRequests}个请求
 		networkRateLimitList: [
 			{
-				"regexUrl": "www\.colamanhua\.com",//表示需要限流的 Url，使用正则表达式格式（不允许为空）
-				"maxRequests": 1,//在指定的时间内允许的请求数量（必须 >= 0 才会生效）
-				"period": 5000,//时间周期，毫秒（必须 > 0 才会生效）
+				regexUrl: "www\.colamanhua\.com",//表示需要限流的 Url，使用正则表达式格式（不允许为空）
+				maxRequests: 0,//在指定的时间内允许的请求数量（必须 >= 0 才会生效）
+				period: 10000,//时间周期，毫秒（必须 > 0 才会生效）
 			}
 		],
+
+		//全局 HTTP 请求头列表
+		httpRequestHeaderList: {
+			"user-agent": `Mozilla/5.0 (Linux; Android;) AppleWebKit (KHTML, like Gecko) Chrome Mobile Safari TimeStamp/${JavaUtils.getPreference().getLong("headerTimeStamp")}`
+		},
 	})
 }
 const baseUrl = "https://www.colamanhua.com";
 //https://www.cocomanga.com
 //onemanhua
-const header = "";
+
+/**
+ * 是否启用人机身份验证
+ * @param {string} url 网址
+ * @param {string} responseHtml 响应源码
+ * @return {boolean} 返回结果
+ */
+function isEnabledAuthenticator(url, responseHtml) {
+	//对框架进行拦截，检索关键字，
+	if(responseHtml != null && responseHtml.indexOf('请用正常浏览器观看') != -1){
+		var time = new Date().getTime();
+		JavaUtils.getPreference().edit().putLong("headerTimeStamp", time).apply();
+		return true;
+	}
+	return false;
+}
+
 /**
  * 搜索
  * @param {string} key
- * @return {[{title, summary, coverUrl, url}]}
+ * @return {[{name, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = ToolUtils.urlJoin(baseUrl,'/search?searchString=' + encodeURI(key) + header);
-	const response = HttpRequest(url + header);
+	var url = JavaUtils.urlJoin(baseUrl,'/search?searchString=' + encodeURI(key));
+	const response = JavaUtils.httpRequest(url);
 	var result= [];
 	if(response.code() == 200){
-		var document = response.document();
+		const document = response.body().cssDocument();
 		var elements = document.select("div.fed-part-layout > dl");
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			result.push({
 				//标题
-				title: element.selectFirst('dd > h1').text(),
+				name: element.selectFirst('dd > h1').text(),
 				
 				//概览
 				summary: element.selectFirst('dd > ul > li:nth-child(3)').text(),
@@ -99,17 +177,48 @@ function search(key) {
 	}
 	return JSON.stringify(result);
 }
+
+/**
+ * 发现
+ * @return {[{name, summary, coverUrl, url}]}
+ */
+function find(state, type, orderBy) {
+	var url = JavaUtils.urlJoin(baseUrl, `/show?status=${state}&mainCategoryId=${type}&orderBy=${orderBy}`);
+	var result = [];
+	const response = JavaUtils.httpRequest(url);
+	if(response.code() == 200){
+		const document = response.body().cssDocument();
+		const elements = document.select(".fed-list-info > li");
+		for (var i = 0;i < elements.size();i++) {
+			var element = elements.get(i);
+			result.push({
+				//名称
+				name: element.selectFirst('.fed-list-title').text(),
+				
+				//概览
+				summary: element.selectFirst('.fed-list-remarks').text(),
+				
+				//封面网址
+				coverUrl: element.selectFirst('.fed-list-pics').absUrl('data-original') + '@header->Referer:' + baseUrl,
+				
+				//网址
+				url: element.selectFirst('.fed-list-pics').absUrl('href')
+			});
+		}
+	}
+	return JSON.stringify(result);
+}
 /**
  * 详情
- * @return {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
-	const response = HttpRequest(url + header);
+	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
-		var document = response.document();
+		const document = response.body().cssDocument();
 		return JSON.stringify({
-			//标题
-			title: document.selectFirst('h1.fed-part-eone').text(),
+			//名称
+			name: document.selectFirst('h1.fed-part-eone').text(),
 			
 			//作者
 			author: document.selectFirst('dd > ul > li:nth-child(2) > a').text(),
@@ -160,7 +269,7 @@ function tocs(document) {
 				//章节名称
 				name: chapterElement.selectFirst('a').text(),
 				//章节网址
-				url: chapterElement.selectFirst('a').absUrl('href') + header
+				url: chapterElement.selectFirst('a').absUrl('href') + '@header->user-agent-platform:Win32'
 			});
 		}
 		newTocs.push({
@@ -213,6 +322,20 @@ function content(url) {
 	);
 	if(!re.test(url)){
 		return url;
+	}
+	return null;
+}
+
+/**
+ * 对网页注入 JS 脚本（contentProcessType == 2）
+ * @param  {string} url
+ * @param  {boolean} isStart：运行时机{true：页面加载前，false：页面加载完成后}
+ * @return  {string} js 代码
+ */
+function webPageLoadJavaScript(url, isStart) {
+	if(!isStart){
+		return `document.querySelector("script[src] ~ div[id]").remove()`;
+		//return `document.write(document.querySelector("#mangalist").outerHTML);`;
 	}
 	return null;
 }

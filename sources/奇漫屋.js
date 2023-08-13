@@ -1,17 +1,13 @@
 function manifest() {
 	return JSON.stringify({
-		//MyACG 最新版本
-		MyACG: 'https://lanzou.com/b07xqlbxc ',
-		
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
 		id: 1654920600,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230317,
+		minMyACG: 20230810,
 		
-		//优先级1~100，数值越大越靠前
-		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
+		//优先级 1~100，数值越大越靠前
 		priority: 1,
 		
 		//是否启用失效#默认关闭
@@ -28,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 5,
+		version: 6,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -40,67 +36,138 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年3月17日",
+		updateTime: "2023年8月10日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
 		
-		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截的请求处理，3：对内部浏览器拦截的框架处理
-		contentType: 1,
+		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
+		contentProcessType: 1,
 		
-		//自定义标签
-		groupName: ["漫画"],
+		//分组
+		group: ["漫画"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,
-		//此源和七夕漫画，六漫画相似
+
+		//发现
+		findList: {
+			category: {
+				"label": {
+					"冒险热血": "1",
+					"武侠格斗": "2",
+					"科幻魔法": "3",
+					"侦探推理": "4",
+					"耽美爱情": "5",
+					"生活": "6",
+					"推荐": "11",
+					"完结": "12",
+					"连载中": "13",
+				},
+			},
+			"漫画": ["label"]
+		},
 	});
 }
-const baseUrl = "http://m.qiman59.com";//备份 http://qiman5.com http://qiman57.com http://qiman56.com
-const header = '';
+
+/**
+ * 发现
+ * @return {[{name, summary, coverUrl, url}]}
+ */
+function find(label) {
+	var url = JavaUtils.urlJoin(baseUrl, `/sort/${label}-1.html`);
+	var result = [];
+	const response = JavaUtils.httpRequest(url);
+	if(response.code() == 200){
+		const document = response.body().cssDocument();
+		var elements = document.select("div.rank-list > div");
+		for (var i = 0;i < elements.size();i++) {
+			var element = elements.get(i);
+			result.push({
+				//名称
+				name: element.selectFirst('.comic-name').text(),
+				
+				//概览
+				summary: element.selectFirst('.comic-author').text() + '\n' + element.selectFirst('.comic-tip').text(),
+				
+				//封面网址
+				coverUrl: element.selectFirst('.cover').absUrl('data-src'),
+				
+				//网址
+				url: element.selectFirst('.comic-item-info > a').absUrl('href')
+			});
+		}
+	}
+	return JSON.stringify(result);
+}
+
+//此源和七夕漫画，六漫画相似
+const baseUrl = getBaseUrl();
+/**
+ * http://qiman5.com
+ * http://qiman56.com
+ * http://qiman57.com
+ * http://m.qiman59.com
+ */
+function getBaseUrl() {
+	var preference = JavaUtils.getPreference();
+	var baseUrlTime = preference.getLong("baseUrlTime");
+	var oneDay = 1000*60*60*24;
+	var time = new Date().getTime();
+	if(baseUrlTime < time - oneDay){//超过一天
+		var strU = String(JavaUtils.webViewEvalJS("http://m.qiman59.com", "window.location.href", 3000));
+		var edit = preference.edit();
+		if(strU != null){
+			edit.putString("baseUrl", strU);//更新基础网址
+		}
+		edit.putLong("baseUrlTime", time).apply();//更新时间
+	}
+	return preference.getString("baseUrl", "http://m.qiman59.com");
+}
 
 /**
  * 搜索
  * @param {string} key
- * @return {[{title, summary, cover, url}]}
+ * @return {[{name, summary, coverUrl, url}]}
  */
 function search(key) {
-	const url = ToolUtils.urlJoin(baseUrl,'/spotlight/?keyword=' + encodeURI(key) + header);
-	const response = HttpRequest(url);
+	var url = JavaUtils.urlJoin(baseUrl, '/spotlight/?keyword=' + encodeURI(key));
 	var result = [];
+	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
-		const document = response.document();
-        var elements = document.select("div.search-result > div");
-        for (var i = 0;i < elements.size();i++) {
-            var element = elements.get(i);
-            result.push({
-                //标题
-                title: element.selectFirst('p.comic-name > a').text(),
-                
-                //概览
-                summary: element.selectFirst('p.comic-tags').text() + '.' + element.selectFirst('p.comic-update-at').text(),
-                
-                //封面网址
-				coverUrl : element.selectFirst('a.cover > img').absUrl('src'),
-                
-                //网址
-                url: element.selectFirst('a.cover').absUrl('href')
-            });
-        }
+		const document = response.body().cssDocument();
+		var elements = document.select("div.search-result > div");
+		for (var i = 0;i < elements.size();i++) {
+			var element = elements.get(i);
+			result.push({
+				//名称
+				name: element.selectFirst('p.comic-name > a').text(),
+				
+				//概览
+				summary: element.selectFirst('p.comic-tags').text() + '\n' + element.selectFirst('p.comic-update-at').text(),
+				
+				//封面网址
+				coverUrl: element.selectFirst('a.cover > img').absUrl('src'),
+				
+				//网址
+				url: element.selectFirst('a.cover').absUrl('href')
+			});
+		}
 	}
 	return JSON.stringify(result);
 }
+
 /**
  * 详情
- * @return {[{title, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
-	const response = HttpRequest(url + header);
+	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
-		const document = response.document();
+		const document = response.body().cssDocument();
 		return JSON.stringify({
 			//标题
-			title: document.selectFirst('div.box-back2 > h1').text(),
+			name: document.selectFirst('div.box-back2 > h1').text(),
 			
 			//作者
 			author: document.selectFirst('div.box-back2 > p:nth-child(2)').text(),
@@ -112,7 +179,7 @@ function detail(url) {
 			summary: document.selectFirst('span.comic-intro').text(),
 	
 			//封面网址
-			coverUrl : document.selectFirst('div.comic-info-box > div > img').absUrl('src'),
+			coverUrl: document.selectFirst('div.comic-info-box > div > img').absUrl('src'),
 			
 			//是否启用将章节置为倒序
 			isEnabledChapterReverseOrder: true,
@@ -124,42 +191,41 @@ function detail(url) {
 	return null;
 }
 
+
 /**
  * 目录
- * @return {[{name, chapters:{[{name, url}]}}]}
+ * @returns {[{name, chapters:{[{name, url}]}}]}
  */
 function tocs(response, url) {
-	const document = response.document();
-	const html = response.html();
-	//创建章节数组
-	var newTocs = [];
-		
-	//章节元素选择器
-	var chapterElements = document.select('li.chapter-item');
+	const document = response.body().cssDocument();
+
+	//目录元素选择器
+	const tocElements = document.select('li.chapter-item');
 	
-	for (var i2 = 0;i2 < chapterElements.size();i2++) {
-		var chapterElement = chapterElements.get(i2);
-		
-		newTocs.push({
+	//创建章节数组
+	var newChapters = [];
+	for (var i2 = 0;i2 < tocElements.size();i2++) {
+		var tocElement = tocElements.get(i2);
+		newChapters.push({
 			//章节名称
-			name: chapterElement.selectFirst('a').text(),
+			name: tocElement.selectFirst('a').text(),
 			//章节网址
-			url: chapterElement.selectFirst('a').absUrl('href')
+			url: tocElement.selectFirst('a').absUrl('href')
 		});
 	}
-	
-	var id = ToolUtils.substring(html,'id\": ',',');
-	var vid = ToolUtils.substring(html,'id2\": ',',');
+
+	var match1 = response.body().string().match(/"id"\s*:\s*(\d+).*"id2"\s*:\s*(\d+)/);
+	var id = match1[1];
+	var vid = match1[2];
 	if(vid.length > 0){
-		var catalog_response = HttpRequest(ToolUtils.urlJoin(baseUrl,'/bookchapter/@post->id=' + id + '&id2=' + vid + header) );
-		if(catalog_response.code() == 200){
-			const $ = JSON.parse(catalog_response.html());
-			$.forEach((child) => {
-				newTocs.push({
+		const response2 = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl,'/bookchapter/') + '@post->id=' + id + '&id2=' + vid);
+		if(response2.code() == 200){
+			JSON.parse(response2.body().string()).forEach((child) => {
+				newChapters.push({
 					//章节名称
 					name: child.name,
 					//章节网址
-					url: ToolUtils.urlJoin(url,child.id) + '.html'
+					url: JavaUtils.urlJoin(url, child.id) + '.html'
 				});
 			});
 		}
@@ -168,7 +234,7 @@ function tocs(response, url) {
 		//目录名称
 		name: "目录",
 		//章节
-		chapters : newTocs
+		chapters : newChapters
 	}];
 }
 
@@ -178,10 +244,11 @@ function tocs(response, url) {
  * @return {string} content
  */
 function content(url) {
-	const response = HttpRequest(url + header);
+	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
-		var newImgs = '';
-		eval(ToolUtils.substring(response.html(),'<script type=\"text/javascript\">','</script>'));
+		var newImgs;
+		var script = JavaUtils.substring(response.body().string(), '<script type=\"text/javascript\">','</script>');
+		eval(String(script));
 		return JSON.stringify(newImgs);
 	}
 	return null;

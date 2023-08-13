@@ -1,20 +1,13 @@
 function manifest() {
 	return JSON.stringify({
-		//MyACG 最新版本
-		MyACG: 'https://pan.baidu.com/s/1kVkWknH',
-		
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
 		id: 1656743080,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230428,
-		
-		//编译版本
-		compileVersion: JavaUtils.JS_VERSION_1_7,
+		minMyACG: 20230804,
 
-		//优先级1~100，数值越大越靠前
-		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
+		//优先级 1~100，数值越大越靠前
 		priority: 80,
 		
 		//是否启用失效#默认关闭
@@ -24,14 +17,14 @@ function manifest() {
 		//@NonNull 搜索源名称
 		name: "笔趣阁",
 
-		//搜索源制作人
+		//搜索源作者
 		author: "雨夏",
 
 		//电子邮箱
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 6,
+		version: 7,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -43,7 +36,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年4月25日",
+		updateTime: "2023年8月5日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -55,16 +48,37 @@ function manifest() {
 		group: ["小说"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "https://infosxs.pysmei.com",//备用：apptuxing_com ，pysmei_com ，pigqq_com
+		baseUrl: baseUrl,
 		
 		//发现
 		findList: {
-			"热门榜": "https://scxs.pysmei.com/top/man/top/hot/week/1.html",
-			"完结榜": "https://scxs.pysmei.com/top/man/top/over/week/1.html",
-			"推荐榜": "https://scxs.pysmei.com/top/man/top/commend/week/1.html",
-			"新书榜": "https://scxs.pysmei.com/top/man/top/new/week/1.html",
-			"评分榜": "https://scxs.pysmei.com/top/man/top/vote/week/1.html",
-			"收藏榜": "https://scxs.pysmei.com/top/man/top/collect/week/1.html"
+			category: {
+				"label": {
+					"玄幻奇幻": "1",
+					"武侠仙侠": "2",
+					"都市言情": "3",
+					"历史军事": "4",
+					"科幻灵异": "5",
+					"网游竞技": "6",
+					"女生频道": "7",
+					"同人小说": "66",
+				},
+				"order": {
+					"热门榜": "hot",
+					"完结榜": "over",
+					"新书榜": "new",
+					"评分榜": "vote",
+				},
+				"order2": {
+					"热门榜": "hot",
+					"完结榜": "over",
+					"推荐榜": "commend",
+					"新书榜": "new",
+					"评分榜": "vote",
+					"收藏榜": "collect",
+				},
+			},
+			"小说": ["label","order"]
 		},
 
 		//全局 HTTP 请求头列表
@@ -74,50 +88,62 @@ function manifest() {
 	});
 }
 
+const baseUrl 	= "https://infosxs.pysmei.com";
+//备用：apptuxing_com ，pysmei_com ，pigqq_com
+
+const searchBaseUrl 	= "https://souxs.pigqq.com";
+//备用：pigqq_com ，leeyegy_com , pysmei_com
+
+const imgBaseUrl 	= "https://imgapixs.pysmei.com";
+const imgUrl 	= "https://imgapixs.pysmei.com/bookfiles/bookimages/";
+
+const findBaseUrl = "https://scxs.pysmei.com";
+
+const contentBaseUrl = "https://contentxs.pysmei.com";
+
+
 /**
  * 搜索
  * @param {string} key
  * @return {[{name, summary, coverUrl, url}]}
  */
 function search(key) {
-	//https://souxs.pigqq.com/search.aspx?key=
-	//https://souxs.leeyegy.com/search.aspx?key=
-	var url = `https://souxs.pigqq.com/search.aspx?key=${encodeURI(key)}&page=1&siteid=app2`;
-
-	var array= [];
+	var url = JavaUtils.urlJoin(searchBaseUrl, `/search.aspx?key=${encodeURI(key)}&page=1&siteid=app2`);
+	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const $ = JSON.parse(response.body().string());
 		$.data.forEach((child) => {
-			array.push({
+			result.push({
 				//名称
 				name: _toString(child.Name),
 				
 				//概览
 				summary: _toString(child.Author),
 				
-				//封面
-				coverUrl: child.Img,
+				//封面 
+				coverUrl: JavaUtils.urlJoin(imgUrl, child.Img.replace(/^[a-zA-Z]+:\/\/[^/]+/, imgBaseUrl)),
 				
 				//网址
-				url: `https://infosxs.pysmei.com/BookFiles/Html/${parseInt(child.Id/1000) + 1}/${child.Id}/info.html`
+				url: JavaUtils.urlJoin(baseUrl, `/BookFiles/Html/${parseInt(child.Id/1000) + 1}/${child.Id}/info.html`)
 			})
-		})
+		});
 	}
-	return JSON.stringify(array);
+	return JSON.stringify(result);
 }
+
 /**
  * 发现
- * @param {string} url
  * @return {[{name, summary, coverUrl, url}]}
  */
-function find(url) {
-	var array= [];
+function find(label, order) {
+	var url = JavaUtils.urlJoin(findBaseUrl, `/Categories/${label}/${order}/1.html`);
+	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const $ = JSON.parse(response.body().string());
 		$.data.BookList.forEach((child) => {
-			array.push({
+			result.push({
 				//标题
 				name: _toString(child.Name),
 				
@@ -125,14 +151,14 @@ function find(url) {
 				summary: _toString(child.Desc),
 				
 				//封面
-				coverUrl: ToolUtil.urlJoin('https://imgapixs.pysmei.com/BookFiles/BookImages/',child.Img),
+				coverUrl: JavaUtils.urlJoin(imgUrl, child.Img.replace(/^[a-zA-Z]+:\/\/[^/]+/, imgBaseUrl)),
 				
 				//网址
-				url: `https://infosxs.pysmei.com/BookFiles/Html/${parseInt(child.Id/1000) + 1}/${child.Id}/info.html`
+				url: JavaUtils.urlJoin(baseUrl, `/BookFiles/Html/${parseInt(child.Id/1000) + 1}/${child.Id}/info.html`)
 			})
-		})
+		});
 	}
-	return JSON.stringify(array);
+	return JSON.stringify(result);
 }
 /**
  * 详情
@@ -156,7 +182,7 @@ function detail(url) {
 			summary: _toString($.Desc),
 			
 			//封面
-			coverUrl : $.Img,
+			coverUrl: JavaUtils.urlJoin(imgUrl, $.Img.replace(/^[a-zA-Z]+:\/\/[^/]+/, imgBaseUrl)),
 			
 			//是否启用将章节置为倒序
 			isEnabledChapterReverseOrder: false,
@@ -176,7 +202,7 @@ function tocs(id) {
 	//创建章节数组
 	var newChapters= [];
 
-	const response = JavaUtils.httpRequest(`https://infosxs.pysmei.com/BookFiles/Html/${id}/index.html`);
+	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, `/BookFiles/Html/${id}/index.html`));
 	if(response.code() == 200){
 		const $ = JSON.parse(String(response.body().string()).replace(new RegExp('},]','g'),'}]').replace(new RegExp('style=','g'),''));
 		$.data.list.forEach((booklet) => {
@@ -185,7 +211,7 @@ function tocs(id) {
 					//章节名称
 					name: _toString(chapter.name),
 					//章节网址
-					url: `https://contentxs.pysmei.com/BookFiles/Html/${id}/${chapter.id}.html`
+					url: JavaUtils.urlJoin(contentBaseUrl, `/BookFiles/Html/${id}/${chapter.id}.html`)
 				})
 			})
 		})

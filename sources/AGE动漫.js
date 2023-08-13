@@ -1,17 +1,13 @@
 function manifest() {
 	return JSON.stringify({
-		//MyACG 最新版本
-		MyACG: 'https://pan.baidu.com/s/1kVkWknH',
-		
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
 		id: 1648714123,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230428,
+		minMyACG: 20230804,
 
-		//优先级1~100，数值越大越靠前
-		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
+		//优先级 1~100，数值越大越靠前
 		priority: 80,
 		
 		//是否启用失效#默认关闭
@@ -21,14 +17,14 @@ function manifest() {
 		//@NonNull 搜索源名称
 		name: "AGE动漫",
 
-		//搜索源制作人
+		//搜索源作者
 		author: "雨夏",
 
 		//电子邮箱
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 4,
+		version: 5,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -40,7 +36,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年7月7日",
+		updateTime: "2023年8月4日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -52,22 +48,39 @@ function manifest() {
 		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: baseUrl,//备用http://age.tv
+		baseUrl: baseUrl,//备用 http://age.tv
 		
 		//发现
 		findList: {
-			"最近更新": "/catalog/all-all-all-all-all-time-1-%E6%97%A5%E6%9C%AC-all-all",
-			"最近完结": "/catalog/all-all-all-all-all-time-1-%E6%97%A5%E6%9C%AC-all-%E5%AE%8C%E7%BB%93",
-			"剧场版": "/catalog/%E5%89%A7%E5%9C%BA%E7%89%88-all-all-all-all-time-1-%E6%97%A5%E6%9C%AC-all-all",
-			"每日推荐": {
-				"url": "/recommend",
-				"function": "find2"
+			category: {
+				"region": ["全部","日本","中国","欧美"],
+				"genre": ["全部","TV","剧场版","OVA"],
+				"status": ["全部","连载中","已完结","未播放"],
+				"label": ["全部","搞笑","运动","励志","武侠","特摄","热血","战斗","竞技","校园","青春","爱情","冒险","后宫","百合","治愈","萝莉","魔法","悬疑","推理","奇幻","神魔","恐怖","血腥","机战","战争","犯罪","社会","职场","剧情","伪娘","耽美","歌舞","肉番","美少女","吸血鬼","泡面番","欢乐向"],
+				"year": ["全部","2023","2022","2021","2020","2019","2018","2017","2016","2015","2014","2013","2012","2011","2010","2009","2008","2007","2006","2005","2004","2003","2002","更早"],
+				"resources": ["全部","BDRIP","AGE-RIP"],
+				"order": {
+					"时间排序": "time",
+					"点击量": "点击量",
+				},
 			},
-			"每日推荐": {
-				"url": "/recommend",
-				"function": "find2"
+			"动漫": {
+				default: ["genre","year","label","resources","order","region","status"],
+				"每日推荐": {
+					"param": "/recommend",
+					"function": "find2"
+				}
 			}
 		},
+
+		//网络限流 - 如果{regexUrl}匹配网址，则限制其{period}毫秒内仅允许{maxRequests}个请求
+		networkRateLimitList: [
+			{
+				regexUrl: "/search",//表示需要限流的 Url，使用正则表达式格式（不允许为空）
+				maxRequests: 0,//在指定的时间内允许的请求数量（必须 >= 0 才会生效）
+				period: 3000,//时间周期，毫秒（必须 > 0 才会生效）
+			}
+		],
 
 		//全局 HTTP 请求头列表
 		httpRequestHeaderList: {
@@ -75,7 +88,25 @@ function manifest() {
 		}
 	});
 }
-const baseUrl = "https://www.agemys.org";
+
+const baseUrl = getBaseUrl();
+
+function getBaseUrl() {
+	var preference = JavaUtils.getPreference();
+	var baseUrlTime = preference.getLong("baseUrlTime");
+	var oneDay = 1000*60*60*24;
+	var time = new Date().getTime();
+	if(baseUrlTime < time - oneDay){//超过一天
+		const response = JavaUtils.httpRequest("https://rentry.org/agefans");
+		var edit = preference.edit();
+		if(response.code() == 200){
+			var _baseUrl = JavaUtils.substring(response.body().string(),"新版：","\n");
+			edit.putString("baseUrl", _baseUrl);//更新基础网址
+		}
+		edit.putLong("baseUrlTime", time).apply();//更新时间
+	}
+	return preference.getString("baseUrl", "https://www.agemys.org");
+}
 
 /**
  * 搜索
@@ -108,13 +139,21 @@ function search(key) {
 	}
 	return JSON.stringify(result);
 }
+
 /**
  * 发现
- * @param {string} url
  * @return {[{name, summary, coverUrl, url}]}
  */
-function find(url) {
-	var url = JavaUtils.urlJoin(baseUrl, url);
+function find(genre, year, label, resources, order, region, status) {
+	if(genre == "全部")genre = "all";
+	if(year == "全部")year = "all";
+	if(year == "更早")year = "2000以前";
+	if(label == "全部")label = "all";
+	if(resources == "全部")resources = "all";
+	if(region == "全部")region = "all";
+	if(status == "全部")status = "all";
+	
+	var url = JavaUtils.urlJoin(baseUrl, `/catalog/${genre}-${year}-all-${label}-${resources}-${order}-1-${region}-all-${status}`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -139,10 +178,8 @@ function find(url) {
 	}
 	return JSON.stringify(result);
 }
-
 /**
  * 发现2
- * @param {string} url
  * @return {[{name, summary, coverUrl, url}]}
  */
 function find2(url) {
@@ -215,17 +252,17 @@ function tocs(document) {
 	const tagElements = document.select('.nav-item');
 	
 	//目录元素选择器
-	const catalogElements= document.select('.tab-pane');
+	const tocElements = document.select('.tab-pane');
 	
 	//创建目录数组
-	var newCatalogs = [];
+	var newTocs = [];
 	
-	for (var i = 0;i < catalogElements.size();i++) {
+	for (var i = 0;i < tocElements.size();i++) {
 		//创建章节数组
 		var newChapters = [];
 		
 		//章节元素选择器
-		var chapterElements = catalogElements.get(i).select('ul > li');
+		var chapterElements = tocElements.get(i).select('ul > li');
 		
 		for (var i2 = 0;i2 < chapterElements.size();i2++) {
 			var chapterElement = chapterElements.get(i2);
@@ -237,13 +274,13 @@ function tocs(document) {
 				url: chapterElement.selectFirst('a').absUrl('href')
 			});
 		}
-		newCatalogs.push({
+		newTocs.push({
 			//目录名称
 			name: tagElements.get(i).selectFirst('li').text(),
 			//章节
 			chapters : newChapters
 		});
 	}
-	return newCatalogs;
+	return newTocs;
 }
 

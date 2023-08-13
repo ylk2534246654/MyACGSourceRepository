@@ -1,20 +1,13 @@
 function manifest() {
 	return JSON.stringify({
-		//MyACG 最新版本
-		MyACG: 'https://pan.baidu.com/s/1kVkWknH',
-		
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
 		id: 1655214571,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230428,
+		minMyACG: 20230810,
 
-		//编译版本
-		compileVersion: JavaUtils.JS_VERSION_1_7,
-
-		//优先级1~100，数值越大越靠前
-		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
+		//优先级 1~100，数值越大越靠前
 		priority: 0,//资源大部分无法播放，考虑列为失效搜索源
 		
 		//是否启用失效#默认关闭
@@ -43,7 +36,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年4月28日",
+		updateTime: "2023年8月10日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -52,16 +45,21 @@ function manifest() {
 		contentProcessType: 2,
 		
 		//分组
-		group: ["动漫"],
+		group: ["动漫", "影视"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,
 		
 		//发现
 		findList: {
-			"最近更新": "/type/riman/",
-			"剧场版": "/type/juchang/",
-			"大陆动漫": "/type/guoman/",
+			"动漫": {
+				"新番放送": "/type/riman/",
+				"大陆动漫": "/type/guoman/",
+				"番组计划": "/type/fanzu/",
+				"剧场动画": "/type/juchang/",
+			},
+			"电视剧": "/type/dianshiju/",
+			"电影": "/type/move/"
 		},
 	});
 }
