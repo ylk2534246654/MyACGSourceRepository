@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 9,
+		version: 10,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -48,7 +48,7 @@ function manifest() {
 		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: baseUrl,
+		baseUrl: "https://lavani.me",
 		
 		//发现
 		findList: {
@@ -78,7 +78,7 @@ const baseUrl = "https://anime-api.5t5.top";
  * @return {boolean}  登录结果
  */
 function isUserLoggedIn(url, responseHtml) {
-	if(url != null && url.indexOf('total') != -1){
+	if(url != null && url.indexOf('follow/total') != -1){
 		return verifyUserLoggedIn();
 	}
 	return false;
@@ -102,8 +102,17 @@ function verifyUserLoggedIn() {
 
 function getHeader() {
 	const token = JavaUtils.getLocalStorage('https://lavani.me', 'token');
-	const authorization = JSON.parse(token).value;
-	return "@header->referer:https://lavani.me/@header->authorization:" + authorization;
+	try{
+		const authorization = JSON.parse(token).value;
+		var preference = JavaUtils.getPreference();
+		if(authorization != null){
+			preference.edit().putString("authorization", authorization).apply();
+		}
+		return "@header->referer:https://lavani.me/@header->authorization:" + preference.getString("authorization", "");
+	}catch(e){
+		//JavaUtils.userLogOut();
+	}
+	return "";
 }
 
 /**
@@ -128,7 +137,7 @@ function search(key) {
 				coverUrl: child.images.large,
 		
 				//网址
-				url: JavaUtils.urlJoin(baseUrl, '/v2/anime/file?id=' + child.id)
+				url: child.id
 			});
 		});
 	}
@@ -163,7 +172,7 @@ function find(type, year) {
 				coverUrl: child.images.large,
 		
 				//网址
-				url: JavaUtils.urlJoin(baseUrl, '/v2/anime/file?id=' + child.id)
+				url: child.id
 			});
 		});
 	}
@@ -174,20 +183,20 @@ function find(type, year) {
  * 详情
  * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
-function detail(url) {
+function detail(id) {
 	return JSON.stringify({
 		//是否启用将章节置为倒序
 		isEnabledChapterReverseOrder: false,
 		
 		//目录加载
-		tocs: tocs(url)
+		tocs: tocs(id)
 	});
 }
 /**
  * 目录
  * @return {[{name, chapters:{[{name, url}]}}]}
  */
-function tocs(url) {
+function tocs(id) {
 	//创建目录数组
 	var newTocs = [];
 
@@ -200,7 +209,15 @@ function tocs(url) {
 		var newChapters = [];
 
 		//目录请求
-		const tocResponse = JavaUtils.httpRequest(url + '&drive=' + defaultDrive + getHeader());
+		var url;
+		if(JavaUtils.isNetworkUrl(id)){
+			url = id;
+		}else{
+			url = JavaUtils.urlJoin(baseUrl, '/v2/anime/file?id=' + id);
+		}
+		url = url + '&drive=' + defaultDrive + getHeader();
+
+		const tocResponse = JavaUtils.httpRequest(url);
 		if(tocResponse.code() == 200){
 			JSON.parse(tocResponse.body().string()).data.forEach((child2, index2) => {
 				if(child2.parseResult.extensionName.type == 'video'){
