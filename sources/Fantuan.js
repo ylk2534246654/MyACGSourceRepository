@@ -76,8 +76,9 @@ function getBaseUrl() {
 		if(response.code() == 200){
 			const document = response.body().cssDocument();
 			var _baseUrl = document.selectFirst(".enter > a,.enter_address > a").absUrl('href');
-			JavaUtils.log("baseUrl -> " + _baseUrl);
-			edit.putString("baseUrl", _baseUrl);//更新基础网址
+			if(JavaUtils.isNetworkUrl(_baseUrl)){
+				edit.putString("baseUrl", _baseUrl);//更新基础网址
+			}
 		}
 		edit.putLong("baseUrlTime", time).apply();//更新时间
 	}

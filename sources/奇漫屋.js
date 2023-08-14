@@ -107,6 +107,7 @@ const baseUrl = getBaseUrl();
  * http://qiman5.com
  * http://qiman56.com
  * http://qiman57.com
+ * http://qiman51.com
  * http://m.qiman59.com
  */
 function getBaseUrl() {
@@ -115,14 +116,14 @@ function getBaseUrl() {
 	var oneDay = 1000*60*60*24;
 	var time = new Date().getTime();
 	if(baseUrlTime < time - oneDay){//超过一天
-		var strU = String(JavaUtils.webViewEvalJS("http://m.qiman59.com", "window.location.href", 3000));
+		var strU = JavaUtils.webViewEvalJS("http://qiman51.com", "window.location.href", 3000);
 		var edit = preference.edit();
-		if(strU != null){
+		if(JavaUtils.isNetworkUrl(strU)){
 			edit.putString("baseUrl", strU);//更新基础网址
 		}
 		edit.putLong("baseUrlTime", time).apply();//更新时间
 	}
-	return preference.getString("baseUrl", "http://m.qiman59.com");
+	return preference.getString("baseUrl", "http://qiman51.com");
 }
 
 /**
