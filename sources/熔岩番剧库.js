@@ -67,7 +67,7 @@ function manifest() {
 		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "https://lavani.me",
+		baseUrl: showBaseUrl,
 		
 		//发现
 		findList: {
@@ -88,6 +88,7 @@ function manifest() {
 		requiresLoginList: ["search","detail","content"],
 	});
 }
+const showBaseUrl = "https://lavani.me";
 const baseUrl = "https://anime-api.5t5.top";
 
 /*
@@ -241,7 +242,7 @@ function tocs(id) {
 		//目录请求
 		var url;
 		if(JavaUtils.isNetworkUrl(id)){
-			url = id;
+			url = id.replace(showBaseUrl, baseUrl);
 		}else{
 			url = JavaUtils.urlJoin(baseUrl, '/v2/anime/file?id=' + id);
 		}

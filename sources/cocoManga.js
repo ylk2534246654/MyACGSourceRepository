@@ -141,7 +141,6 @@ function isEnabledAuthenticator(url, responseHtml) {
 	if(responseHtml != null && responseHtml.indexOf('请用正常浏览器观看') != -1){
 		var time = new Date().getTime();
 		JavaUtils.getPreference().edit().putLong("headerTimeStamp", time).apply();
-		return true;
 	}
 	return false;
 }
