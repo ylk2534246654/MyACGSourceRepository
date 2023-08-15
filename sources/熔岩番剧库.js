@@ -5,7 +5,7 @@ function manifest() {
 		id: 1660927525,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230804,
+		minMyACG: 20230815,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 50,//加载较慢
@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 10,
+		version: 11,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -36,13 +36,32 @@ function manifest() {
 		},
 
 		//更新时间
-		updateTime: "2023年8月5日",
+		updateTime: "2023年8月15日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
 		
 		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
 		contentProcessType: 1,
+		
+		//首选项配置 type：（1:文本框，2:开关，3:单选框，4:编辑框，5:跳转链接）
+		preferenceOptionList: [
+			{
+				type: 3,
+				key: "drive",
+				name: "选择节点",
+				entries: {
+					"番剧库本地节点": 	"3A_Xinxiang",
+					"CF 环大陆自选": 	"2AG_CF2",
+					"CF 环大陆自选 2": 	"2AG_CF3",
+					"OneDrive 新加坡":	"2AG",
+					"Cloudflare":		"2AG_CF",
+					"大陆加速": 		"2AG_CHUN_CDN",
+					"谷歌云端硬盘每日镜像": "4AG",
+				},
+				defaultValue: 0
+			}
+		],
 		
 		//分组
 		group: ["动漫"],
@@ -63,7 +82,7 @@ function manifest() {
 		isEnabledLogin: true,
 		
 		//登录网址
-		loginUrl: "https://lavani.me/auth/login",
+		loginUrl: "https://lavani.me/user",
 		
 		//需要登录的功能（search，detail，content，find）
 		requiresLoginList: ["search","detail","content"],
@@ -79,7 +98,14 @@ const baseUrl = "https://anime-api.5t5.top";
  */
 function isUserLoggedIn(url, responseHtml) {
 	if(url != null && url.indexOf('follow/total') != -1){
-		return verifyUserLoggedIn();
+		const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, "/v2/user/info" + getHeader()));
+		if(response.code() == 200){
+			if(response.body().string().indexOf('成功') != -1){
+				return true;
+			}else{
+				return false;
+			}
+		}
 	}
 	return false;
 }
@@ -95,22 +121,21 @@ function verifyUserLoggedIn() {
 		}else{
 			return false;
 		}
-	}else{
-		return true;
+	}else if(response.code() == 401 || response.code() == 403){
+		return false;
 	}
+	return true;
 }
 
 function getHeader() {
 	const token = JavaUtils.getLocalStorage('https://lavani.me', 'token');
 	try{
-		const authorization = JSON.parse(token).value;
-		var preference = JavaUtils.getPreference();
-		if(authorization != null){
-			preference.edit().putString("authorization", authorization).apply();
+		if(!JavaUtils.isEmpty(token)){
+			const authorization = JSON.parse(token).value;
+			return "@header->referer:https://lavani.me/@header->authorization:" + authorization;
 		}
-		return "@header->referer:https://lavani.me/@header->authorization:" + preference.getString("authorization", "");
 	}catch(e){
-		//JavaUtils.userLogOut();
+		JavaUtils.setUserLoginStatus(false);
 	}
 	return "";
 }
@@ -123,7 +148,11 @@ function getHeader() {
 function search(key) {
 	var result = [];
 	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, `/v2/search?value=${encodeURI(key)}` + getHeader()));
+	if(response.code() == 401){
+		JavaUtils.setUserLoginStatus(false);
+	}
 	if(response.code() == 200){
+		JavaUtils.setUserLoginStatus(true);
 		const $ = JSON.parse(response.body().string());
 		$.data.forEach((child) => {
 			result.push({
@@ -192,6 +221,7 @@ function detail(id) {
 		tocs: tocs(id)
 	});
 }
+
 /**
  * 目录
  * @return {[{name, chapters:{[{name, url}]}}]}
@@ -203,7 +233,7 @@ function tocs(id) {
 	//目录标签请求
 	//const tagResponse = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, '/v2/drive/all' + getHeader()));
 	//if(tagResponse.code() == 200){
-		const defaultDrive = '2AG_CHUN_CDN'
+		const defaultDrive = JavaUtils.getPreference().getString("drive", "2AG_CHUN_CDN")
 		//const defaultDrive = JSON.parse(tagResponse.body().string()).data.default;
 		//创建章节数组
 		var newChapters = [];
@@ -218,12 +248,20 @@ function tocs(id) {
 		url = url + '&drive=' + defaultDrive + getHeader();
 
 		const tocResponse = JavaUtils.httpRequest(url);
+		if(tocResponse.code() == 401){
+			JavaUtils.setUserLoginStatus(false);
+		}
 		if(tocResponse.code() == 200){
+			JavaUtils.setUserLoginStatus(true);
 			JSON.parse(tocResponse.body().string()).data.forEach((child2, index2) => {
 				if(child2.parseResult.extensionName.type == 'video'){
+					var name = child2.parseResult.episode;
+					if(name == null){
+						name = child2.parseResult.animeTitle;
+					}
 					newChapters.push({
 						//章节名称
-						name: String(child2.parseResult.episode),
+						name: name,
 						//章节网址
 						url: child2.url
 					});

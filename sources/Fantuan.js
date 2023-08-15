@@ -5,7 +5,7 @@ function manifest() {
 		id: 1654757510,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230811,
+		minMyACG: 20230815,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 1,//加载速度慢，经常无法连接
@@ -36,7 +36,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年8月11日",
+		updateTime: "2023年8月15日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
