@@ -1,212 +1,267 @@
 function manifest() {
 	return JSON.stringify({
-		//MyACG 最新版本
-		MyACG: 'https://lanzou.com/b07xqlbxc ',
-		
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
 		id: 1648714588,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20220705,
+		minMyACG: 20230815,
 
-		//优先级1~100，数值越大越靠前
-		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
+		//优先级 1~100，数值越大越靠前
 		priority: 50,
 		
-		//是否失效，默认关闭
+		//是否启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		invalid: false,
+		isEnabledInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "轻小说文库",
 
-		//搜索源制作人
+		//搜索源作者
 		author: "雨夏",
 
 		//电子邮箱
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//搜索源自动同步更新网址
 		syncList: {
 			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/轻小说文库.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/轻小说文库.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/轻小说文库.js",
-			"Coding": "https://ylk2534246654.coding.net/p/myacg/d/MyACGSourceRepository/git/raw/master/sources/轻小说文库.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/轻小说文库.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/轻小说文库.js",
 		},
 		
 		//更新时间
-		updateTime: "2022年3月29日",
+		updateTime: "2023年8月17日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
 		
-		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截的请求处理，3：对内部浏览器拦截的框架处理
-		contentType: 1,
+		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
+		contentProcessType: 1,
 		
-		//自定义标签
-		tag: ["小说","轻小说"],
+		//分组
+		group: ["小说","轻小说"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "https://www.wenku8.net",
+		baseUrl: baseUrl,
+
+		//发现
+		findList: {
+			category: {
+				"region": {
+					"热门": "allvisit",
+					"推荐": "allvote",
+					"动画化": "anime",
+					"今日更新": "lastupdate",
+					"新书一览": "postdate",
+					"人气": "goodnum"
+				}
+			},
+			"轻小说": ["region"]
+		},
 		
-		//登录授权是否启用
-		auth: true,
+		//是否启用登录
+		isEnabledLogin: true,
 		
-		//登录授权网址
-		authUrl:"https://www.wenku8.net/index.php",
+		//登录网址
+		loginUrl: JavaUtils.urlJoin(baseUrl, "/index.php"),
 		
-		//需要授权的功能（search，find，detail，content）
-		authRequired: ["search"],
+		//需要登录的功能（search，detail，content，find）
+		requiresLoginList: ["search", "find"],
+
+		//全局 HTTP 请求头列表
+		httpRequestHeaderList: {
+			"user-agent-system": "Windows NT 10.0; Win64; x64"
+		}
 	});
 }
+
+const baseUrl = "https://www.wenku8.net";
+
 /*
- * 拦截并验证手动授权数据
- * @params {string} html	网页源码
- * @params {string} url		网址
- * @returns 是否授权
+ * 是否完成登录
+ * @param {string} url		网址
+ * @param {string} responseHtml	响应源码
+ * @return {boolean}  登录结果
  */
-function authCallback(html,url) {
-	if(html.length > 1 && html.indexOf('登录成功') != -1){
+function isUserLoggedIn(url, responseHtml) {
+	if(responseHtml != null && responseHtml.length > 1 && responseHtml.indexOf('登录成功') != -1){
 		return true;
 	}
 	return false;
 }
 /*
- * 自动验证授权结果
- * @returns 是否授权
+ * 验证完成登录
+ * @return {boolean} 登录结果
  */
-function authVerify() {
-	const response = httpRequest("https://www.wenku8.net/index.php");
-	if(response.length > 1 && response.indexOf('轻小说文库欢迎您') != -1){
-		return true;
+function verifyUserLoggedIn() {
+	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, "/index.php"));
+	if(response.code() == 200){
+		var responseHtml = response.body().string();
+		if(responseHtml.length > 1 && responseHtml.indexOf('轻小说文库欢迎您') != -1){
+			return true;
+		}
 	}
 	return false;
 }
 
-const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
 /**
  * 搜索
- * @params {string} key
- * @returns {[{title, summary, cover, url}]}
+ * @param {string} key
+ * @return {[{name, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = 'https://www.wenku8.net/modules/article/search.php?searchtype=articlename&searchkey='+ ToolUtil.encodeURI(key,'GBK') + header;
-	const response = httpRequest(url);
-	
-	var array= [];
-	if(response.indexOf('小说目录')!=-1){
-		array.push({
-			//标题
-			title : jsoup(response,'#content > div > table > tbody > tr > td > table > tbody > tr > td > span > b').text(),
-			
-			//概览
-			summary : jsoup(response,'#content > div:nth-child(1) > table:nth-child(4) > tbody > tr > td:nth-child(2) > span:nth-child(13)').text(),
-			
-			//封面
-			cover : ToolUtil.urlJoin(url,jsoup(response,'#content > div > table > tbody > tr > td > img').attr('src')),
-			
-			//网址
-			url : 'https://www.wenku8.net/book/' + ToolUtil.substring(response,'bid=','\"')+'.htm'
+	var url = JavaUtils.urlJoin(baseUrl, `/modules/article/search.php?searchtype=articlename&searchkey=${JavaUtils.encodeURI(key,'GBK')}`);
+	var result = [];
+	const response = JavaUtils.httpRequest(url);
+	if(response.code() == 200){
+		const document = response.body().cssDocument();
+		var responseHtml = response.body().string();
+		if(responseHtml.indexOf('小说目录') != -1){
+			result.push({
+				//名称
+				name: document.selectFirst('#content > div > table > tbody > tr > td > table > tbody > tr > td > span > b').text(),
+				
+				//概览
+				summary: document.selectFirst('#content > div:nth-child(1) > table:nth-child(4) > tbody > tr > td:nth-child(2) > span:nth-child(13)').text(),
+				
+				//封面网址
+				coverUrl: document.selectFirst('#content > div > table > tbody > tr > td > img').absUrl('src'),
+				
+				//网址
+				url: JavaUtils.urlJoin(baseUrl, `/book/${JavaUtils.substring(responseHtml,'bid=','\"')}.htm`)
 			});
-		return JSON.stringify(array);
-	}
-	
-	const list = jsoupArray(response,'#content > table > tbody > tr > td > div').outerHtml();
-	
-	for (var i=0;i <list.length ; i++) {
-	    var data = list[i];
-		array.push({
-			//标题
-			title : jsoup(data,'div:nth-child(2) > b > a').text(),
-			
-			//概览
-			summary : jsoup(data,'div:nth-child(2) > p:nth-child(3)').text(),
-			
-			//封面
-			cover : ToolUtil.urlJoin(url,jsoup(data,':nth-child(1) > a >img').attr('src')),
-			
-			//网址
-			url : ToolUtil.urlJoin(url,jsoup(data,'div:nth-child(2) > b > a').attr('href'))
-			});
-	}
-	return JSON.stringify(array);
-}
-/**
- * 详情
- * @params {string} url
- * @returns {[{title, author, date, summary, cover, reverseOrder, catalog:{[{tag, chapter:{[{name, url}]}}]}}]}
- */
-function detail(url) {
-	const response = httpRequest(url+ header);
-	return JSON.stringify({
-		//标题
-		title : jsoup(response,'#content > div:nth-child(1) > table:nth-child(1) > tbody > tr:nth-child(1) > td > table > tbody > tr > td:nth-child(1) > span > b').text(),
-		
-		//作者
-		author: jsoup(response,'#content > div:nth-child(1) > table:nth-child(1) > tbody > tr:nth-child(2) > td:nth-child(2)').text(),
-		
-		//日期
-		date : jsoup(response,'dl:nth-child(5) > dd').text(),
-		
-		//概览
-		summary: jsoup(response,'#content > div:nth-child(1) > table:nth-child(4) > tbody > tr > td:nth-child(2) > span:nth-child(13)').text(),
-
-		//封面
-		cover : ToolUtil.urlJoin(url,jsoup(response,'#content > div > table > tbody > tr > td > img').attr('src')),
-		
-		//目录是否倒序
-		reverseOrder: false,
-		
-		//目录网址/非外链无需使用
-		catalog: catalog(ToolUtil.urlJoin(url,jsoup(response,'#content > div:nth-child(1) > div:nth-child(6) > div > span:nth-child(1) > fieldset > div > a').attr('href')))
-	})
-}
-/**
- * 目录
- * @params {string} response
- * @params {string} url
- * @returns {[{tag, chapter:{[{name, url}]}}]}
- */
-function catalog(url) {
-	const response = httpRequest(url+ header);
-	//创建目录数组
-	var new_catalogs= [];
-	
-	//创建章节数组
-	var newchapters= [];
-		
-	//章节代码
-	var chapters = jsoupArray(response,'td.vcss,td.ccss').outerHtml();
-		
-	var group;//分组记录
-	for (var ci=0;ci<chapters.length;ci++) {
-		var chapter = chapters[ci];
-		
-		if(!(chapter.indexOf('href')!=-1)){
-			group = jsoup(chapter,':matchText').text();
 		}else{
-			newchapters.push({
-				//章节名称
-				name: group + ' ' + jsoup(chapter,'a').text(),
-				//章节网址
-				url: ToolUtil.urlJoin(url,jsoup(chapter,'a').attr('href'))
+			var elements = document.select("#content > table > tbody > tr > td > div");
+			for (var i = 0;i < elements.size();i++) {
+				var element = elements.get(i);
+				result.push({
+					//名称
+					name: element.selectFirst('div:nth-child(2) > b > a').text(),
+					
+					//概览
+					summary: element.selectFirst('div:nth-child(2) > p:nth-child(3)').text(),
+					
+					//封面网址
+					coverUrl: element.selectFirst(':nth-child(1) > a > img').absUrl('src'),
+					
+					//网址
+					url: element.selectFirst('div:nth-child(2) > b > a').absUrl('href')
+				});
+			}
+		}
+	}
+	return JSON.stringify(result);
+}
+
+/**
+ * 发现
+ * @return {[{name, summary, coverUrl, url}]}
+ */
+function find(region) {
+	var url = JavaUtils.urlJoin(baseUrl, `/modules/article/toplist.php?sort=${region}`);
+	var result = [];
+	const response = JavaUtils.httpRequest(url);
+	if(response.code() == 200){
+		const document = response.body().cssDocument();
+		var elements = document.select("#content > table > tbody > tr > td > div");
+		for (var i = 0;i < elements.size();i++) {
+			var element = elements.get(i);
+			result.push({
+				//名称
+				name: element.selectFirst('div:nth-child(2) > b > a').text(),
+				
+				//概览
+				summary: element.selectFirst('div:nth-child(2) > p:nth-child(3)').text(),
+				
+				//封面网址
+				coverUrl: element.selectFirst(':nth-child(1) > a > img').absUrl('src'),
+				
+				//网址
+				url: element.selectFirst('div:nth-child(2) > b > a').absUrl('href')
 			});
 		}
 	}
-	//添加目录
-	new_catalogs.push({
+	return JSON.stringify(result);
+}
+
+/**
+ * 详情
+ * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ */
+function detail(url) {
+	const response = JavaUtils.httpRequest(url);
+	if(response.code() == 200){
+		const document = response.body().cssDocument();
+		return JSON.stringify({
+			//标题
+			name: document.selectFirst('#content > div:nth-child(1) > table:nth-child(1) > tbody > tr:nth-child(1) > td > table > tbody > tr > td:nth-child(1) > span > b').text(),
+			
+			//作者
+			author: document.selectFirst('#content > div:nth-child(1) > table:nth-child(1) > tbody > tr:nth-child(2) > td:nth-child(2)').text(),
+			
+			//更新时间
+			update: document.selectFirst('dl:nth-child(5) > dd').text(),
+			
+			//概览
+			summary: document.selectFirst('#content > div:nth-child(1) > table:nth-child(4) > tbody > tr > td:nth-child(2) > span:nth-child(13)').text(),
+	
+			//封面网址
+			coverUrl: document.selectFirst('#content > div > table > tbody > tr > td > img').absUrl('src'),
+			
+			//是否启用将章节置为倒序
+			isEnabledChapterReverseOrder: false,
+			
+			//目录加载
+			tocs: tocs(document.selectFirst('#content > div:nth-child(1) > div:nth-child(6) > div > span:nth-child(1) > fieldset > div > a').absUrl('href'))
+		});
+	}
+	return null;
+}
+
+/**
+ * 目录
+ * @returns {[{name, chapters:{[{name, url}]}}]}
+ */
+function tocs(url) {
+	const response = JavaUtils.httpRequest(url);
+	if(response.code() == 200){
+		const document = response.body().cssDocument();
+
+		//创建章节数组
+		var newChapters = [];
+		
+		//章节元素选择器
+		var chapterElements = document.select('td.vcss,td.ccss');
+		
+		var group;//分组记录
+		for (var i2 = 0;i2 < chapterElements.size();i2++) {
+			var chapterElement = chapterElements.get(i2);
+			
+			var href = chapterElement.selectFirst('a').absUrl('href');
+			if(!JavaUtils.isNetworkUrl(href)){
+				group = chapterElement.selectFirst(':matchText').text();
+			}else{
+				newChapters.push({
+					//章节名称
+					name: group + ' ' + chapterElement.selectFirst('a').text(),
+					//章节网址
+					url: chapterElement.selectFirst('a').absUrl('href')
+				});
+			}
+		}
+	}
+	return [{
 		//目录名称
-		tag: '目录',
+		name: '目录',
 		//章节
-		chapter : newchapters
-	});
-	return new_catalogs;
+		chapters : newChapters
+	}];
 }
 
 /**
@@ -215,8 +270,11 @@ function catalog(url) {
  * @returns {string} content
  */
 function content(url) {
-	const response = httpRequest(url + header);
-	const content = jsoup(response,'#content').outerHtml();
-	return content;
+	const response = JavaUtils.httpRequest(url);
+	if(response.code() == 200){
+		const document = response.body().cssDocument();
+		return document.selectFirst('#content').outerHtml();
+	}
+	return null;
 }
 
