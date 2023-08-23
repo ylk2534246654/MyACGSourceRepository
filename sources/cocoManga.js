@@ -5,7 +5,7 @@ function manifest() {
 		id: 1648714186,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230804,
+		minMyACG: 20230823,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 60,
@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 11,
+		version: 12,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -36,7 +36,7 @@ function manifest() {
 		},
 
 		//更新时间
-		updateTime: "2023年8月4日",
+		updateTime: "2023年8月23日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -112,17 +112,23 @@ function manifest() {
 		},
 		
 		//网络限流 - 如果{regexUrl}匹配网址，则限制其{period}毫秒内仅允许{maxRequests}个请求
+		/*
 		networkRateLimitList: [
 			{
 				regexUrl: "www\.colamanhua\.com",//表示需要限流的 Url，使用正则表达式格式（不允许为空）
 				maxRequests: 0,//在指定的时间内允许的请求数量（必须 >= 0 才会生效）
-				period: 10000,//时间周期，毫秒（必须 > 0 才会生效）
+				period: 5000,//时间周期，毫秒（必须 > 0 才会生效）
 			}
 		],
+		*/
+
+		//是否启用检测收藏更新
+		//isEnabledDetectFavoriteUpdate: false,
 
 		//全局 HTTP 请求头列表
 		httpRequestHeaderList: {
-			"user-agent": `Mozilla/5.0 (Linux; Android;) AppleWebKit (KHTML, like Gecko) Chrome Mobile Safari TimeStamp/${JavaUtils.getPreference().getLong("headerTimeStamp")}`
+			"user-agent": `Mozilla/5.0 (Linux; Android;) AppleWebKit (KHTML, like Gecko) Mobile Safari TimeStamp/${JavaUtils.getPreference().getLong("headerTimeStamp")}`,
+			"Referer": "https://www.colamanhua.com"
 		},
 	})
 }
@@ -141,6 +147,7 @@ function isEnabledAuthenticator(url, responseHtml) {
 	if(responseHtml != null && responseHtml.indexOf('请用正常浏览器观看') != -1){
 		var time = new Date().getTime();
 		JavaUtils.getPreference().edit().putLong("headerTimeStamp", time).apply();
+		return null;
 	}
 	return false;
 }
@@ -151,7 +158,7 @@ function isEnabledAuthenticator(url, responseHtml) {
  * @return {[{name, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl,'/search?searchString=' + encodeURI(key));
+	var url = JavaUtils.urlJoin(baseUrl,`/search?searchString=${encodeURI(key)}@enabledFrameSource->true`);
 	const response = JavaUtils.httpRequest(url);
 	var result= [];
 	if(response.code() == 200){
@@ -167,7 +174,7 @@ function search(key) {
 				summary: element.selectFirst('dd > ul > li:nth-child(3)').text(),
 				
 				//封面网址
-				coverUrl: element.selectFirst('dt > a').absUrl('data-original') + '@header->Referer:' + baseUrl,
+				coverUrl: element.selectFirst('dt > a').absUrl('data-original'),
 				
 				//网址
 				url: element.selectFirst('dt > a').absUrl('href')
@@ -182,7 +189,7 @@ function search(key) {
  * @return {[{name, summary, coverUrl, url}]}
  */
 function find(state, type, orderBy) {
-	var url = JavaUtils.urlJoin(baseUrl, `/show?status=${state}&mainCategoryId=${type}&orderBy=${orderBy}`);
+	var url = JavaUtils.urlJoin(baseUrl, `/show?status=${state}&mainCategoryId=${type}&orderBy=${orderBy}@enabledFrameSource->true`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -198,7 +205,7 @@ function find(state, type, orderBy) {
 				summary: element.selectFirst('.fed-list-remarks').text(),
 				
 				//封面网址
-				coverUrl: element.selectFirst('.fed-list-pics').absUrl('data-original') + '@header->Referer:' + baseUrl,
+				coverUrl: element.selectFirst('.fed-list-pics').absUrl('data-original'),
 				
 				//网址
 				url: element.selectFirst('.fed-list-pics').absUrl('href')
@@ -212,7 +219,7 @@ function find(state, type, orderBy) {
  * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
-	const response = JavaUtils.httpRequest(url);
+	const response = JavaUtils.httpRequest(url + "@enabledFrameSource->true");
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
 		return JSON.stringify({
@@ -229,7 +236,7 @@ function detail(url) {
 			summary: document.selectFirst('p.fed-part-both').text(),
 	
 			//封面网址
-			coverUrl: document.selectFirst('a.fed-list-pics:nth-last-child(1)').absUrl('data-original') + '@header->Referer:' + baseUrl,
+			coverUrl: document.selectFirst('a.fed-list-pics:nth-last-child(1)').absUrl('data-original'),
 			
 			//是否启用将章节置为倒序
 			isEnabledChapterReverseOrder: true,
