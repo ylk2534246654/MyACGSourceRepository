@@ -28,7 +28,6 @@ function manifest() {
 
 		//搜索源自动同步更新网址
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/动漫之家.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/动漫之家.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/动漫之家.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/动漫之家.js",

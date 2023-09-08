@@ -5,7 +5,7 @@ function manifest() {
 		id: 1655214571,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230810,
+		minMyACG: 20230823,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 0,//资源大部分无法播放，考虑列为失效搜索源
@@ -24,11 +24,10 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 7,
+		version: 8,
 
 		//搜索源自动同步更新网址
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/哔咪动漫.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/哔咪动漫.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/哔咪动漫.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/哔咪动漫.js",
@@ -36,7 +35,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年8月10日",
+		updateTime: "2023年9月3日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -63,11 +62,35 @@ function manifest() {
 		},
 	});
 }
-const baseUrl = "http://bimiacg4.net";
+const baseUrl = getBaseUrl();
 /**
- * 备份：
- * http://bimiacg.one/
+ * http://bimiacg4.net
+ * http://bimiacg5.net
+ * http://bimiacg.one
+ * 
+ * 导航：https://bimiacg.icu
  */
+function getBaseUrl() {
+	var preference = JavaUtils.getPreference();
+	var baseUrlTime = preference.getLong("baseUrlTime");
+	var oneDay = 1000*60*60*24;
+	var time = new Date().getTime();
+	if(baseUrlTime < time - oneDay){//超过一天
+		const response = JavaUtils.httpRequest("https://bimiacg.icu");
+		var edit = preference.edit();
+		if(response.code() == 200){
+			var _baseUrl = JavaUtils.substring(response.body().string(),"www.","\"");
+			if(_baseUrl != null){
+				_baseUrl = "http://www." + String(_baseUrl).replace(/a@b/g, '.');
+				edit.putString("baseUrl", _baseUrl);//更新基础网址
+			}
+		}
+		edit.putLong("baseUrlTime", time).apply();//更新时间
+	}
+	return preference.getString("baseUrl", "http://bimiacg4.net");
+}
+
+//网页浏览时不需要，所以未使用 httpRequestHeaderList
 const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
 
 /**

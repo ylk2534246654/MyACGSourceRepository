@@ -24,11 +24,10 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 12,
+		version: 13,
 
 		//搜索源自动同步更新网址
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/cocoManga.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/cocoManga.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/cocoManga.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/cocoManga.js",
@@ -36,7 +35,7 @@ function manifest() {
 		},
 
 		//更新时间
-		updateTime: "2023年8月23日",
+		updateTime: "2023年9月8日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -59,6 +58,9 @@ function manifest() {
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,
+
+		//详情页网址匹配
+		detailUrlPattern: JavaUtils.urlJoin(baseUrl, "/manga-\\w+/"),
 
 		//发现
 		findList: {
@@ -128,11 +130,12 @@ function manifest() {
 		//全局 HTTP 请求头列表
 		httpRequestHeaderList: {
 			"user-agent": `Mozilla/5.0 (Linux; Android;) AppleWebKit (KHTML, like Gecko) Mobile Safari TimeStamp/${JavaUtils.getPreference().getLong("headerTimeStamp")}`,
-			"Referer": "https://www.colamanhua.com"
+			"Referer": baseUrl
 		},
 	})
 }
-const baseUrl = "https://www.colamanhua.com";
+const baseUrl = "https://www.colamanga.com";
+//https://www.colamanhua.com
 //https://www.cocomanga.com
 //onemanhua
 

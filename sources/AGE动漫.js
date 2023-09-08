@@ -28,7 +28,6 @@ function manifest() {
 
 		//搜索源自动同步更新网址
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/AGE动漫.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/AGE动漫.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/AGE动漫.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/AGE动漫.js",
@@ -53,7 +52,7 @@ function manifest() {
 		//发现
 		findList: {
 			category: {
-				"region": ["全部","日本","中国","欧美"],
+				"region": ["全部","日本","欧美"],
 				"genre": ["全部","TV","剧场版","OVA"],
 				"status": ["全部","连载中","已完结","未播放"],
 				"label": ["全部","搞笑","运动","励志","武侠","特摄","热血","战斗","竞技","校园","青春","爱情","冒险","后宫","百合","治愈","萝莉","魔法","悬疑","推理","奇幻","神魔","恐怖","血腥","机战","战争","犯罪","社会","职场","剧情","伪娘","耽美","歌舞","肉番","美少女","吸血鬼","泡面番","欢乐向"],

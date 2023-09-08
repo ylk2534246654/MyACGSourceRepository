@@ -28,7 +28,6 @@ function manifest() {
 
 		//搜索源自动同步更新网址
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/奇奇动漫.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/奇奇动漫.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/奇奇动漫.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/奇奇动漫.js",
@@ -80,6 +79,10 @@ const baseUrl = "http://qiqidm8.com";
  * @return {[{name, summary, coverUrl, url}]}
  */
 function search(key) {
+	//没找到相关视频,请缩短关键词重新搜索,宁可少字,不可错字,如"你和我的倾城时光",只需输入"你和我的"
+	if(key.replace(/[^\x00-\xff]/g, "00").length > 30){
+		return null;
+	}
 	var url = JavaUtils.urlJoin(baseUrl, '/search.php@enabledFrameSource->true@post->searchword=' + encodeURI(key));
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
@@ -105,7 +108,6 @@ function search(key) {
 	}
 	return JSON.stringify(result);
 }
-
 
 /**
  * 发现
