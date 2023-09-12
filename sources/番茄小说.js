@@ -101,27 +101,33 @@ const baseUrl = "https://novel.snssdk.com";
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl,'/api/novel/channel/homepage/search/search/v1/?aid=13&q=' + encodeURI(key));
+	var p = 1;//页数
+	var url = JavaUtils.urlJoin(baseUrl, `/api/novel/channel/homepage/search/search/v1/?device_platform=android&parent_enterfrom=novel_channel_search.tab.&offset=${(p-1)*10}&aid=1967&q=${encodeURI(key)}`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		JSON.parse(response.body().string()).data.ret_data.forEach((child) => {
-			result.push({
-				//名称
-				name: child.title.replace(new RegExp('<em>','g'),'').replace(new RegExp('</em>','g'),''),
-		
-				//作者
-				author: child.author,
-		
-				//概览
-				summary: child.abstract.replace(new RegExp('<em>','g'),'').replace(new RegExp('</em>','g'),''),
-		
-				//封面网址
-				coverUrl: child.thumb_url,
-		
-				//网址
-				url: child.book_id
-			});
+			if(child.genre == 0){//0 : 小说，1：漫画
+				result.push({
+					//名称
+					name: child.title.replace(new RegExp('<em>','g'),'').replace(new RegExp('</em>','g'),''),
+			
+					//作者
+					author: child.author,
+			
+					//概览
+					summary: child.abstract.replace(new RegExp('<em>','g'),'').replace(new RegExp('</em>','g'),''),
+			
+					//类别
+					//type: child.genre,
+
+					//封面网址
+					coverUrl: child.thumb_url,
+			
+					//网址
+					url: child.book_id
+				});
+			}
 		});
 	}
 	return JSON.stringify(result);
@@ -139,28 +145,30 @@ function find(label) {
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		JSON.parse(response.body().string()).data.data.forEach((child) => {
-			result.push({
-				//名称
-				name: child.book_name,
-		
-				//作者
-				author: child.author,
-		
-				//最后章节名称
-				lastChapterName: child.last_chapter_title,
-
-				//最近更新时间
-				lastUpdateTime: child.last_chapter_update_time,
-		
-				//概览
-				summary: child.abstract,
-		
-				//封面网址
-				coverUrl: child.thumb_url,
-		
-				//网址
-				url: child.book_id
-			});
+			if(child.genre == 0){//0 : 小说，1：漫画
+				result.push({
+					//名称
+					name: child.book_name,
+			
+					//作者
+					author: child.author,
+			
+					//最后章节名称
+					lastChapterName: child.last_chapter_title,
+	
+					//最近更新时间
+					lastUpdateTime: child.last_chapter_update_time,
+			
+					//概览
+					summary: child.abstract,
+			
+					//封面网址
+					coverUrl: child.thumb_url,
+			
+					//网址
+					url: child.book_id
+				});
+			}
 		});
 	}
 	return JSON.stringify(result);
