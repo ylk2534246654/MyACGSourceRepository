@@ -5,14 +5,14 @@ function manifest() {
 		id: 1652783603,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230823,
+		minMyACG: 20230911,
 		
 		//优先级 1~100，数值越大越靠前
 		priority: 20,
 		
-		//是否启用失效#默认关闭
+		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isEnabledInvalid: false,
+		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "动漫之家",
@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 3,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -34,8 +34,8 @@ function manifest() {
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/动漫之家.js",
 		},
 		
-		//更新时间
-		updateTime: "2023年8月23日",
+		//最近更新时间
+		lastUpdateTime: 1694506625,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -106,14 +106,14 @@ function manifest() {
 			"漫画": ["region","label","label2","status","order"]
 		},
 		
-		//是否启用登录
-		isEnabledLogin: true,
+		//启用用户登录
+		enableUserLogin: true,
 		
-		//登录网址
-		loginUrl: "https://m.dmzj.com/my.html",
+		//用户登录网址
+		userLoginUrl: "https://m.dmzj.com/my.html",
 		
-		//需要登录的功能（search，detail，content，find）
-		requiresLoginList: ["content"],
+		//需要用户登录的功能（search，detail，content，find）
+		requiresUserLoginList: ["content"],
 	});
 }
 
@@ -148,9 +148,8 @@ function verifyUserLoggedIn() {
 /**
  * 搜索
  * @param {string} key
- * @return {[{name, summary, coverUrl, url}]}
- * 
-**/
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
+ */
 function search(key) {
 	var url = JavaUtils.urlJoin(baseUrl, '/search/' + encodeURI(key)) + '.html';
 	var result = [];
@@ -162,15 +161,21 @@ function search(key) {
 				result.push({
 					//名称
 					name : child.name,
+		
+					//最后章节名称
+					lastChapterName: child.last_update_chapter_name,
+
+					//最近更新时间
+					lastUpdateTime: child.last_updatetime,
 					
 					//概览
-					summary : child.last_update_chapter_name,
+					summary: child.description,
 					
 					//封面
-					cover : JavaUtils.urlJoin(imgBaseUrl, child.cover),
+					cover: JavaUtils.urlJoin(imgBaseUrl, child.cover),
 					
 					//网址
-					url : JavaUtils.urlJoin(baseUrl, `/info/${child.comic_py}.html`)
+					url: JavaUtils.urlJoin(baseUrl, `/info/${child.comic_py}.html`)
 				});
 			});
 		}
@@ -180,7 +185,7 @@ function search(key) {
 
 /**
  * 发现
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(region, label, label2, status, order) {
 	var url = JavaUtils.urlJoin(baseUrl, `/classify/${label}-${label2}-${status}-${region}-${order}-0.json`);
@@ -191,15 +196,21 @@ function find(region, label, label2, status, order) {
 			result.push({
 				//名称
 				name : child.name,
+		
+				//最后章节名称
+				lastChapterName: child.last_update_chapter_name,
+
+				//最近更新时间
+				lastUpdateTime: child.last_updatetime,
 				
 				//概览
-				summary : child.last_update_chapter_name,
+				summary: child.description,
 				
 				//封面
-				cover : JavaUtils.urlJoin(imgBaseUrl, child.cover),
+				cover: JavaUtils.urlJoin(imgBaseUrl, child.cover),
 				
 				//网址
-				url : JavaUtils.urlJoin(baseUrl, `/info/${child.comic_py}.html`)
+				url: JavaUtils.urlJoin(baseUrl, `/info/${child.comic_py}.html`)
 			});
 		});
 	}
@@ -208,7 +219,7 @@ function find(region, label, label2, status, order) {
 
 /**
  * 详情
- * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = JavaUtils.httpRequest(url);
@@ -221,8 +232,8 @@ function detail(url) {
 			//作者
 			author: document.selectFirst('p.txtItme:nth-child(1)').text(),
 			
-			//更新时间
-			update: document.selectFirst('span.date').text(),
+			//最近更新时间
+			lastUpdateTime: document.selectFirst('span.date').text(),
 			
 			//概览
 			summary: document.selectFirst('p.txtDesc.autoHeight').text(),
@@ -230,8 +241,8 @@ function detail(url) {
 			//封面网址
 			coverUrl: document.selectFirst('#Cover > img').absUrl('src'),
 			
-			//是否启用将章节置为倒序
-			isEnabledChapterReverseOrder: true,
+			//启用章节反向顺序
+			enableChapterReverseOrder: true,
 			
 			//目录加载
 			tocs: tocs(response)
@@ -245,26 +256,30 @@ function detail(url) {
  * @returns {[{name, chapters:{[{name, url}]}}]}
  */
 function tocs(response) {
-	//创建章节数组
-	var newChapters = [];
-		
-	var initIntroData = JavaUtils.substring(response.body().string(),'initIntroData([',']);');
+	//创建目录数组
+	var newTocs = [];
+	var initIntroData = JavaUtils.substring(response.body().string(),'initIntroData(',');');
 	if(!JavaUtils.isEmpty(initIntroData)){
-		JSON.parse(initIntroData).data.forEach((child) => {
-			newChapters.push({
-				//章节名称
-				name: child.chapter_name,
-				//章节网址
-				url: JavaUtils.urlJoin(baseUrl, `/view/${child.comic_id}/${child.id}.html`)
+		JSON.parse(initIntroData).forEach((child) => {
+			//创建章节数组
+			var newChapters = [];
+			child.data.forEach((chapter) => {
+				newChapters.push({
+					//章节名称
+					name: chapter.chapter_name,
+					//章节网址
+					url: JavaUtils.urlJoin(baseUrl, `/view/${chapter.comic_id}/${chapter.id}.html`)
+				});
+			});
+			newTocs.push({
+				//目录名称
+				name: child.title,
+				//章节
+				chapters: newChapters
 			});
 		});
 	}
-	return [{
-		//目录名称
-		name: "目录",
-		//章节
-		chapters : newChapters
-	}];
+	return newTocs;
 }
 
 /**
