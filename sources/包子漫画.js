@@ -5,14 +5,14 @@ function manifest() {
 		id: 1652949783,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230804,
+		minMyACG: 20230911,
 		
 		//优先级 1~100，数值越大越靠前
 		priority: 50,
 		
-		//是否启用失效#默认关闭
+		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isEnabledInvalid: false,
+		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "包子漫画",
@@ -24,19 +24,18 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 12,
+		version: 13,
 
 		//搜索源自动同步更新网址
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/包子漫画.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/包子漫画.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/包子漫画.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/包子漫画.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/包子漫画.js",
 		},
 		
-		//更新时间
-		updateTime: "2023年8月4日",
+		//最近更新时间
+		lastUpdateTime: 1694531401,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -149,7 +148,7 @@ const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://cn.baozi
 /**
  * 搜索
  * @param {string} key
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = JavaUtils.urlJoin(baseUrl,'/search?q='+ encodeURI(key));
@@ -178,10 +177,9 @@ function search(key) {
 	return JSON.stringify(result);
 }
 
-
 /**
  * 发现
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(region, status, label, page) {
 	var url = JavaUtils.urlJoin(baseUrl,`/classify?type=${label}&region=${region}&state=${status}&filter=%2a`);
@@ -209,9 +207,10 @@ function find(region, status, label, page) {
 	}
 	return JSON.stringify(result);
 }
+
 /**
  * 详情
- * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = JavaUtils.httpRequest(url);
@@ -224,8 +223,8 @@ function detail(url) {
 			//作者
 			author: document.selectFirst('h2.comics-detail__author').text(),
 			
-			//更新时间
-			//update: document.selectFirst('').text(),
+			//最近更新时间
+			//lastUpdateTime: document.selectFirst('').text(),
 			
 			//概览
 			summary: document.selectFirst('div.l-content > div > div > div > p').text(),
@@ -233,8 +232,8 @@ function detail(url) {
 			//封面网址
 			coverUrl: document.selectFirst('div.l-content > div > div > amp-img').absUrl('data-media'),
 			
-			//是否启用将章节置为倒序
-			isEnabledChapterReverseOrder: false,
+			//启用章节反向顺序
+			enableChapterReverseOrder: false,
 			
 			//目录加载
 			tocs: tocs(document)
@@ -269,7 +268,7 @@ function tocs(document) {
 	}
 	if(newChapters.length < 1){//最新章节
 		chapterElements = document.select('.comics-chapters');
-		for (var i2 = 0;i2 < chapterElements.size();i2++) {
+		for (var i2 = chapterElements.size() - 1;i2 >= 0;i2--) {
 			var chapterElement = chapterElements.get(i2);
 			
 			var aElement = chapterElement.selectFirst('a');

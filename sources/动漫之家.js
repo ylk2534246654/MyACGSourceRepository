@@ -160,7 +160,7 @@ function search(key) {
 			JSON.parse(serchArry).forEach((child) => {
 				result.push({
 					//名称
-					name : child.name,
+					name: child.name,
 		
 					//最后章节名称
 					lastChapterName: child.last_update_chapter_name,
