@@ -5,19 +5,19 @@ function manifest() {
 		id: 1655214571,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230823,
+		minMyACG: 20230911,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 0,//资源大部分无法播放，考虑列为失效搜索源
 		
-		//是否启用失效#默认关闭
+		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isEnabledInvalid: false,
+		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "哔咪动漫",
 
-		//搜索源制作人
+		//搜索源作者
 		author: "雨夏",
 
 		//电子邮箱
@@ -34,8 +34,8 @@ function manifest() {
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/哔咪动漫.js",
 		},
 		
-		//更新时间
-		updateTime: "2023年9月3日",
+		//最近更新时间
+		lastUpdateTime: 1694518508,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -66,6 +66,7 @@ const baseUrl = getBaseUrl();
 /**
  * http://bimiacg4.net
  * http://bimiacg5.net
+ * http://bimiacg10.net
  * http://bimiacg.one
  * 
  * 导航：https://bimiacg.icu
@@ -87,7 +88,7 @@ function getBaseUrl() {
 		}
 		edit.putLong("baseUrlTime", time).apply();//更新时间
 	}
-	return preference.getString("baseUrl", "http://bimiacg4.net");
+	return preference.getString("baseUrl", "https://www.bimiacg10.net");
 }
 
 //网页浏览时不需要，所以未使用 httpRequestHeaderList
@@ -96,7 +97,7 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
 /**
  * 搜索
  * @param {string} key
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = JavaUtils.urlJoin(baseUrl, '/vod/search/@post->wd='+ encodeURI(key));
@@ -111,8 +112,8 @@ function search(key) {
 				//名称
 				name: element.selectFirst('div.info > a').text(),
 				
-				//概览
-				summary: element.selectFirst('div.info > p').text(),
+				//最后章节名称
+				lastChapterName: element.selectFirst('div.info > p').text(),
 				
 				//封面网址
 				coverUrl: element.selectFirst('img.lazy').absUrl('data-original'),
@@ -124,10 +125,10 @@ function search(key) {
 	}
 	return JSON.stringify(result);
 }
+
 /**
  * 发现
- * @param string url
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(url) {
 	var result = [];
@@ -141,8 +142,8 @@ function find(url) {
 				//名称
 				name: element.selectFirst('div.info > a').text(),
 				
-				//概览
-				summary: element.selectFirst('div.info > p').text(),
+				//最后章节名称
+				lastChapterName: element.selectFirst('div.info > p').text(),
 				
 				//封面网址
 				coverUrl: element.selectFirst('img.lazy').absUrl('data-original'),
@@ -157,7 +158,7 @@ function find(url) {
 
 /**
  * 详情
- * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = JavaUtils.httpRequest(url + header);
@@ -170,8 +171,8 @@ function detail(url) {
 			//作者
 			author: document.selectFirst('div.txt_intro_con > ul > li:nth-child(4) > storng > a').text(),
 			
-			//日期
-			date: document.selectFirst('div.txt_intro_con > ul > li:nth-child(10) > :matchText').text(),
+			//最近更新时间
+			lastUpdateTime: document.selectFirst('div.txt_intro_con > ul > li:nth-child(10) > :matchText').text(),
 			
 			//概览
 			summary: document.selectFirst('li.li_intro > p:nth-child(3)').text(),
@@ -179,8 +180,8 @@ function detail(url) {
 			//封面网址
 			coverUrl: document.selectFirst('.v_pic > img.lazy').absUrl('src'),
 			
-			//是否启用将章节置为倒序
-			isEnabledChapterReverseOrder: false,
+			//启用章节反向顺序
+			enableChapterReverseOrder: false,
 			
 			//目录加载
 			tocs: tocs(document)

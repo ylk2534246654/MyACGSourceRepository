@@ -5,14 +5,14 @@ function manifest() {
 		id: 1648714186,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230823,
+		minMyACG: 20230911,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 60,
 		
-		//是否启用失效#默认关闭
+		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isEnabledInvalid: false,
+		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "COCO漫画",
@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 13,
+		version: 14,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -34,8 +34,8 @@ function manifest() {
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/cocoManga.js",
 		},
 
-		//更新时间
-		updateTime: "2023年9月8日",
+		//最近更新时间
+		lastUpdateTime: 1694519787,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -124,8 +124,8 @@ function manifest() {
 		],
 		*/
 
-		//是否启用检测收藏更新
-		//isEnabledDetectFavoriteUpdate: false,
+		//启用检测收藏更新
+		//enableDetectFavoriteUpdate: false,
 
 		//全局 HTTP 请求头列表
 		httpRequestHeaderList: {
@@ -145,7 +145,7 @@ const baseUrl = "https://www.colamanga.com";
  * @param {string} responseHtml 响应源码
  * @return {boolean} 返回结果
  */
-function isEnabledAuthenticator(url, responseHtml) {
+function isEnableAuthenticator(url, responseHtml) {
 	//对框架进行拦截，检索关键字，
 	if(responseHtml != null && responseHtml.indexOf('请用正常浏览器观看') != -1){
 		var time = new Date().getTime();
@@ -158,10 +158,10 @@ function isEnabledAuthenticator(url, responseHtml) {
 /**
  * 搜索
  * @param {string} key
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl,`/search?searchString=${encodeURI(key)}@enabledFrameSource->true`);
+	var url = JavaUtils.urlJoin(baseUrl,`/search?searchString=${encodeURI(key)}@enableFrameSource->true`);
 	const response = JavaUtils.httpRequest(url);
 	var result= [];
 	if(response.code() == 200){
@@ -173,9 +173,15 @@ function search(key) {
 				//标题
 				name: element.selectFirst('dd > h1').text(),
 				
-				//概览
-				summary: element.selectFirst('dd > ul > li:nth-child(3)').text(),
+				//最后章节名称
+				lastChapterName: element.selectFirst('dd > ul > li:nth-child(2) > span').nextSibling().text(),
 				
+				//最近更新时间
+				lastUpdateTime: element.selectFirst('dd > ul > li:nth-child(5) > span').nextSibling().text(),
+			
+				//概览
+				summary: element.selectFirst('.fed-part-esan > :matchText').text(),
+
 				//封面网址
 				coverUrl: element.selectFirst('dt > a').absUrl('data-original'),
 				
@@ -189,10 +195,10 @@ function search(key) {
 
 /**
  * 发现
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(state, type, orderBy) {
-	var url = JavaUtils.urlJoin(baseUrl, `/show?status=${state}&mainCategoryId=${type}&orderBy=${orderBy}@enabledFrameSource->true`);
+	var url = JavaUtils.urlJoin(baseUrl, `/show?status=${state}&mainCategoryId=${type}&orderBy=${orderBy}@enableFrameSource->true`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -204,8 +210,11 @@ function find(state, type, orderBy) {
 				//名称
 				name: element.selectFirst('.fed-list-title').text(),
 				
-				//概览
-				summary: element.selectFirst('.fed-list-remarks').text(),
+				//最后章节名称
+				lastChapterName: element.selectFirst('.fed-list-remarks').text(),
+				
+				//最近更新时间
+				lastUpdateTime: element.selectFirst('.fed-list-desc').text(),
 				
 				//封面网址
 				coverUrl: element.selectFirst('.fed-list-pics').absUrl('data-original'),
@@ -217,12 +226,13 @@ function find(state, type, orderBy) {
 	}
 	return JSON.stringify(result);
 }
+
 /**
  * 详情
- * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
-	const response = JavaUtils.httpRequest(url + "@enabledFrameSource->true");
+	const response = JavaUtils.httpRequest(url + "@enableFrameSource->true");
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
 		return JSON.stringify({
@@ -232,8 +242,8 @@ function detail(url) {
 			//作者
 			author: document.selectFirst('dd > ul > li:nth-child(2) > a').text(),
 			
-			//更新时间
-			update: document.selectFirst('dd > ul > li:nth-child(3) > a').text(),
+			//最近更新时间
+			lastUpdateTime: document.selectFirst('dd > ul > li:nth-child(3) > a').text(),
 			
 			//概览
 			summary: document.selectFirst('p.fed-part-both').text(),
@@ -241,8 +251,8 @@ function detail(url) {
 			//封面网址
 			coverUrl: document.selectFirst('a.fed-list-pics:nth-last-child(1)').absUrl('data-original'),
 			
-			//是否启用将章节置为倒序
-			isEnabledChapterReverseOrder: true,
+			//启用章节反向顺序
+			enableChapterReverseOrder: true,
 			
 			//目录加载
 			tocs: tocs(document)
@@ -299,8 +309,8 @@ function tocs(document) {
  */
 function content(url) {
 	var re = new RegExp(
-		//https://
-		'[a-z]+://[\\w.]+/(' +
+		//https://xx.xxx.xx/ 匹配任意基础网址
+		'[a-zA-z]+://[^\\s/]+/(' +
 
 		//https://knr.xxxxx.cn/j/140000		#[a-z]{1}\/\d{6}
 		'([a-z]{1}/\\d)|' +
