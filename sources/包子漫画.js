@@ -230,7 +230,7 @@ function detail(url) {
 			summary: document.selectFirst('div.l-content > div > div > div > p').text(),
 	
 			//封面网址
-			coverUrl: document.selectFirst('div.l-content > div > div > amp-img').absUrl('data-media'),
+			coverUrl: document.selectFirst('div.l-content > div > div > amp-img').absUrl('src'),
 			
 			//启用章节反向顺序
 			enableChapterReverseOrder: false,
