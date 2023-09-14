@@ -5,14 +5,14 @@ function manifest() {
 		id: 1656743080,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230804,
+		minMyACG: 20230911,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 80,
 		
-		//是否启用失效#默认关闭
+		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isEnabledInvalid: false,
+		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "笔趣阁",
@@ -24,19 +24,18 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 7,
+		version: 8,
 
 		//搜索源自动同步更新网址
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/笔趣阁.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/笔趣阁.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/笔趣阁.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/笔趣阁.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/笔趣阁.js",
 		},
 		
-		//更新时间
-		updateTime: "2023年8月5日",
+		//最近更新时间
+		lastUpdateTime: 1694675209,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -91,11 +90,12 @@ function manifest() {
 const baseUrl 	= "https://infosxs.pysmei.com";
 //备用：apptuxing_com ，pysmei_com ，pigqq_com
 
-const searchBaseUrl 	= "https://souxs.pigqq.com";
+const searchBaseUrl 	= "https://souxs.pigqq.com";//leeyegy、pigqq
 //备用：pigqq_com ，leeyegy_com , pysmei_com
 
-const imgBaseUrl 	= "https://imgapixs.pysmei.com";
-const imgUrl 	= "https://imgapixs.pysmei.com/bookfiles/bookimages/";
+const imgBaseUrl 	= "https://imgapixs.pigqq.com";
+const imgUrl 	= "https://imgapixs.pigqq.com/bookfiles/bookimages/";
+//备用：apptuxing_com ，pigqq_com
 
 const findBaseUrl = "https://scxs.pysmei.com";
 
@@ -105,7 +105,7 @@ const contentBaseUrl = "https://contentxs.pysmei.com";
 /**
  * 搜索
  * @param {string} key
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = JavaUtils.urlJoin(searchBaseUrl, `/search.aspx?key=${encodeURI(key)}&page=1&siteid=app2`);
@@ -117,9 +117,18 @@ function search(key) {
 			result.push({
 				//名称
 				name: _toString(child.Name),
+			
+				//作者
+				author: _toString(child.Author),
+			
+				//最后章节名称
+				lastChapterName: _toString(child.LastChapter),
+
+				//最近更新时间
+				lastUpdateTime: _toString(child.UpdateTime),
 				
 				//概览
-				summary: _toString(child.Author),
+				summary: _toString(child.Desc),
 				
 				//封面 
 				coverUrl: JavaUtils.urlJoin(imgUrl, child.Img.replace(/^[a-zA-Z]+:\/\/[^/]+/, imgBaseUrl)),
@@ -134,7 +143,7 @@ function search(key) {
 
 /**
  * 发现
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(label, order) {
 	var url = JavaUtils.urlJoin(findBaseUrl, `/Categories/${label}/${order}/1.html`);
@@ -146,6 +155,9 @@ function find(label, order) {
 			result.push({
 				//标题
 				name: _toString(child.Name),
+			
+				//作者
+				author: _toString(child.Author),
 				
 				//概览
 				summary: _toString(child.Desc),
@@ -160,9 +172,10 @@ function find(label, order) {
 	}
 	return JSON.stringify(result);
 }
+
 /**
  * 详情
- * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = JavaUtils.httpRequest(url);
@@ -175,8 +188,8 @@ function detail(url) {
 			//作者
 			author: _toString($.Author),
 			
-			//日期
-			update : $.LastTime,
+			//最近更新时间
+			lastUpdateTime: _toString($.LastTime),
 			
 			//概览
 			summary: _toString($.Desc),
@@ -184,8 +197,8 @@ function detail(url) {
 			//封面
 			coverUrl: JavaUtils.urlJoin(imgUrl, $.Img.replace(/^[a-zA-Z]+:\/\/[^/]+/, imgBaseUrl)),
 			
-			//是否启用将章节置为倒序
-			isEnabledChapterReverseOrder: false,
+			//启用章节反向顺序
+			enableChapterReverseOrder: false,
 			
 			//目录网址/非外链无需使用
 			tocs: tocs(`${parseInt($.Id/1000) + 1}/${$.Id}`)
