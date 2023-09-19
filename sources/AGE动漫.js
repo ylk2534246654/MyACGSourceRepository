@@ -5,14 +5,14 @@ function manifest() {
 		id: 1648714123,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230815,
+		minMyACG: 20230911,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 80,
 		
-		//是否启用失效#默认关闭
+		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isEnabledInvalid: false,
+		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "AGE动漫",
@@ -34,8 +34,8 @@ function manifest() {
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/AGE动漫.js",
 		},
 		
-		//更新时间
-		updateTime: "2023年8月15日",
+		//最近更新时间
+		lastUpdateTime: 1694957068,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -112,7 +112,7 @@ function getBaseUrl() {
 /**
  * 搜索
  * @param {string} key
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = JavaUtils.urlJoin(baseUrl, '/search?&query=' + encodeURI(key));
@@ -127,8 +127,14 @@ function search(key) {
 				//名称
 				name: element.selectFirst('.card-title').text(),
 				
+				//最后章节名称
+				lastChapterName: element.selectFirst('.video_play_status').text(),
+
+				//最近更新时间
+				//lastUpdateTime: element.selectFirst('.video_play_status').text(),
+
 				//概览
-				summary: element.selectFirst('div.video_cover > div > span').text(),
+				summary: element.selectFirst('.desc > :matchText').text(),
 				
 				//封面网址
 				coverUrl: element.selectFirst('div.video_cover > div > a > img').absUrl('data-original'),
@@ -143,7 +149,7 @@ function search(key) {
 
 /**
  * 发现
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(genre, year, label, resources, order, region, status) {
 	if(genre == "全部")genre = "all";
@@ -166,8 +172,14 @@ function find(genre, year, label, resources, order, region, status) {
 				//名称
 				name: element.selectFirst('.card-title').text(),
 				
+				//最后章节名称
+				lastChapterName: element.selectFirst('.video_play_status').text(),
+
+				//最近更新时间
+				//lastUpdateTime: element.selectFirst('.video_play_status').text(),
+
 				//概览
-				summary: element.selectFirst('div.video_cover > div > span').text(),
+				summary: element.selectFirst('.desc > :matchText').text(),
 				
 				//封面网址
 				coverUrl: element.selectFirst('div.video_cover > div > a > img').absUrl('data-original'),
@@ -181,7 +193,7 @@ function find(genre, year, label, resources, order, region, status) {
 }
 /**
  * 发现2
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find2(url) {
 	var url = JavaUtils.urlJoin(baseUrl, url);
@@ -196,8 +208,14 @@ function find2(url) {
 				//名称
 				name: element.selectFirst('.video_item-title > a').text(),
 				
+				//最后章节名称
+				lastChapterName: element.selectFirst('.video_item--info').text(),
+
+				//最近更新时间
+				//lastUpdateTime: element.selectFirst('.video_play_status').text(),
+
 				//概览
-				summary: element.selectFirst('.video_item--image > span').text(),
+				summary: element.selectFirst('.desc > :matchText').text(),
 				
 				//封面网址
 				coverUrl: element.selectFirst('.video_item--image > img').absUrl('data-original'),
@@ -212,7 +230,7 @@ function find2(url) {
 
 /**
  * 详情
- * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = JavaUtils.httpRequest(url);
@@ -225,8 +243,8 @@ function detail(url) {
 			//作者
 			author: document.selectFirst('li:nth-child(5) > span.detail_imform_value').text(),
 			
-			//更新时间
-			update: document.selectFirst('li:nth-child(7) > span.detail_imform_value').text(),
+			//最近更新时间
+			lastUpdateTime: document.selectFirst('li:nth-child(7) > span.detail_imform_value').text(),
 			
 			//概览
 			summary: document.selectFirst('div.video_detail_desc').text(),
@@ -234,8 +252,8 @@ function detail(url) {
 			//封面网址
 			coverUrl: document.selectFirst('div.video_detail_cover > img').absUrl('data-original'),
 			
-			//是否启用将章节置为倒序
-			isEnabledChapterReverseOrder: false,
+			//启用章节反向顺序
+			enableChapterReverseOrder: false,
 			
 			//目录加载
 			tocs: tocs(document)
