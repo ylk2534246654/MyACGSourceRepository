@@ -17,7 +17,7 @@ function manifest() {
 		//@NonNull 搜索源名称
 		name: "Biu.Moe",
 
-		//搜索源制作人
+		//搜索源作者
 		author: "雨夏",
 
 		//电子邮箱

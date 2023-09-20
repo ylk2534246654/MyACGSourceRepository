@@ -26,7 +26,7 @@ function manifest() {
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
 		version: 2,
 
-		//搜索源自动同步更新链接
+		//搜索源自动同步更新网址
 		syncList: {
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/打驴动漫.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/打驴动漫.js",
@@ -69,7 +69,7 @@ const baseUrl = "https://www.dqsj.top";
  * @param {string} responseHtml 响应源码
  * @return {boolean} 返回结果
  */
-function isEnabledAuthenticator(url, responseHtml) {
+function isEnableAuthenticator(url, responseHtml) {
 	//对框架进行拦截，检索关键字，
 	if(responseHtml != null && responseHtml.indexOf('请输入验证码') != -1){
 		return true;

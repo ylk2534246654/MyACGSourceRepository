@@ -20,7 +20,7 @@ function manifest() {
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
 		version: 3,
 
-		//搜索源自动同步更新链接
+		//搜索源自动同步更新网址
 		syncList: {
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/番茄小说.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/番茄小说.js",
