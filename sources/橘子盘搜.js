@@ -1,8 +1,5 @@
 function manifest() {
 	return JSON.stringify({
-		//MyACG 最新版本
-		MyACG: 'https://lanzou.com/b07xqlbxc ',
-		
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
 		id: 1660740959,
@@ -16,7 +13,7 @@ function manifest() {
 		
 		//是否失效，默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		invalid: false,
+		invalid: true,
 		
 		//@NonNull 搜索源名称
 		name: "橘子盘搜",
@@ -32,7 +29,6 @@ function manifest() {
 
 		//搜索源自动同步更新网址
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/橘子盘搜.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/橘子盘搜.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/橘子盘搜.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/橘子盘搜.js",
