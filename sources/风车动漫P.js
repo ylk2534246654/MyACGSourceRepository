@@ -226,14 +226,14 @@ function tocs(document) {
 
 /**
  * 内容（部分搜索源通用过滤规则）
- * @version 2023/4/27
- * 布米米、嘻嘻动漫、12wo动漫、路漫漫、风车动漫P、樱花动漫P、COCO漫画、Nike
+ * @version 2023/9/21
+ * 布米米、嘻嘻动漫、12wo动漫、路漫漫、风车动漫P、樱花动漫P、COCO漫画、Nike、cocoManga
  * @return {string} content
  */
 function content(url) {
 	var re = new RegExp(
 		//https://
-		'[a-z]+://[\\w.:]+/(' +
+		'[a-zA-z]+://[^\\s/]+/(' +
 
 		//https://knr.xxxxx.cn/j/140000		#[a-z]{1}\/\d{6}
 		'([a-z]{1}/\\d)' +
