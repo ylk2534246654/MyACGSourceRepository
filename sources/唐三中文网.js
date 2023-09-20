@@ -212,7 +212,9 @@ function tocs(document) {
  * @returns {string} content
  */
 function content(url) {
-	const response = httpRequest(url);
-	var document = org.jsoup.Jsoup.parse(response,url);
-	return document.select(`#content:not(:matches(唐三中文网|${baseUrl})):matchText`).outerHtml();
+	const response = JavaUtils.httpRequest(url);
+	if(response.code() == 200){
+		const document = response.body().cssDocument();
+		return document.select(`#content:not(:matches(唐三中文网|${baseUrl})):matchText`).outerHtml();
+	}
 }

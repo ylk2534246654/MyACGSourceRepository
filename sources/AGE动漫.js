@@ -47,7 +47,7 @@ function manifest() {
 		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: baseUrl,//备用 http://age.tv
+		baseUrl: baseUrl,
 		
 		//发现
 		findList: {
@@ -89,6 +89,7 @@ function manifest() {
 }
 
 const baseUrl = getBaseUrl();
+//备用 http://age.tv
 
 function getBaseUrl() {
 	var preference = JavaUtils.getPreference();
@@ -191,6 +192,7 @@ function find(genre, year, label, resources, order, region, status) {
 	}
 	return JSON.stringify(result);
 }
+
 /**
  * 发现2
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
