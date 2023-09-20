@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1694675209,
+		lastUpdateTime: 1695221363,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -43,6 +43,20 @@ function manifest() {
 		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
 		contentProcessType: 1,
 		
+		//首选项配置 type：（1:文本框，2:开关，3:单选框，4:编辑框，5:跳转链接）
+		preferenceOptionList: [
+			{
+				type: 3,
+				key: "drive",
+				name: "选择节点",
+				entries: {
+					"节点1": 	"pigqq.com",
+					"节点2": 	"pysmei.com",
+				},
+				defaultValue: 0
+			}
+		],
+
 		//分组
 		group: ["小说"],
 		
@@ -87,7 +101,7 @@ function manifest() {
 	});
 }
 
-const baseUrl 	= "https://infosxs.pysmei.com";
+const baseUrl 	= "https://infosxs." + JavaUtils.getPreference().getString("drive", "pigqq.com");
 //备用：apptuxing_com ，pysmei_com ，pigqq_com
 
 const searchBaseUrl 	= "https://souxs.pigqq.com";//leeyegy、pigqq
@@ -97,9 +111,9 @@ const imgBaseUrl 	= "https://imgapixs.pigqq.com";
 const imgUrl 	= "https://imgapixs.pigqq.com/bookfiles/bookimages/";
 //备用：apptuxing_com ，pigqq_com
 
-const findBaseUrl = "https://scxs.pysmei.com";
+const findBaseUrl = "https://scxs." + JavaUtils.getPreference().getString("drive", "pigqq.com");;
 
-const contentBaseUrl = "https://contentxs.pysmei.com";
+const contentBaseUrl = "https://contentxs." + JavaUtils.getPreference().getString("drive", "pigqq.com");;
 
 
 /**
