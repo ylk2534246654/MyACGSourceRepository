@@ -50,8 +50,8 @@ function manifest() {
 				key: "drive",
 				name: "选择节点",
 				entries: {
-					"节点1": 	"pigqq.com",
-					"节点2": 	"pysmei.com",
+					"节点1": "pigqq.com",
+					"节点2": "pysmei.com",
 				},
 				defaultValue: 0
 			}
@@ -111,10 +111,9 @@ const imgBaseUrl 	= "https://imgapixs.pigqq.com";
 const imgUrl 	= "https://imgapixs.pigqq.com/bookfiles/bookimages/";
 //备用：apptuxing_com ，pigqq_com
 
-const findBaseUrl = "https://scxs." + JavaUtils.getPreference().getString("drive", "pigqq.com");;
+const findBaseUrl = "https://scxs." + JavaUtils.getPreference().getString("drive", "pigqq.com");
 
-const contentBaseUrl = "https://contentxs." + JavaUtils.getPreference().getString("drive", "pigqq.com");;
-
+const contentBaseUrl = "https://contentxs." + JavaUtils.getPreference().getString("drive", "pigqq.com");
 
 /**
  * 搜索
