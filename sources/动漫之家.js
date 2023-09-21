@@ -171,8 +171,8 @@ function search(key) {
 					//概览
 					summary: child.description,
 					
-					//封面
-					cover: JavaUtils.urlJoin(imgBaseUrl, child.cover),
+					//封面网址
+					coverUrl: JavaUtils.urlJoin(imgBaseUrl, child.cover),
 					
 					//网址
 					url: JavaUtils.urlJoin(baseUrl, `/info/${child.comic_py}.html`)
@@ -206,8 +206,8 @@ function find(region, label, label2, status, order) {
 				//概览
 				summary: child.description,
 				
-				//封面
-				cover: JavaUtils.urlJoin(imgBaseUrl, child.cover),
+				//封面网址
+				coverUrl: JavaUtils.urlJoin(imgBaseUrl, child.cover),
 				
 				//网址
 				url: JavaUtils.urlJoin(baseUrl, `/info/${child.comic_py}.html`)
