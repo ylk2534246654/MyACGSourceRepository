@@ -5,14 +5,14 @@ function manifest() {
 		id: 1654507793,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230815,
+		minMyACG: 20230911,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 20,
 		
-		//是否启用失效#默认关闭
+		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isEnabledInvalid: false,
+		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "哔哩轻小说",
@@ -24,25 +24,24 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 7,
+		version: 8,
 
 		//搜索源自动同步更新网址
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/哔哩轻小说.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/哔哩轻小说.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/哔哩轻小说.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/哔哩轻小说.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/哔哩轻小说.js",
 		},
 		
-		//更新时间
-		updateTime: "2023年8月15日",
+		//最近更新时间
+		lastUpdateTime: 1695279075,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
 		
-		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截的请求处理，3：对内部浏览器拦截的框架处理
-		contentType: 2,
+		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
+		contentProcessType: 2,
 		
 		//分组
 		group: ["轻小说","小说"],
@@ -69,11 +68,11 @@ function manifest() {
 
 		//全局 HTTP 请求头列表
 		httpRequestHeaderList: {
-			"user-agent-system": "Windows NT 10.0; Win64; x64"
+			"user-agent": "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.91 Mobile Safari/537.36 Edg/116.0.0.0"
 		}
 	});
 }
-const baseUrl = "https://www.bilinovel.com";
+const baseUrl = "https://w.linovelib.com";
 /**
  * https://www.bilinovel.com
  * https://www.linovelib.com
@@ -85,7 +84,7 @@ const baseUrl = "https://www.bilinovel.com";
  * @param {string} responseHtml 响应源码
  * @return {boolean} 返回结果
  */
-function isEnabledAuthenticator(url, responseHtml) {
+function isEnableAuthenticator(url, responseHtml) {
 	//对框架进行拦截，检索关键字，
 	if(responseHtml.length > 1 && responseHtml.indexOf('检查站点连接是否安全') != -1){
 		return true;
@@ -96,7 +95,7 @@ function isEnabledAuthenticator(url, responseHtml) {
 /**
  * 搜索
  * @param {string} key
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = JavaUtils.urlJoin(baseUrl, `/search.html@post->searchkey=${encodeURI(key)}&searchtype=all`);
@@ -127,6 +126,9 @@ function search(key) {
 					//名称
 					name: element.selectFirst('.book-title').text(),
 					
+					//作者
+					author: element.selectFirst('.book-author').text(),
+					
 					//概览
 					summary: element.selectFirst('.book-desc').text(),
 					
@@ -144,10 +146,10 @@ function search(key) {
 
 /**
  * 发现
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(label) {
-	var url = JavaUtils.urlJoin(baseUrl, `https://www.bilinovel.com/tagarticle/${encodeURI(label)}/1.html`);
+	var url = JavaUtils.urlJoin(baseUrl, `/tagarticle/${encodeURI(label)}/1.html`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -175,7 +177,7 @@ function find(label) {
 
 /**
  * 详情
- * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = JavaUtils.httpRequest(url);
@@ -188,8 +190,8 @@ function detail(url) {
 			//作者
 			author: document.selectFirst('.book-rand-a > span > a').text(),
 			
-			//更新时间
-			update: document.selectFirst('.book-meta-r > p').text(),
+			//最近更新时间
+			lastUpdateTime: document.selectFirst('.book-meta-r > p').text(),
 			
 			//概览
 			summary: document.selectFirst('#bookSummary').text(),
@@ -197,8 +199,8 @@ function detail(url) {
 			//封面网址
 			coverUrl: document.selectFirst('.module-book-cover > div > img').absUrl('src'),
 			
-			//是否启用将章节置为倒序
-			isEnabledChapterReverseOrder: false,
+			//启用章节反向顺序
+			enableChapterReverseOrder: false,
 			
 			//目录加载
 			tocs: tocs(document.selectFirst('.book-meta.book-status').absUrl('href'))
