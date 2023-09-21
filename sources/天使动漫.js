@@ -1,114 +1,108 @@
 function manifest() {
 	return JSON.stringify({
-		//MyACG 最新版本
-		MyACG: 'https://pan.baidu.com/s/1kVkWknH',
-		
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
 		id: 1654760124,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230207,
+		minMyACG: 20230911,
 
-		//优先级1~100，数值越大越靠前
-		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
-		priority: 10,
+		//优先级 1~100，数值越大越靠前
+		priority: 40,
 		
-		//是否失效，默认关闭
+		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isInvalid: false,
+		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "天使动漫",//天使动漫，酷动漫
 
-		//搜索源制作人
+		//搜索源作者
 		author: "雨夏",
 
 		//电子邮箱
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 5,
+		version: 4,
 
 		//搜索源自动同步更新链接
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/天使动漫.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/天使动漫.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/天使动漫.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/天使动漫.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/天使动漫.js",
 		},
 		
-		//更新时间
-		updateTime: "2023年2月9日",
+		//最近更新时间
+		lastUpdateTime: 1695218158,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
 		
-		//内容处理方式： -1: 搜索相似，0：对链接处理并调用外部APP访问，1：对链接处理，2：对内部浏览器拦截的请求处理，3：对内部浏览器拦截的框架处理
-		contentType: 2,
+		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
+		contentProcessType: 2,
 		
-		//自定义标签
+		//分组
 		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "http://www.sbdm.net",
-		//导航页：http://www.kudm.vip/
-		//同布局备份：http://tv.kudm.net/
-		//备份：https://www.gqdm.net/ ，http://ysjdm.net/
+		baseUrl: baseUrl,
 
 		//发现
 		findList: {
+			category: {
+				"label": ["僧侣档","BD无修","奇幻","恋爱","后宫","学園","热血","神魔","萝莉","治愈","搞笑","百合","冒险","魔法","机战","战争","战斗","犯罪","悬疑","推理","科幻","竞技","运动","耽美","其他","OVA","剧场版","真人版"],
+				"year": ["全部","2024","2023","2022","2021","2020","2019","2018","2017","2016","2015","2014","2013","2012","2011","2010","2009","2008","2007","2006","2005","2004","2003","2002","2001","2000"],
+				"order": {
+					"时间排序": "time",
+					"人气排序": "hits",
+					"评分排序": "score"
+				},
+			},
 			"动漫": {
-				"最近更新": "https://www.sbdm.net/index.php/map/index.html"
+				"日本": ["label","year","order"],
 			}
 		},
+
+		//全局 HTTP 请求头列表
+		httpRequestHeaderList: {
+			"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
+		}
 	});
 }
-const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
+
+const baseUrl = "http://www.sbdm.net";
+//导航页：http://www.kudm.vip/
+//同布局备份：http://tv.kudm.net/
+//备份：https://www.gqdm.net/ ，http://ysjdm.net/，https://www.mikudm.com/
 
 /**
  * 搜索
- * @params {string} key
- * @returns {[{title, summary, coverUrl, url}]}
+ * @param {string} key
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
+	var url = JavaUtils.urlJoin(baseUrl, `/index.php/vod/search.html?wd=${encodeURI(key)}`);
 	var result = [];
-
-	var url = 'http://www.sbdm.net/search.asp@post->searchword=' + ToolUtil.encodeURI(key,'gb2312') + '&submit=%CB%D1%CB%F7' + header;
-	var response = httpRequest(url);
-	var document = org.jsoup.Jsoup.parse(response,url);
-	var elements = document.select("div.movie-chrList > ul > li");
-	if(elements.size() > 0){
-		for (var i = 0;i < elements.size();i++) {
-			var element = elements.get(i);
-			result.push({
-				//标题
-				title: element.selectFirst('div.cover > a > img').attr('alt'),
-				
-				//概览
-				summary: element.selectFirst('div.intro > em:nth-child(4)').text(),
-				
-				//封面网址
-				coverUrl: element.selectFirst('div.cover > a > img').absUrl('src'),
-				
-				//网址
-				url: element.selectFirst('div.intro > h6 > a').absUrl('href')
-			});
-		}
-	}else{
-		var url = 'http://www.sbdm.net/index.php/vod/search.html?wd=' + encodeURI(key) + header;
-		var response = httpRequest(url);
-		var document = org.jsoup.Jsoup.parse(response,url);
+	const response = JavaUtils.httpRequest(url);
+	if(response.code() == 200){
+		const document = response.body().cssDocument();
 		var elements = document.select(".searchlist_item");
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			result.push({
-				//标题
-				title: element.selectFirst('.vodlist_title > a > :matchText').text(),
+				//名称
+				name: element.selectFirst('.vodlist_title > a > :matchText').text(),
 				
+				//最后章节名称
+				lastChapterName: element.selectFirst('.pic_text').text(),
+
+				//最近更新时间
+				//lastUpdateTime: element.selectFirst('.video_play_status').text(),
+
 				//概览
-				summary: element.selectFirst('.pic_text').text(),
+				//summary: element.selectFirst('.desc > :matchText').text(),
 				
 				//封面网址
 				coverUrl: element.selectFirst('.vodlist_thumb').absUrl('data-original'),
@@ -120,166 +114,173 @@ function search(key) {
 	}
 	return JSON.stringify(result);
 }
+
 /**
  * 发现
- * @params string url
- * @returns {[{title, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
-function find(url) {
-	const response = httpRequest(url + header);
+function find(label, year, order) {
+	if(label == "全部"){
+		label = "";
+	}else{
+		label = "class/" + label;
+	}
+	if(year == "全部"){
+		year = "";
+	}else{
+		year = "year/" + year;
+	}
 	
+	var url = JavaUtils.urlJoin(baseUrl, `/index.php/vod/show/by/${order}/${label}/id/20/${year}.html`);
 	var result = [];
-    var document = org.jsoup.Jsoup.parse(response,url);
-    var elements = document.select(".ranklist_item");
-	for (var i = 0;i < elements.size();i++) {
-	    var element = elements.get(i);
-		result.push({
-			//标题
-			title: element.selectFirst('.title').text(),
-			
-			//概览
-			summary: element.selectFirst('p > .vodlist_sub').text(),
-			
-			//封面网址
-			coverUrl: element.selectFirst('.ranklist_thumb').absUrl('data-original'),
-			
-			//网址
-			url: element.selectFirst('a').absUrl('href')
-		});
+	const response = JavaUtils.httpRequest(url);
+	if(response.code() == 200){
+		const document = response.body().cssDocument();
+		const elements = document.select(".vodlist_item");
+		for (var i = 0;i < elements.size();i++) {
+			var element = elements.get(i);
+			result.push({
+				//名称
+				name: element.selectFirst('.vodlist_title > a > :matchText').text(),
+				
+				//最后章节名称
+				lastChapterName: element.selectFirst('.pic_text').text(),
+
+				//最近更新时间
+				//lastUpdateTime: element.selectFirst('.video_play_status').text(),
+
+				//概览
+				//summary: element.selectFirst('.desc > :matchText').text(),
+				
+				//封面网址
+				coverUrl: element.selectFirst('.vodlist_thumb').absUrl('data-original'),
+				
+				//网址
+				url: element.selectFirst('.vodlist_thumb').absUrl('href')
+			});
+		}
 	}
 	return JSON.stringify(result);
 }
 
 /**
  * 详情
- * @returns {[{title, author, date, summary, coverUrl, isReverseOrder, catalogs:{[{name, chapters:{[{name, url}]}}]}}]}
+ * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
-	const response = httpRequest(url+ header);
-    var document = org.jsoup.Jsoup.parse(response,url);
-	try{
+	const response = JavaUtils.httpRequest(url);
+	if(response.code() == 200){
+		const document = response.body().cssDocument();
 		return JSON.stringify({
 			//标题
-			title: document.selectFirst('div.m-info > div.mtext > ul > li:nth-child(1) > h1').text(),
+			name: document.selectFirst('h2.title').text(),
 			
 			//作者
 			//author: document.selectFirst('').text(),
 			
-			//日期
-			//date: document.selectFirst('').text(),
+			//最近更新时间
+			//lastUpdateTime: document.selectFirst('').text(),
 			
 			//概览
-			summary: document.selectFirst('div.m-intro').text(),
+			summary: document.selectFirst('.full_text > span').text(),
 	
 			//封面网址
-			coverUrl: document.selectFirst('div.m-info > div > img').absUrl('src'),
+			coverUrl: document.selectFirst('.content_thumb > a').absUrl('data-original'),
 			
-			//目录是否倒序
-			isReverseOrder: false,
-			
-			//目录加载
-			catalogs: catalogs(document)
-		});
-	}catch(error){
-		return JSON.stringify({
-			//标题
-			title: document.selectFirst('h2.title').text(),
-			
-			//作者
-			//author: document.selectFirst('').text(),
-			
-			//日期
-			//date: document.selectFirst('').text(),
-			
-			//概览
-			summary: document.selectFirst('.content_desc > span').text(),
-	
-			//封面网址
-			coverUrl: document.selectFirst('.content_thumb.fl > a').absUrl('data-original'),
-			
-			//目录是否倒序
-			isReverseOrder: false,
+			//启用章节反向顺序
+			enableChapterReverseOrder: false,
 			
 			//目录加载
-			catalogs: catalogs(document)
+			tocs: tocs(document)
 		});
 	}
+	return null;
 }
+
 /**
  * 目录
  * @returns {[{name, chapters:{[{name, url}]}}]}
  */
-function catalogs(document) {
-	//创建目录数组
-	var newCatalogs = [];
-	
+function tocs(document) {
 	//目录元素选择器
-	var catalogElements= document.select('div.playurl');
-	if(catalogElements.size() > 0){
-		for (var i = 0;i < catalogElements.size();i++) {
-			//创建章节数组
-			var newChapters = [];
+	const tocElements = document.select('.playlist_full > .content_playlist');
+	
+	//创建目录数组
+	var newTocs = [];
+	
+	for (var i = 0;i < tocElements.size();i++) {
+		//创建章节数组
+		var newChapters = [];
+		
+		//章节元素选择器
+		var chapterElements = tocElements.get(i).select('ul > li');
+		
+		for (var i2 = 0;i2 < chapterElements.size();i2++) {
+			var chapterElement = chapterElements.get(i2);
 			
-			//章节元素选择器
-			var chapterElements = catalogElements.get(i).select('ul > ul > li > ul > li');
-			
-			for (var i2 = 0;i2 < chapterElements.size();i2++) {
-				var chapterElement = chapterElements.get(i2);
-				
-				newChapters.push({
-					//章节名称
-					name: chapterElement.selectFirst('a').text(),
-					//章节网址
-					url: chapterElement.selectFirst('a').absUrl('href')
-				});
-			}
-			newCatalogs.push({
-				//目录名称
-				name: '线路 '+ (i + 1),
-				//章节
-				chapters: newChapters
+			newChapters.push({
+				//章节名称
+				name: chapterElement.selectFirst('a').text(),
+				//章节网址
+				url: chapterElement.selectFirst('a').absUrl('href')
 			});
 		}
-	}else{
-		//目录元素选择器
-		var catalogElements = document.select('.playlist_full > .content_playlist');
-		for (var i = 0;i < catalogElements.size();i++) {
-			//创建章节数组
-			var newChapters = [];
-			
-			//章节元素选择器
-			var chapterElements = catalogElements.get(i).select('ul > li');
-			
-			for (var i2 = 0;i2 < chapterElements.size();i2++) {
-				var chapterElement = chapterElements.get(i2);
-				
-				newChapters.push({
-					//章节名称
-					name: chapterElement.selectFirst('a').text(),
-					//章节网址
-					url: chapterElement.selectFirst('a').absUrl('href')
-				});
-			}
-			newCatalogs.push({
-				//目录名称
-				name: '线路 '+ (i + 1),
-				//章节
-				chapters: newChapters
-			});
-		}
+		newTocs.push({
+			//目录名称
+			name: '线路 '+ (i + 1),
+			//章节
+			chapters : newChapters
+		});
 	}
-	return newCatalogs
+	return newTocs;
 }
+
 /**
- * 内容(InterceptRequest)
- * @params {string} url
- * @returns {string} content
-*/
+ * 内容（部分搜索源通用过滤规则）
+ * @version 2023/9/21
+ * 布米米、嘻嘻动漫、12wo动漫、路漫漫、风车动漫P、樱花动漫P、COCO漫画、Nike、cocoManga
+ * @return {string} content
+ */
 function content(url) {
-	//浏览器请求结果处理
-	var re = /aqours|yangshengzu|\.png|\.jpg|\.svg|\.ico|\.gif|\.webp|\.jpeg/i;
+	var re = new RegExp(
+		//https://
+		'[a-zA-z]+://[^\\s/]+/(' +
+
+		//https://knr.xxxxx.cn/j/140000		#[a-z]{1}\/\d{6}
+		'([a-z]{1}/\\d)' +
+
+		//https://xx.xxx.xx/xxx/xxx/0000	#[a-z]{3}\/[a-z]{3}\/\d
+		'|([a-z]{3}/[a-z]{3}/\\d)' +
+
+		//https://tg.xxx.com/sc/0000?n=xxxx #[a-z]{2}\/\d{4}\?
+		'|([a-z]{2}/\\d{4}\\?)' +
+
+		//https://xx.xxx.xyz/vh1/158051 	#[\w]{3}\/\d{6}$
+		'|([\\w]{3}/\\d{6}$)' +
+
+		//https://xx.xx.com/0000/00/23030926631.txt 	#[\d]{4}\/\d{2}\/\d{11}\.txt
+		'|([\\d]{4}/\\d{2}/\\d{11}\\.txt)' +
+
+		//https://xxxxx.xxxxxx.com/v2/stats/12215/157527 	#[\w]{2}\/\w{5}\/\d{5}\/\d{6}
+		'|([\\w]{2}/\\w{5}/\\d{5}/\\d{6})' +
+
+		//https://xxx.xxxxxx.com/sh/to/853	#sh\/[\w]{2}\/\d{3}
+		'|(sh/[\\w]{2}/\\d{3})' +
+
+		//https://xxx.rmb.xxxxxxxx.com/xxx/e3c5da206d50f116fc3a8f47502de66d.gif #[\w]{3}\/[\w]{32}\.
+		'|([\\w]{3}/[\\w]{32}\\.)' +
+
+		//https://xxxx.xxxx.xx:00000/mnrt/kmrr1.woff
+		//https://xxxx.xxxx.xx:00000/kmopef/3.woff # [\w/]+[/km][\w/]+\.woff
+		'|([\\w/]+[/km][\\w/]+\\.woff)' +
+
+		')'+
+		''
+		,
+		'i'
+	);
 	if(!re.test(url)){
 		return url;
 	}
 	return null;
-} 
+}

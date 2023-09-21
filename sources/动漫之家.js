@@ -99,8 +99,8 @@ function manifest() {
 					"完结": "2"
 				},
 				"order": {
-					"人气": "0",
-					"更新": "1"
+					"人气排序": "0",
+					"时间排序": "1"
 				},
 			},
 			"漫画": ["region","label","label2","status","order"]

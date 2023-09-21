@@ -60,7 +60,7 @@ function manifest() {
 				"resources": ["全部","BDRIP","AGE-RIP"],
 				"order": {
 					"时间排序": "time",
-					"点击量": "点击量",
+					"人气排序": "点击量",
 				},
 			},
 			"动漫": {

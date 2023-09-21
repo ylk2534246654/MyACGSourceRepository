@@ -58,9 +58,9 @@ function manifest() {
 					"剧场": "22",
 				},
 				"order": {
-					"按最新": "time",
-					"按最热": "hits",
-					"按评分": "score",
+					"时间排序": "time",
+					"人气排序": "hits",
+					"评分排序": "score",
 				},
 			},
 			"动漫": ["region","order"]
