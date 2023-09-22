@@ -208,7 +208,7 @@ function tocs(document, url) {
 		});
 	}
     var more = document.selectFirst('.detail-more').text();
-	if(String(more).length > 1){
+	if(more != null && String(more).length > 1){
 		const catalog_response = JavaUtils.httpRequest(replaceUrl(baseUrl, url));
 		if(catalog_response.code() == 200){
 			try {
@@ -238,14 +238,12 @@ function replaceUrl(baseUrl, url) {
 
 /**
  * 内容
- * @param {string} url
  * @return {string} content
 
 function content(url) {
-	const response = HttpRequest(url);
+	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
-		var newImgs = '';
-		eval(ToolUtils.substring(response.html(),'<script type=\"text/javascript\">','</script>'));
+		eval(JavaUtils.substring(response.body().string(),'<script type=\"text/javascript\">','</script>'));
 		return JSON.stringify(newImgs);
 	}
 	return null;

@@ -179,7 +179,7 @@ function detail(url) {
 function tocs(url) {
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
-		const document = response.document();
+		const document = response.body().cssDocument();
 
         //目录元素选择器
         const tocElements= document.select('#chapterlist > p > a:not([style])');
@@ -216,7 +216,7 @@ function tocs(url) {
 function contentNextPageUrl() {
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
-		const document = response.document();
+		const document = response.body().cssDocument();
         return document.select('#pt_next').absUrl('href');
     }
     return null;
@@ -230,7 +230,7 @@ function contentNextPageUrl() {
 function content(url) {
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
-		const document = response.document();
+		const document = response.body().cssDocument();
         return document.select('#chaptercontent > :matchText').outerHtml();
     }
     return null;
