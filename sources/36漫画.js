@@ -5,14 +5,14 @@ function manifest() {
 		id: 1658148697,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230804,
+		minMyACG: 20230911,
 		
 		//优先级 1~100，数值越大越靠前
 		priority: 80,
 		
-		//是否启用失效#默认关闭
+		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isEnabledInvalid: false,
+		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "36漫画",
@@ -24,19 +24,18 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 4,
 
 		//搜索源自动同步更新网址
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/36漫画.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/36漫画.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/36漫画.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/36漫画.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/36漫画.js",
 		},
 		
-		//更新时间
-		updateTime: "2023年8月5日",
+		//最近更新时间
+		lastUpdateTime: 1696057569,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -44,6 +43,21 @@ function manifest() {
 		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
 		contentProcessType: 1,
 		
+		/*首选项配置 type：（1:文本框，2:开关，3:单选框，4:编辑框，5:跳转链接）
+		preferenceOptionList: [
+			{
+				type: 3,
+				key: "drive",
+				name: "选择节点",
+				entries: {
+					"节点1": "pigqq.com",
+					"节点2": "pysmei.com",
+				},
+				defaultValue: 0
+			}
+		],
+		*/
+
 		//分组
 		group: ["漫画"],
 		
@@ -128,24 +142,27 @@ function manifest() {
 		}
 	});
 }
+const drive 	= "pigqq.com";//JavaUtils.getPreference().getString("drive", "pigqq.com")
 
-const baseUrl 	= "https://infosmanhua.pysmei.com";
-//备用：apptuxing_com ，pysmei_com ，pigqq_com , leeyegy.com
+const baseUrl 	= "https://tp." + drive;
+//备用：infosmanhua.apptuxing_com ，pysmei_com ，pigqq_com , leeyegy.com
 
-const searchBaseUrl 	= "https://soumh.pigqq.com";
-//备用：pigqq_com ，leeyegy_com , pysmei_com
+const searchBaseUrl 	= "https://ssmh.pigqq.com";
+//备用：soumh.pigqq_com ，leeyegy_com , pysmei_com
 
 //const imgBaseUrl 	= "https://imgapixs.pysmei.com";
 //const imgUrl 	= "https://imgapixs.pysmei.com/bookfiles/bookimages/";
 
-const findBaseUrl = "https://scmanhua.pysmei.com";
+const findBaseUrl = "https://tp." + drive;
+//备用：scmanhua.
 
-const contentBaseUrl = "https://contentmanhua.pysmei.com";
+const contentBaseUrl = "https://tp." + drive;
+//备用：contentmanhua.
 
 /**
  * 搜索
  * @param {string} key
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = JavaUtils.urlJoin(searchBaseUrl, `/search.aspx?key=${encodeURI(key)}&page=1&siteid=manhuaapp2`);
@@ -174,7 +191,7 @@ function search(key) {
 
 /**
  * 发现
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(label, order) {
 	var url = JavaUtils.urlJoin(findBaseUrl, `/Categories/${label}/${order}/1.html`);
@@ -203,7 +220,7 @@ function find(label, order) {
 
 /**
  * 详情
- * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = JavaUtils.httpRequest(url);
@@ -216,8 +233,8 @@ function detail(url) {
 			//作者
 			author: _toString($.Author),
 			
-			//日期
-			update : $.LastTime,
+			//最近更新时间
+			lastUpdateTime : $.LastTime,
 			
 			//概览
 			summary: _toString($.Desc),
@@ -225,8 +242,8 @@ function detail(url) {
 			//封面
 			coverUrl : $.Img + '@imageDecoderFunctionName->decrypt',
 			
-			//是否启用将章节置为倒序
-			isEnabledChapterReverseOrder: false,
+			//启用章节反向顺序
+			enableChapterReverseOrder: false,
 			
 			//目录网址/非外链无需使用
 			tocs: tocs(`${parseInt($.Id/1000) + 1}/${$.Id}`)

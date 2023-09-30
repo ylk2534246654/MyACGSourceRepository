@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 8,
+		version: 9,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1695221363,
+		lastUpdateTime: 1696057569,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -43,7 +43,7 @@ function manifest() {
 		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
 		contentProcessType: 1,
 		
-		//首选项配置 type：（1:文本框，2:开关，3:单选框，4:编辑框，5:跳转链接）
+		/*首选项配置 type：（1:文本框，2:开关，3:单选框，4:编辑框，5:跳转链接）
 		preferenceOptionList: [
 			{
 				type: 3,
@@ -56,6 +56,7 @@ function manifest() {
 				defaultValue: 0
 			}
 		],
+		*/
 
 		//分组
 		group: ["小说"],
@@ -100,20 +101,23 @@ function manifest() {
 		}
 	});
 }
+const drive 	= "pigqq.com";//JavaUtils.getPreference().getString("drive", "pigqq.com")
 
-const baseUrl 	= "https://infosxs." + JavaUtils.getPreference().getString("drive", "pigqq.com");
-//备用：apptuxing_com ，pysmei_com ，pigqq_com
+const baseUrl 	= "https://wb." + drive;
+//备用：infosxs.apptuxing_com ，pysmei_com ，pigqq_com
 
-const searchBaseUrl 	= "https://souxs.pigqq.com";//leeyegy、pigqq
-//备用：pigqq_com ，leeyegy_com , pysmei_com
+const searchBaseUrl 	= "https://ssxs.pigqq.com";//leeyegy、pigqq
+//备用：souxs.pigqq_com ，leeyegy_com , pysmei_com
 
 const imgBaseUrl 	= "https://imgapixs.pigqq.com";
 const imgUrl 	= "https://imgapixs.pigqq.com/bookfiles/bookimages/";
 //备用：apptuxing_com ，pigqq_com
 
-const findBaseUrl = "https://scxs." + JavaUtils.getPreference().getString("drive", "pigqq.com");
+const findBaseUrl = "https://wb." + drive;
+//备用：scxs.
 
-const contentBaseUrl = "https://contentxs." + JavaUtils.getPreference().getString("drive", "pigqq.com");
+const contentBaseUrl = "https://wb." + drive;
+//备用：contentxs.
 
 /**
  * 搜索
