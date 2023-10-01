@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 3,
+		version: 4,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -221,20 +221,51 @@ function tocs(document) {
 }
 
 /**
- * 内容(InterceptRequest)
- * @params {string} url
- * @returns {string} content
- 
+ * 内容（部分搜索源通用过滤规则）
+ * @version 2023/9/21
+ * 布米米、嘻嘻动漫、12wo动漫、路漫漫、风车动漫P、樱花动漫P、COCO漫画、Nike、cocoManga
+ * @return {string} content
+ */
 function content(url) {
-	//浏览器请求结果处理
-	if(url.indexOf('kwimgs.com') != -1){
+	var re = new RegExp(
+		//https://
+		'[a-zA-z]+://[^\\s/]+/(' +
+
+		//https://knr.xxxxx.cn/j/140000		#[a-z]{1}\/\d{6}
+		'([a-z]{1}/\\d)' +
+
+		//https://xx.xxx.xx/xxx/xxx/0000	#[a-z]{3}\/[a-z]{3}\/\d
+		'|([a-z]{3}/[a-z]{3}/\\d)' +
+
+		//https://tg.xxx.com/sc/0000?n=xxxx #[a-z]{2}\/\d{4}\?
+		'|([a-z]{2}/\\d{4}\\?)' +
+
+		//https://xx.xxx.xyz/vh1/158051 	#[\w]{3}\/\d{6}$
+		'|([\\w]{3}/\\d{6}$)' +
+
+		//https://xx.xx.com/0000/00/23030926631.txt 	#[\d]{4}\/\d{2}\/\d{11}\.txt
+		'|([\\d]{4}/\\d{2}/\\d{11}\\.txt)' +
+
+		//https://xxxxx.xxxxxx.com/v2/stats/12215/157527 	#[\w]{2}\/\w{5}\/\d{5}\/\d{6}
+		'|([\\w]{2}/\\w{5}/\\d{5}/\\d{6})' +
+
+		//https://xxx.xxxxxx.com/sh/to/853	#sh\/[\w]{2}\/\d{3}
+		'|(sh/[\\w]{2}/\\d{3})' +
+
+		//https://xxx.rmb.xxxxxxxx.com/xxx/e3c5da206d50f116fc3a8f47502de66d.gif #[\w]{3}\/[\w]{32}\.
+		'|([\\w]{3}/[\\w]{32}\\.)' +
+
+		//https://xxxx.xxxx.xx:00000/mnrt/kmrr1.woff
+		//https://xxxx.xxxx.xx:00000/kmopef/3.woff # [\w/]+[/km][\w/]+\.woff
+		'|([\\w/]+[/km][\\w/]+\\.woff)' +
+
+		')'+
+		''
+		,
+		'i'
+	);
+	if(!re.test(url)){
 		return url;
-	}else{
-		var re = /\.png|\.jpg|\.svg|\.ico|\.gif|\.webp|\.jpeg/i;
-		if(!re.test(url)){
-			return url;
-		}
 	}
 	return null;
 }
-*/
