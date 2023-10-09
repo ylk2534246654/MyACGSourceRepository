@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1694506625,
+		lastUpdateTime: 1696882686,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -110,7 +110,7 @@ function manifest() {
 		enableUserLogin: true,
 		
 		//用户登录网址
-		userLoginUrl: "https://m.dmzj.com/my.html",
+		userLoginUrl: "https://m.dmzj.com/my.html@header->Referer:http://m.idmzj.com/",
 		
 		//需要用户登录的功能（search，detail，content，find）
 		requiresUserLoginList: ["content"],
