@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 3,
+		version: 4,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -110,15 +110,16 @@ function manifest() {
 		enableUserLogin: true,
 		
 		//用户登录网址
-		userLoginUrl: "https://m.dmzj.com/my.html@header->Referer:http://m.idmzj.com/",
+		userLoginUrl: "https://m.idmzj.com/my.html@header->Referer:http://m.idmzj.com/",
 		
 		//需要用户登录的功能（search，detail，content，find）
 		requiresUserLoginList: ["content"],
 	});
 }
 
-const baseUrl = "https://m.dmzj.com";
-const imgBaseUrl = "https://images.dmzj.com";
+const baseUrl = "https://m.idmzj.com";
+//备用：m.dmzj.com
+const imgBaseUrl = "https://images.idmzj.com";
 
 /*
  * 是否完成登录
@@ -127,7 +128,7 @@ const imgBaseUrl = "https://images.dmzj.com";
  * @return {boolean}  登录结果
  */
 function isUserLoggedIn(url, responseHtml) {
-	if(!JavaUtils.isEmpty(url) && !JavaUtils.isEmpty(responseHtml) && url.startsWith(baseUrl)){
+	if(!JavaUtils.isEmpty(url) && !JavaUtils.isEmpty(responseHtml) && url.indexOf('dmzj.com') != -1){
 		return verifyUserLoggedIn()
 	}
 	return false;
@@ -137,7 +138,7 @@ function isUserLoggedIn(url, responseHtml) {
  * @return {boolean} 登录结果
  */
 function verifyUserLoggedIn() {
-	var strU = JavaUtils.webViewEvalJS("https://m.dmzj.com/my.html", "window.location.href");
+	var strU = JavaUtils.webViewEvalJS("https://m.idmzj.com/my.html", "window.location.href");
 	if(strU.indexOf("my.html") != -1){
 		return true;
 	}else {
