@@ -74,7 +74,8 @@ function manifest() {
 	});
 }
 
-const baseUrl = "http://www.kumw9.com";//此源和六漫画相似
+const baseUrl = "http://www.kumw9.com";
+//此源和七夕漫画、速漫库、酷漫屋、六漫画相似
 //备份：www.kumw7.com,www.kumw9.com
 
 /**
