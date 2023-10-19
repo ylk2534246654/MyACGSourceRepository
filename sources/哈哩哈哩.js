@@ -5,38 +5,37 @@ function manifest() {
 		id: 1660756417,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230810,
+		minMyACG: 20230911,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 70,
 		
-		//是否启用失效#默认关闭
+		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isEnabledInvalid: false,
+		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "哈哩哈哩",
 
-		//搜索源制作人
+		//搜索源作者
 		author: "雨夏",
 
 		//电子邮箱
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 3,
+		version: 4,
 
-		//搜索源自动同步更新链接
+		//搜索源自动同步更新网址
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/哈哩哈哩.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/哈哩哈哩.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/哈哩哈哩.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/哈哩哈哩.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/哈哩哈哩.js",
 		},
 		
-		//更新时间
-		updateTime: "2023年8月10日",
+		//最近更新时间
+		lastUpdateTime: 1697693351,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -47,7 +46,7 @@ function manifest() {
 		//分组
 		group: ["动漫", "影视"],
 		
-		//@NonNull 详细界面的基本网址
+		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,
 
 		//发现
@@ -85,7 +84,7 @@ const baseUrl = 'https://m.feijisu21.com';
 /**
  * 搜索
  * @param {string} key
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = 'https://s5.quelingfei.com:4438/ssszz.php?top=10&q='+ encodeURI(key);
@@ -98,8 +97,11 @@ function search(key) {
 				//名称
 				name: child.title,
 		
+				//最近更新时间
+				lastUpdateTime: child.time,
+
 				//概览
-				summary: child.time,
+				summary: child.lianzaijs,
 		
 				//封面网址
 				coverUrl: JavaUtils.urlJoin(url, child.thumb),
@@ -112,11 +114,9 @@ function search(key) {
 	return JSON.stringify(result);
 }
 
-
 /**
  * 发现
- * @param string url
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(url) {
 	var result = [];
@@ -128,7 +128,7 @@ function find(url) {
 			var element = elements.get(i);
 			result.push({
 				//名称
-				name: element.selectFirst('.li-hv').text(),
+				name: element.selectFirst('.name').text(),
 				
 				//概览
 				summary: element.selectFirst('.bz').text(),
@@ -159,8 +159,8 @@ function find(url) {
 			//作者
 			//author: document.selectFirst('').text(),
 			
-			//更新时间
-			//update: document.selectFirst('').text(),
+			//最近更新时间
+			//lastUpdateTime: document.selectFirst('').text(),
 			
 			//概览
 			summary: document.selectFirst('.des2').text(),
@@ -168,8 +168,8 @@ function find(url) {
 			//封面网址
 			coverUrl: document.selectFirst('.pic > img').absUrl('data-src'),
 			
-			//是否启用将章节置为倒序
-			isEnabledChapterReverseOrder: true,
+			//启用章节反向顺序
+			enableChapterReverseOrder: true,
 			
 			//目录加载
 			tocs: tocs(document)

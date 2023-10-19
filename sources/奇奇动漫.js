@@ -10,9 +10,9 @@ function manifest() {
 		//优先级 1~100，数值越大越靠前
 		priority: 20,
 		
-		//是否启用失效#默认关闭
+		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isEnabledInvalid: false,
+		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "奇奇动漫",
@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 3,
+		version: 4,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -34,8 +34,8 @@ function manifest() {
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/奇奇动漫.js",
 		},
 		
-		//更新时间
-		updateTime: "2023年8月11日",
+		//最近更新时间
+		lastUpdateTime: 1697693351,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -44,7 +44,7 @@ function manifest() {
 		contentProcessType: 2,
 		
 		//分组
-		group: ["动漫"],
+		group: ["动漫", "影视"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,
@@ -76,7 +76,7 @@ const baseUrl = "http://qiqidm8.com";
 /**
  * 搜索
  * @param {string} key
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
 	//没找到相关视频,请缩短关键词重新搜索,宁可少字,不可错字,如"你和我的倾城时光",只需输入"你和我的"
@@ -111,8 +111,7 @@ function search(key) {
 
 /**
  * 发现
- * @param string url
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(url) {
 	var result = [];
@@ -124,7 +123,7 @@ function find(url) {
 			var element = elements.get(i);
 			result.push({
 				//名称
-				name: element.selectFirst('.li-hv').text(),
+				name: element.selectFirst('.name').text(),
 				
 				//概览
 				summary: element.selectFirst('.bz').text(),
@@ -142,7 +141,7 @@ function find(url) {
 
 /**
  * 详情
- * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = JavaUtils.httpRequest(url);
@@ -155,8 +154,8 @@ function detail(url) {
 			//作者
 			//author: document.selectFirst('').text(),
 			
-			//更新时间
-			//update: document.selectFirst('').text(),
+			//最近更新时间
+			//lastUpdateTime: document.selectFirst('').text(),
 			
 			//概览
 			summary: document.selectFirst('#quanjq > p').text(),
@@ -164,8 +163,8 @@ function detail(url) {
 			//封面网址
 			coverUrl: document.selectFirst('.pic > img').absUrl('data-original'),
 			
-			//是否启用将章节置为倒序
-			isEnabledChapterReverseOrder: true,
+			//启用章节反向顺序
+			enableChapterReverseOrder: true,
 			
 			//目录加载
 			tocs: tocs(document)
