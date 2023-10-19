@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 4,
+		version: 5,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1696882686,
+		lastUpdateTime: 1697694965,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -110,7 +110,7 @@ function manifest() {
 		enableUserLogin: true,
 		
 		//用户登录网址
-		userLoginUrl: "https://m.idmzj.com/my.html@header->Referer:http://m.idmzj.com/",
+		userLoginUrl: JavaUtils.urlJoin(baseUrl, "/login.html@header->Referer:http://m.idmzj.com/"),
 		
 		//需要用户登录的功能（search，detail，content，find）
 		requiresUserLoginList: ["content"],
@@ -138,7 +138,7 @@ function isUserLoggedIn(url, responseHtml) {
  * @return {boolean} 登录结果
  */
 function verifyUserLoggedIn() {
-	var strU = JavaUtils.webViewEvalJS("https://m.idmzj.com/my.html", "window.location.href");
+	var strU = JavaUtils.webViewEvalJS(JavaUtils.urlJoin(baseUrl, "/my.html"), "window.location.href");
 	if(strU.indexOf("my.html") != -1){
 		return true;
 	}else {
