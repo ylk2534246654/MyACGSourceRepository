@@ -24,11 +24,10 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 6,
+		version: 7,
 
 		//搜索源自动同步更新网址
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/奇漫屋.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/奇漫屋.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/奇漫屋.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/奇漫屋.js",
@@ -36,7 +35,7 @@ function manifest() {
 		},
 		
 		//更新时间
-		updateTime: "2023年8月15日",
+		updateTime: "2023年10月24日",
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -116,14 +115,14 @@ function getBaseUrl() {
 	var oneDay = 1000*60*60*24;
 	var time = new Date().getTime();
 	if(baseUrlTime < time - oneDay){//超过一天
-		var strU = JavaUtils.webViewEvalJS("http://qiman51.com", "window.location.href", 3000);
+		var strU = JavaUtils.webViewEvalJS("http://qiman52.com", "window.location.href", 3000);
 		var edit = preference.edit();
 		if(JavaUtils.isNetworkUrl(strU)){
 			edit.putString("baseUrl", strU);//更新基础网址
 		}
 		edit.putLong("baseUrlTime", time).apply();//更新时间
 	}
-	return preference.getString("baseUrl", "http://qiman51.com");
+	return preference.getString("baseUrl", "http://qiman52.com");
 }
 
 /**
