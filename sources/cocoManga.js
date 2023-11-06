@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 14,
+		version: 15,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -35,7 +35,7 @@ function manifest() {
 		},
 
 		//最近更新时间
-		lastUpdateTime: 1694519787,
+		lastUpdateTime: 1699260350,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -303,7 +303,7 @@ function tocs(document) {
 
 /**
  * 内容（部分搜索源通用过滤规则）
- * @version 2023/9/21
+ * @version 2023/11/6
  * 布米米、嘻嘻动漫、12wo动漫、路漫漫、风车动漫P、樱花动漫P、COCO漫画、Nike、cocoManga
  * @return {string} content
  */
@@ -340,6 +340,9 @@ function content(url) {
 		//https://xxxx.xxxx.xx:00000/kmopef/3.woff # [\w/]+[/km][\w/]+\.woff
 		'|([\\w/]+[/km][\\w/]+\\.woff)' +
 
+		//https://xxxx.xxxx.com/o.js # o\.js
+		'|o\\.js' +
+
 		')'+
 		''
 		,
@@ -356,7 +359,7 @@ function content(url) {
  * @param  {string} url
  * @param  {boolean} isStart：运行时机{true：页面加载前，false：页面加载完成后}
  * @return  {string} js 代码
- */
+
 function webPageLoadJavaScript(url, isStart) {
 	if(!isStart){
 		return `document.querySelector("script[src] ~ div[id]").remove()`;
@@ -364,3 +367,4 @@ function webPageLoadJavaScript(url, isStart) {
 	}
 	return null;
 }
+ */
