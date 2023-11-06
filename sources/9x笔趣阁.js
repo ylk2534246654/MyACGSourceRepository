@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 3,
+		version: 4,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1694681353,
+		lastUpdateTime: 1699268045,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -79,9 +79,11 @@ function manifest() {
 	});
 }
 
-const baseUrl = "https://novel-api.xiaoppkk.com";
-//备份：gfnormal05at.com、nso92.xsafetech.com
-//novel-api.xiaoppkk.com/h5/
+const baseUrl = "https://novel-api.elklk.cn";
+//备份：
+//gfnormal05at.com
+//nso92.xsafetech.com
+//novel-api.xiaoppkk.com
 
 /**
  * 搜索
@@ -202,7 +204,7 @@ function tocs(id) {
 				//章节名称
 				name: child.name,
 				//章节网址
-				url: child.url
+				url: JavaUtils.urlJoin(baseUrl, child.url.replace(/https:\/\/contentxs\.pysmei\.com\/BookFiles\/Html\/(\d+)\/(\d+)\/(\d+)\.html/, '/cdn/book/content/$2/$3.html'))
 			});
 		});
 
@@ -224,7 +226,7 @@ function tocs(id) {
 function content(url) {
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
-		return JSON.parse(response.body().string()).data.content;
+		return com.jayway.jsonpath.JsonPath.parse(response.body().string()).read("$..content").get(0);
 	}
 }
 
