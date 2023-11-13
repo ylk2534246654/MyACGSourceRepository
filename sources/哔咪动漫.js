@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 8,
+		version: 9,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1694518508,
+		lastUpdateTime: 1699867970,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -232,33 +232,73 @@ function tocs(document) {
 }
 
 /**
- * 内容(InterceptRequest)
+ * 内容（部分搜索源通用过滤规则）
+ * @version 2023/11/13
+ * 布米米、嘻嘻动漫、12wo动漫、路漫漫、风车动漫P、樱花动漫P、COCO漫画、Nike、cocoManga
  * @return {string} content
  */
 function content(url) {
-	if(url.length > 500){
-		return null;
-	}
-	//浏览器请求结果处理
-	var re = /sohu|hm\.|\.gov|\.qq|\.alpha|\.xyz|cpv|360buyimg|suning|knmer|qqmail_head|adInnovationResource|[a-z]+:\/\/[\w.]+\/[a-z]{1}\/[a-z]{1}\?|WASE\/[\w-]+\/\w+/i;
-	
-	//https://api.simi0000.com/s/a?_=000000000000000000
-	//https://d.xxxxxxx.xyz/WASE/Z-13289-G-227/ODqpbVmd4324097374 # WASE\/[\w-]\/\w
+	var re = new RegExp(
+		//https://
+		'[a-zA-z]+://[^\\s/]+/(' +
 
+		//https://knr.xxxxx.cn/j/140000		#[a-z]{1}\/\d{6}
+		'([a-z]{1}/\\d)' +
+
+		//https://xx.xxx.xx/xxx/xxx/0000	#[a-z]{3}\/[a-z]{3}\/\d
+		'|([a-z]{3}/[a-z]{3}/\\d)' +
+
+		//https://tg.xxx.com/sc/0000?n=xxxx #[a-z]{2}\/\d{4}\?
+		'|([a-z]{2}/\\d{4}\\?)' +
+
+		//https://xx.xxx.xyz/vh1/158051 	#[\w]{3}\/\d{6}$
+		'|([\\w]{3}/\\d{6}$)' +
+
+		//https://xx.xx.com/0000/00/23030926631.txt 	#[\d]{4}\/\d{2}\/\d{11}\.txt
+		'|([\\d]{4}/\\d{2}/\\d{11}\\.txt)' +
+
+		//https://xxx.com/ba4fa4f070f761b057fbabfb3fd7925d.txt 	#\w{32}\.txt
+		'|(\\w{32}\\.txt)' +
+		
+		//https://zbg.xxx.com/candy14395.js 	#\w{32}\.txt
+		'|(candy\\d{5}\\.)' +
+
+		//https://xxxxx.xxxxxx.com/v2/stats/12215/157527 	#[\w]{2}\/\w{5}\/\d{5}\/\d{6}
+		'|([\\w]{2}/\\w{5}/\\d{5}/\\d{6})' +
+
+		//https://xxx.xxxxxx.com/sh/to/853	#sh\/[\w]{2}\/\d{3}
+		'|(sh/[\\w]{2}/\\d{3})' +
+
+		//https://xxx.rmb.xxxxxxxx.com/xxx/e3c5da206d50f116fc3a8f47502de66d.gif #[\w]{3}\/[\w]{32}\.
+		'|([\\w]{3}/[\\w]{32}\\.)' +
+
+		//https://xxxx.xxxx.xx:00000/mnrt/kmrr1.woff
+		//https://xxxx.xxxx.xx:00000/kmopef/3.woff # [\w/]+[/km][\w/]+\.woff
+		'|([\\w/]+[/km][\\w/]+\\.woff)' +
+
+		//https://xxxx.xxxx.com/o.js # o\.js
+		'|o\\.js' +
+
+		')'+
+		''
+		,
+		'i'
+	);
 	if(!re.test(url)){
 		return url;
 	}
 	return null;
 }
+
 /**
  * 对网页注入 JS 脚本（contentProcessType == 2）
  * @return  {string} url
  * @param  {boolean} isStart：运行时机{true：页面加载前，false：页面加载完成后}
  * @return  {string} js 代码
- */
 function webPageLoadJavaScript(url, isStart) {
 	if(!isStart){
 		return `document.write(document.querySelector("#playleft > iframe").outerHTML);`;
 	}
 	return null;
-}
+} 
+*/

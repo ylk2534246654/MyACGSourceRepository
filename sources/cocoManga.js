@@ -303,7 +303,7 @@ function tocs(document) {
 
 /**
  * 内容（部分搜索源通用过滤规则）
- * @version 2023/11/6
+ * @version 2023/11/13
  * 布米米、嘻嘻动漫、12wo动漫、路漫漫、风车动漫P、樱花动漫P、COCO漫画、Nike、cocoManga
  * @return {string} content
  */
@@ -326,6 +326,12 @@ function content(url) {
 
 		//https://xx.xx.com/0000/00/23030926631.txt 	#[\d]{4}\/\d{2}\/\d{11}\.txt
 		'|([\\d]{4}/\\d{2}/\\d{11}\\.txt)' +
+
+		//https://xxx.com/ba4fa4f070f761b057fbabfb3fd7925d.txt 	#\w{32}\.txt
+		'|(\\w{32}\\.txt)' +
+		
+		//https://zbg.xxx.com/candy14395.js 	#\w{32}\.txt
+		'|(candy\\d{5}\\.)' +
 
 		//https://xxxxx.xxxxxx.com/v2/stats/12215/157527 	#[\w]{2}\/\w{5}\/\d{5}\/\d{6}
 		'|([\\w]{2}/\\w{5}/\\d{5}/\\d{6})' +
