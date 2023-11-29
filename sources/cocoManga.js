@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 15,
+		version: 16,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -35,7 +35,7 @@ function manifest() {
 		},
 
 		//最近更新时间
-		lastUpdateTime: 1699260350,
+		lastUpdateTime: 1701275020,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -347,7 +347,7 @@ function content(url) {
 		'|([\\w/]+[/km][\\w/]+\\.woff)' +
 
 		//https://xxxx.xxxx.com/o.js # o\.js
-		'|o\\.js' +
+		//'|o\\.js' + //无法正常加载
 
 		')'+
 		''
