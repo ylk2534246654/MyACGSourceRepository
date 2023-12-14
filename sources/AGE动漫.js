@@ -100,12 +100,13 @@ function getBaseUrl() {
 		const response = JavaUtils.httpRequest("https://rentry.org/agefans");
 		var edit = preference.edit();
 		if(response.code() == 200){
-			var _baseUrl = JavaUtils.substring(response.body().string(),"新版：","\n");
+			var _baseUrl = JavaUtils.substring(response.body().string(),"域名：","\n");
 			if(JavaUtils.isNetworkUrl(_baseUrl)){
 				edit.putString("baseUrl", _baseUrl);//更新基础网址
 			}
 		}
 		edit.putLong("baseUrlTime", time).apply();//更新时间
+		JavaUtils.log("baseUrlTime -> " + baseUrlTime + "<" + (time - oneDay));
 	}
 	return preference.getString("baseUrl", "https://www.agemys.org");
 }
@@ -116,6 +117,7 @@ function getBaseUrl() {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
+	JavaUtils.log("baseUrlTime -> " + JavaUtils.getPreference().getLong("baseUrlTime"));
 	var url = JavaUtils.urlJoin(baseUrl, '/search?&query=' + encodeURI(key));
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
@@ -130,7 +132,7 @@ function search(key) {
 				
 				//最后章节名称
 				lastChapterName: element.selectFirst('.video_play_status').text(),
-
+				
 				//最近更新时间
 				//lastUpdateTime: element.selectFirst('.video_play_status').text(),
 

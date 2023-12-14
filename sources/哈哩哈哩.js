@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1697693351,
+		lastUpdateTime: 1702564794,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -58,7 +58,7 @@ function manifest() {
 		},
 	});
 }
-const baseUrl = 'https://m.feijisu21.com';
+const baseUrl = 'https://m.feijisu36.com';
 /**
  * buidng2.com
  * 
