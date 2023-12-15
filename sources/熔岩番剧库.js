@@ -5,14 +5,14 @@ function manifest() {
 		id: 1660927525,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230815,
+		minMyACG: 20231215,
 
 		//优先级 1~100，数值越大越靠前
-		priority: 50,//加载较慢
+		priority: 50,
 		
-		//是否启用失效#默认关闭
+		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isEnabledInvalid: false,
+		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "熔岩番剧库",
@@ -24,19 +24,18 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 11,
+		version: 12,
 
 		//搜索源自动同步更新网址
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/熔岩番剧库.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/熔岩番剧库.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/熔岩番剧库.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/熔岩番剧库.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/熔岩番剧库.js",
 		},
 
-		//更新时间
-		updateTime: "2023年8月15日",
+		//最近更新时间
+		lastUpdateTime: 1702620617,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -78,14 +77,14 @@ function manifest() {
 			"动漫": ["type","year"]
 		},
 		
-		//是否启用登录
-		isEnabledLogin: true,
+		//启用用户登录
+		enableUserLogin: true,
 		
-		//登录网址
-		loginUrl: "https://lavani.me/user",
+		//用户登录网址
+		userLoginUrl: "https://lavani.me/user",
 		
-		//需要登录的功能（search，detail，content，find）
-		requiresLoginList: ["search","detail","content"],
+		//需要用户登录列表（search，detail，content，find）
+		requiresUserLoginList: ["search","detail","content"],
 	});
 }
 const showBaseUrl = "https://lavani.me";
@@ -122,8 +121,6 @@ function verifyUserLoggedIn() {
 		}else{
 			return false;
 		}
-	}else if(response.code() == 401 || response.code() == 403){
-		return false;
 	}
 	return true;
 }
@@ -136,7 +133,7 @@ function getHeader() {
 			return "@header->referer:https://lavani.me/@header->authorization:" + authorization;
 		}
 	}catch(e){
-		JavaUtils.setUserLoginStatus(false);
+		//抛出异常
 	}
 	return "";
 }
@@ -144,7 +141,7 @@ function getHeader() {
 /**
  * 搜索
  * @param {string} key
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
 	var result = [];
@@ -160,11 +157,14 @@ function search(key) {
 				//名称
 				name: child.title,
 		
+				//最近更新时间
+				lastUpdateTime: child.index.year,
+
 				//概览
-				summary: child.index.type + '\n' + child.index.year,
+				summary: child.index.type,
 		
 				//封面网址
-				coverUrl: child.images.large,
+				coverUrl: child.images.poster,
 		
 				//网址
 				url: child.id
@@ -173,9 +173,10 @@ function search(key) {
 	}
 	return JSON.stringify(result);
 }
+
 /**
  * 发现
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(type, year) {
 	if(type == "全部"){
@@ -195,11 +196,14 @@ function find(type, year) {
 				//名称
 				name: child.title,
 		
+				//最近更新时间
+				lastUpdateTime: child.index.year,
+
 				//概览
-				summary: child.index.type + '\n' + child.index.year,
+				summary: child.index.type,
 		
 				//封面网址
-				coverUrl: child.images.large,
+				coverUrl: child.images.poster,
 		
 				//网址
 				url: child.id
@@ -211,12 +215,36 @@ function find(type, year) {
 
 /**
  * 详情
- * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(id) {
+	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, `/v2/anime/get?id=${id}&full=true${getHeader()}`));
+	if(response.code() == 200){
+		const $ = JSON.parse(response.body().string()).data;
+
+		return JSON.stringify({
+			//标题
+			name: $.name_cn,
+
+			//最近更新时间
+			lastUpdateTime: $.date,
+			
+			//概览
+			summary: $.summary,
+	
+			//封面网址
+			coverUrl: $.images.poster,
+			
+			//启用章节反向顺序
+			enableChapterReverseOrder: false,
+			
+			//目录加载
+			tocs: tocs(id)
+		});
+	}
 	return JSON.stringify({
-		//是否启用将章节置为倒序
-		isEnabledChapterReverseOrder: false,
+		//启用章节反向顺序
+		enableChapterReverseOrder: false,
 		
 		//目录加载
 		tocs: tocs(id)
