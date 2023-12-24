@@ -152,7 +152,7 @@ function find(region, genre, year, status, label, order) {
 
 /**
  * 详情
- * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = JavaUtils.httpRequest(url);
