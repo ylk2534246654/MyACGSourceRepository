@@ -67,7 +67,7 @@ function manifest() {
 		},
 	});
 }
-const baseUrl = "http://qiqidm8.com";
+const baseUrl = "http://qiqidm7.com";
 /**
  * https://www.qiqidongman.com
  * https://www.qiqidongman.cc
