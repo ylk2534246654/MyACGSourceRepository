@@ -5,14 +5,14 @@ function manifest() {
 		id: 1648714588,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230815,
+		minMyACG: 20231215,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 50,
 		
-		//是否启用失效#默认关闭
+		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isEnabledInvalid: false,
+		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "轻小说文库",
@@ -24,19 +24,18 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 3,
 
 		//搜索源自动同步更新网址
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/轻小说文库.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/轻小说文库.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/轻小说文库.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/轻小说文库.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/轻小说文库.js",
 		},
 		
-		//更新时间
-		updateTime: "2023年8月17日",
+		//最近更新时间
+		lastUpdateTime: 1703412682,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -65,14 +64,14 @@ function manifest() {
 			"轻小说": ["region"]
 		},
 		
-		//是否启用登录
-		isEnabledLogin: true,
+		//启用用户登录
+		enableUserLogin: true,
 		
-		//登录网址
-		loginUrl: JavaUtils.urlJoin(baseUrl, "/index.php"),
+		//用户登录网址
+		userLoginUrl: JavaUtils.urlJoin(baseUrl, "/index.php"),
 		
-		//需要登录的功能（search，detail，content，find）
-		requiresLoginList: ["search", "find"],
+		//需要用户登录列表（search，detail，content，find）
+		requiresUserLoginList: ["search", "find"],
 
 		//全局 HTTP 请求头列表
 		httpRequestHeaderList: {
@@ -113,7 +112,7 @@ function verifyUserLoggedIn() {
 /**
  * 搜索
  * @param {string} key
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = JavaUtils.urlJoin(baseUrl, `/modules/article/search.php?searchtype=articlename&searchkey=${JavaUtils.encodeURI(key,'GBK')}`);
@@ -161,7 +160,7 @@ function search(key) {
 
 /**
  * 发现
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(region) {
 	var url = JavaUtils.urlJoin(baseUrl, `/modules/article/toplist.php?sort=${region}`);
@@ -192,7 +191,7 @@ function find(region) {
 
 /**
  * 详情
- * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = JavaUtils.httpRequest(url);
@@ -214,8 +213,8 @@ function detail(url) {
 			//封面网址
 			coverUrl: document.selectFirst('#content > div > table > tbody > tr > td > img').absUrl('src'),
 			
-			//是否启用将章节置为倒序
-			isEnabledChapterReverseOrder: false,
+			//启用章节反向顺序
+			enableChapterReverseOrder: false,
 			
 			//目录加载
 			tocs: tocs(document.selectFirst('#content > div:nth-child(1) > div:nth-child(6) > div > span:nth-child(1) > fieldset > div > a').absUrl('href'))
