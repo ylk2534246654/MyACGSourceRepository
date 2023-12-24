@@ -94,7 +94,7 @@ function getBaseUrl() {
 			edit.putLong("baseUrlTime", time).apply();//更新时间
 		}
 	}
-	return preference.getString("baseUrl", "http://www.sixmanhua.com");
+	return preference.getString("baseUrl", "http://m.sixmanhua.com");
 }
 
 /**
@@ -169,7 +169,7 @@ function find(label) {
 
 /**
  * 详情
- * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = JavaUtils.httpRequest(url);
@@ -191,8 +191,8 @@ function detail(url) {
 			//封面网址
 			//coverUrl: document.selectFirst('').absUrl(''),
 			
-			//是否启用将章节置为倒序
-			isEnabledChapterReverseOrder: true,
+			//启用章节反向顺序
+			enableChapterReverseOrder: false,
 			
 			//目录加载
 			tocs: tocs(document, url)
