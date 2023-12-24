@@ -5,14 +5,14 @@ function manifest() {
 		id: 1652947579,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230804,
+		minMyACG: 20231215,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 70,
 		
-		//是否启用失效#默认关闭
+		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isEnabledInvalid: false,
+		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "樱花动漫P",
@@ -28,15 +28,14 @@ function manifest() {
 
 		//搜索源自动同步更新链接
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/樱花动漫P.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/樱花动漫P.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/樱花动漫P.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/樱花动漫P.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/樱花动漫P.js",
 		},
 		
-		//更新时间
-		updateTime: "2023年8月4日",
+		//最近更新时间
+		lastUpdateTime: 1703410844,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -44,7 +43,7 @@ function manifest() {
 		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
 		contentProcessType: 2,
 		
-		//自定义标签
+		//分组
 		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
@@ -76,6 +75,7 @@ const baseUrl = "https://www.yhdmz.org";
  * yhdmp.live
  * yhdmp.net
  * yhdmp.me
+ * m.iyhdmm.com
  * 
  * 和风车动漫P是同源同模板不同名的网站
  */
@@ -83,7 +83,7 @@ const baseUrl = "https://www.yhdmz.org";
 /**
  * 搜索
  * @param {string} key
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = JavaUtils.urlJoin(baseUrl, '/s_all?ex=1&kw=' + encodeURI(key));
@@ -98,8 +98,8 @@ function search(key) {
 				//名称
 				name: element.selectFirst('h2').text(),
 				
-				//概览
-				summary: element.selectFirst('span').text(),
+				//最后章节名称
+				lastChapterName: element.selectFirst('span').text(),
 				
 				//封面网址
 				coverUrl: element.selectFirst('img[src]').absUrl('src'),
@@ -115,7 +115,7 @@ function search(key) {
 
 /**
  * 发现
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(region, genre, year, status, label, order) {
 	if(region == "全部")region = "";
@@ -136,8 +136,8 @@ function find(region, genre, year, status, label, order) {
 				//名称
 				name: element.selectFirst('h2').text(),
 				
-				//概览
-				summary: element.selectFirst('span').text(),
+				//最后章节名称
+				lastChapterName: element.selectFirst('span').text(),
 				
 				//封面网址
 				coverUrl: element.selectFirst('img[src]').absUrl('src'),
@@ -174,8 +174,8 @@ function detail(url) {
 			//封面网址
 			coverUrl: document.selectFirst('div.show > img').absUrl('src'),
 			
-			//是否启用将章节置为倒序
-			isEnabledChapterReverseOrder: false,
+			//启用章节反向顺序
+			enableChapterReverseOrder: false,
 			
 			//目录加载
 			tocs: tocs(document)
