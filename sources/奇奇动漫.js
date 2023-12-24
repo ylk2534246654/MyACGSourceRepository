@@ -12,7 +12,7 @@ function manifest() {
 		
 		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		enableInvalid: true,//暂时性关闭
+		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "奇奇动漫",
@@ -83,7 +83,7 @@ function search(key) {
 	if(key.replace(/[^\x00-\xff]/g, "00").length > 30){
 		return null;
 	}
-	var url = JavaUtils.urlJoin(baseUrl, '/search.php@enabledFrameSource->true@post->searchword=' + encodeURI(key));
+	var url = JavaUtils.urlJoin(baseUrl, '/search.php@enabledFrameSource->true@post->searchword=' + key);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
