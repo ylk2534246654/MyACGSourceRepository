@@ -5,14 +5,14 @@ function manifest() {
 		id: 1652945404,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230804,
+		minMyACG: 20231215,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 60,
 		
-		//是否启用失效#默认关闭
+		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isEnabledInvalid: false,
+		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "动漫星球",
@@ -24,19 +24,18 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 6,
+		version: 7,
 
 		//搜索源自动同步更新网址
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/动漫星球.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/动漫星球.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/动漫星球.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/动漫星球.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/动漫星球.js",
 		},
 		
-		//更新时间
-		updateTime: "2023年8月4日",
+		//最近更新时间
+		lastUpdateTime: 1703412181,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -44,7 +43,7 @@ function manifest() {
 		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
 		contentProcessType: 2,
 		
-		//自定义标签
+		//分组
 		group: ["影视", "动漫"],
 		
 		//@NonNull 详情页的基本网址
@@ -92,7 +91,7 @@ const baseUrl = "https://www.dmxq.me";
  * @param {string} url 网址
  * @param {string} responseHtml 响应源码
  */
-function isEnabledAuthenticator(url, responseHtml) {
+function isEnableAuthenticator(url, responseHtml) {
 	if(responseHtml.indexOf('点击开始验证') != -1){
 		return true;
 	}
@@ -102,7 +101,7 @@ function isEnabledAuthenticator(url, responseHtml) {
 /**
  * 搜索
  * @param {string} key
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = JavaUtils.urlJoin(baseUrl, '/vodsearch/-------------.html?wd=' + encodeURI(key));
@@ -134,7 +133,7 @@ function search(key) {
 
 /**
  * 发现
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(type, region, label, year, order) {
 	if(region == "全部")region = "";
@@ -169,7 +168,7 @@ function find(type, region, label, year, order) {
 
 /**
  * 详情
- * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = JavaUtils.httpRequest(url);
@@ -182,8 +181,8 @@ function detail(url) {
 			//作者
 			//author: document.selectFirst('').text(),
 			
-			//更新时间
-			update: document.selectFirst('div.module-info-items > div:nth-child(4) > div').text(),
+			//最近更新时间
+			lastUpdateTime: document.selectFirst('div.module-info-items > div:nth-child(4) > div').text(),
 			
 			//概览
 			summary: document.selectFirst('div.module-info-introduction > div > p').text(),
@@ -191,8 +190,8 @@ function detail(url) {
 			//封面网址
 			coverUrl: document.selectFirst('div.module-info-poster > div > div > img').absUrl('src'),
 			
-			//是否启用将章节置为倒序
-			isEnabledChapterReverseOrder: false,
+			//启用章节反向顺序
+			enableChapterReverseOrder: false,
 			
 			//目录加载
 			tocs: tocs(document)
