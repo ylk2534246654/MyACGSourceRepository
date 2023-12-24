@@ -5,26 +5,26 @@ function manifest() {
 		id: 1654920600,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230815,
+		minMyACG: 20231215,
 		
 		//优先级 1~100，数值越大越靠前
 		priority: 1,
 		
-		//是否启用失效#默认关闭
+		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isEnabledInvalid: false,
+		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "奇漫屋",
 
-		//搜索源制作人
+		//搜索源作者
 		author: "雨夏",
 
 		//电子邮箱
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 7,
+		version: 8,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -34,8 +34,8 @@ function manifest() {
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/奇漫屋.js",
 		},
 		
-		//更新时间
-		updateTime: "2023年10月24日",
+		//最近更新时间
+		lastUpdateTime: 1703407068,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -69,44 +69,15 @@ function manifest() {
 	});
 }
 
-/**
- * 发现
- * @return {[{name, summary, coverUrl, url}]}
- */
-function find(label) {
-	var url = JavaUtils.urlJoin(baseUrl, `/sort/${label}-1.html`);
-	var result = [];
-	const response = JavaUtils.httpRequest(url);
-	if(response.code() == 200){
-		const document = response.body().cssDocument();
-		var elements = document.select("div.rank-list > div");
-		for (var i = 0;i < elements.size();i++) {
-			var element = elements.get(i);
-			result.push({
-				//名称
-				name: element.selectFirst('.comic-name').text(),
-				
-				//概览
-				summary: element.selectFirst('.comic-author').text() + '\n' + element.selectFirst('.comic-tip').text(),
-				
-				//封面网址
-				coverUrl: element.selectFirst('.cover').absUrl('data-src'),
-				
-				//网址
-				url: element.selectFirst('.comic-item-info > a').absUrl('href')
-			});
-		}
-	}
-	return JSON.stringify(result);
-}
-
 //此源和七夕漫画，六漫画相似
 const baseUrl = getBaseUrl();
 /**
+ * http://www.qmanwu2.com
  * http://qiman5.com
  * http://qiman56.com
  * http://qiman57.com
  * http://qiman51.com
+ * http://qiman52.com
  * http://m.qiman59.com
  */
 function getBaseUrl() {
@@ -115,20 +86,26 @@ function getBaseUrl() {
 	var oneDay = 1000*60*60*24;
 	var time = new Date().getTime();
 	if(baseUrlTime < time - oneDay){//超过一天
-		var strU = JavaUtils.webViewEvalJS("http://qiman52.com", "window.location.href", 3000);
-		var edit = preference.edit();
-		if(JavaUtils.isNetworkUrl(strU)){
-			edit.putString("baseUrl", strU);//更新基础网址
+		const response = JavaUtils.httpRequest("http://qmwdh1.com");
+		if(response.code() == 200){
+			const document = response.body().cssDocument();
+			var strU = document.selectFirst("a#href").absUrl('href');
+			var edit = preference.edit();
+			if(JavaUtils.isNetworkUrl(strU)){
+				edit.putString("baseUrl", strU);//更新基础网址
+			}
+			edit.putLong("baseUrlTime", time).apply();//更新时间
 		}
-		edit.putLong("baseUrlTime", time).apply();//更新时间
+		
 	}
-	return preference.getString("baseUrl", "http://qiman52.com");
+	return preference.getString("baseUrl", "http://m.qmanwu2.com");
 }
+
 
 /**
  * 搜索
  * @param {string} key
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = JavaUtils.urlJoin(baseUrl, '/spotlight/?keyword=' + encodeURI(key));
@@ -143,14 +120,57 @@ function search(key) {
 				//名称
 				name: element.selectFirst('p.comic-name > a').text(),
 				
+				//作者
+				author: element.selectFirst('comic-author').text(),
+
+				//最后章节名称
+				lastChapterName: element.selectFirst('p.comic-update-at').text(),
+
 				//概览
-				summary: element.selectFirst('p.comic-tags').text() + '\n' + element.selectFirst('p.comic-update-at').text(),
+				summary: element.selectFirst('p.comic-tags').text(),
 				
 				//封面网址
 				coverUrl: element.selectFirst('a.cover > img').absUrl('src'),
 				
 				//网址
 				url: element.selectFirst('a.cover').absUrl('href')
+			});
+		}
+	}
+	return JSON.stringify(result);
+}
+
+/**
+ * 发现
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
+ */
+function find(label) {
+	var url = JavaUtils.urlJoin(baseUrl, `/sort/${label}-1.html`);
+	var result = [];
+	const response = JavaUtils.httpRequest(url);
+	if(response.code() == 200){
+		const document = response.body().cssDocument();
+		var elements = document.select("div.rank-list > div");
+		for (var i = 0;i < elements.size();i++) {
+			var element = elements.get(i);
+			result.push({
+				//名称
+				name: element.selectFirst('.comic-name').text(),
+				
+				//作者
+				author: element.selectFirst('comic-author').text(),
+
+				//最后章节名称
+				lastChapterName: element.selectFirst('p.comic-update-at').text(),
+
+				//概览
+				summary: element.selectFirst('.comic-author').text(),
+				
+				//封面网址
+				coverUrl: element.selectFirst('.cover').absUrl('data-src'),
+				
+				//网址
+				url: element.selectFirst('.comic-item-info > a').absUrl('href')
 			});
 		}
 	}
@@ -181,8 +201,8 @@ function detail(url) {
 			//封面网址
 			coverUrl: document.selectFirst('div.comic-info-box > div > img').absUrl('src'),
 			
-			//是否启用将章节置为倒序
-			isEnabledChapterReverseOrder: true,
+			//启用章节反向顺序
+			enableChapterReverseOrder: true,
 			
 			//目录加载
 			tocs: tocs(response, url)
