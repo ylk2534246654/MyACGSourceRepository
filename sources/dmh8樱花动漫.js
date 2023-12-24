@@ -5,19 +5,19 @@ function manifest() {
 		id: 1654704919,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230810,
+		minMyACG: 20231215,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 30,
 		
-		//是否启用失效#默认关闭
+		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isEnabledInvalid: false,
+		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "樱花动漫",
 
-		//搜索源制作人
+		//搜索源作者
 		author: "雨夏",
 
 		//电子邮箱
@@ -28,15 +28,14 @@ function manifest() {
 
 		//搜索源自动同步更新网址
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/dmh8樱花动漫.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/dmh8樱花动漫.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/dmh8樱花动漫.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/dmh8樱花动漫.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/dmh8樱花动漫.js",
 		},
 		
-		//更新时间
-		updateTime: "2023年8月10日",
+		//最近更新时间
+		lastUpdateTime: 1703411532,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -48,22 +47,7 @@ function manifest() {
 		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: baseUrl, 
-
-		/*主机域名映射
-		hostsList: {
-			//"*.zcczrvsaq.xyz": "0.0.0.0",
-			//"*.zcczrvsaqa.xyz": "0.0.0.0",
-			//"*.zcczrsaqw.xyz": "0.0.0.0",
-			//"*.zcczrvsaqs.xyz": "0.0.0.0",
-			//"*.zcczrvsaw.xyz": "0.0.0.0",
-			"*.zcczrvsaqw.xyz": "0.0.0.0",
-			//"*.zcczrvsaqw.live": "0.0.0.0",
-			//"*.wsdd11.com": "0.0.0.0",
-			
-			//"ekofelj.xyz": "0.0.0.0",
-		},
-		*/
+		baseUrl: baseUrl,
 
 		//发现
 		findList: {
@@ -106,7 +90,7 @@ const baseUrl = "http://www.dm99.me";//网站模板相似：1080电影网、哆�
  * @param {string} responseHtml 响应源码
  * @return {boolean} 返回结果
  */
-function isEnabledAuthenticator(url, responseHtml) {
+function isEnableAuthenticator(url, responseHtml) {
 	//对框架进行拦截，检索关键字，
 	if(responseHtml != null && responseHtml.indexOf('安全验证') != -1){
 		return true;
@@ -117,7 +101,7 @@ function isEnabledAuthenticator(url, responseHtml) {
 /**
  * 搜索
  * @param {string} key
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = JavaUtils.urlJoin(baseUrl, '/search.asp?searchword=' + encodeURI(key));
@@ -148,8 +132,7 @@ function search(key) {
 
 /**
  * 发现
- * @param string url
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(region, label, year, order) {
 	var url = JavaUtils.urlJoin(baseUrl, `/so.asp?id=2&page=1&nf=${year}&gj=${label}&dq=${region}&pl=${order}`);
@@ -177,9 +160,10 @@ function find(region, label, year, order) {
 	}
 	return JSON.stringify(result);
 }
+
 /**
  * 详情
- * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = JavaUtils.httpRequest(url);
@@ -192,8 +176,8 @@ function detail(url) {
 			//作者
 			//author: ,
 			
-			//更新时间
-			update: document.selectFirst('p.data > a:nth-child(8)').text(),
+			//最近更新时间
+			lastUpdateTime: document.selectFirst('p.data > a:nth-child(8)').text(),
 			
 			//概览
 			summary: document.selectFirst('div.content').text(),
@@ -201,8 +185,8 @@ function detail(url) {
 			//封面网址
 			coverUrl: document.selectFirst('div.myui-content__thumb > a > img').absUrl('data-original'),
 			
-			//是否启用将章节置为倒序
-			isEnabledChapterReverseOrder: false,
+			//启用章节反向顺序
+			enableChapterReverseOrder: false,
 			
 			//目录加载
 			tocs: tocs(document)
