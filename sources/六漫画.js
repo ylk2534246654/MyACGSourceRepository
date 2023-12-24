@@ -5,14 +5,14 @@ function manifest() {
 		id: 1652779713,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230815,
+		minMyACG: 20231215,
 		
 		//优先级 1~100，数值越大越靠前
 		priority: 30,
 		
-		//是否启用失效#默认关闭
+		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isEnabledInvalid: false,
+		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "六漫画",
@@ -24,19 +24,18 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 6,
+		version: 7,
 
 		//搜索源自动同步更新网址
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/六漫画.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/六漫画.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/六漫画.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/六漫画.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/六漫画.js",
 		},
 		
-		//更新时间
-		updateTime: "2023年8月15日",
+		//最近更新时间
+		lastUpdateTime: 1703407068,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -44,11 +43,11 @@ function manifest() {
 		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
 		contentProcessType: 1,
 		
-		//自定义标签
+		//分组
 		group: ["漫画"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: baseUrl,//备份网址sixmh7.com，sixmh6.com，6mh9.com，6mh66.com，此源和七夕漫画相似
+		baseUrl: baseUrl,
 
 		//发现
 		findList: {
@@ -71,27 +70,37 @@ function manifest() {
 }
 
 const baseUrl = getBaseUrl();
-
+/**
+ * sixmh7.com
+ * sixmh6.com
+ * 6mh9.com
+ * 6mh66.com
+ * 此源和七夕漫画相似
+ */
 function getBaseUrl() {
 	var preference = JavaUtils.getPreference();
 	var baseUrlTime = preference.getLong("baseUrlTime");
 	var oneDay = 1000*60*60*24;
 	var time = new Date().getTime();
 	if(baseUrlTime < time - oneDay){//超过一天
-		var strU = JavaUtils.webViewEvalJS("http://m.6mh67.com", "window.location.href", 3000);
-		var edit = preference.edit();
-		if(JavaUtils.isNetworkUrl(strU)){
-			edit.putString("baseUrl", strU);//更新基础网址
+		const response = JavaUtils.httpRequest("http://m.6mh9.com");
+		if(response.code() == 200){
+			const document = response.body().cssDocument();
+			var strU = document.selectFirst("a#href").absUrl('href');
+			var edit = preference.edit();
+			if(JavaUtils.isNetworkUrl(strU)){
+				edit.putString("baseUrl", strU);//更新基础网址
+			}
+			edit.putLong("baseUrlTime", time).apply();//更新时间
 		}
-		edit.putLong("baseUrlTime", time).apply();//更新时间
 	}
-	return preference.getString("baseUrl", "http://m.6mh67.com");
+	return preference.getString("baseUrl", "http://www.sixmanhua.com");
 }
 
 /**
  * 搜索
  * @param {string} key
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = JavaUtils.urlJoin(baseUrl, '/search?keyword=' + encodeURI(key));
@@ -106,9 +115,15 @@ function search(key) {
 				//名称
 				name: element.selectFirst('div > h2').text(),
 				
-				//概览
-				summary: element.selectFirst('div > p:nth-child(5)').text(),
+				//作者
+				author: element.selectFirst('div > p:nth-child(2)').text(),
+
+				//最后章节名称
+				lastChapterName: element.selectFirst('div > p:nth-child(5)').text(),
 				
+				//概览
+				summary: element.selectFirst('div > p:nth-child(3)').text(),
+
 				//封面网址
 				coverUrl: element.selectFirst('li > img').absUrl('src'),
 				
@@ -122,7 +137,7 @@ function search(key) {
 
 /**
  * 发现
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(label) {
 	var url = JavaUtils.urlJoin(baseUrl, `/sortdata.php@post->page_num=1&type=${label}`);
@@ -135,10 +150,13 @@ function find(label) {
 				//名称
 				name: child.name,
 				
+				//作者
+				author: child.author,
+
 				//概览
-				summary: child.author + "\n" + child.intro,
+				summary: child.intro,
 				
-				//封面
+				//封面网址
 				coverUrl: child.imgurl,
 				
 				//网址
