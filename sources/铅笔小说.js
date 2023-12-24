@@ -5,14 +5,14 @@ function manifest() {
 		id: 1674623577,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230815,
+		minMyACG: 20231215,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 20,
 		
-		//是否启用失效#默认关闭
+		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isEnabledInvalid: false,
+		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "铅笔小说",
@@ -28,15 +28,14 @@ function manifest() {
 
 		//搜索源自动同步更新网址
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/铅笔小说.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/铅笔小说.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/铅笔小说.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/铅笔小说.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/铅笔小说.js",
 		},
 		
-		//更新时间
-		updateTime: "2023年8月17日",
+		//最近更新时间
+		lastUpdateTime: 1703412682,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -96,14 +95,14 @@ function manifest() {
 			"小说": ["label","order","size","status"]
 		},
 
-		//是否启用登录
-		isEnabledLogin: true,
+		//启用用户登录
+		enableUserLogin: true,
 		
-		//登录网址
-		loginUrl: "https://www.23qb.net/login.php",
+		//用户登录网址
+		userLoginUrl: "https://www.23qb.net/login.php",
 		
-		//需要登录的功能（search，detail，content，find）
-		requiresLoginList: ["search"],
+		//需要用户登录列表（search，detail，content，find）
+		requiresUserLoginList: ["search"],
 
 		//全局 HTTP 请求头列表
 		httpRequestHeaderList: {
@@ -144,7 +143,7 @@ const baseUrl = "https://www.23qb.net";
 /**
  * 搜索
  * @param {string} key
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = JavaUtils.urlJoin(baseUrl, `/saerch.php@post->searchkey=${JavaUtils.encodeURI(key,'gbk')}&searchtype=all`);
@@ -175,7 +174,7 @@ function search(key) {
 
 /**
  * 发现
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(label, order, size, status) {
 	var url = JavaUtils.urlJoin(baseUrl, `/book/${label}-${order}-0-${size}-0-0-${status}-0-1.html`);
@@ -206,7 +205,7 @@ function find(label, order, size, status) {
 
 /**
  * 详情
- * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = JavaUtils.httpRequest(url);
@@ -219,8 +218,8 @@ function detail(url) {
 			//作者
 			author: document.selectFirst('#count > ul > li:nth-child(1) > a').text(),
 			
-			//更新时间
-			update: document.selectFirst('#uptime > span').text(),
+			//最近更新时间
+			lastUpdateTime: document.selectFirst('#uptime > span').text(),
 			
 			//概览
 			summary: document.selectFirst('#bookintro').text(),
@@ -228,8 +227,8 @@ function detail(url) {
 			//封面网址
 			coverUrl: document.selectFirst('#bookimg > img').absUrl('src'),
 			
-			//是否启用将章节置为倒序
-			isEnabledChapterReverseOrder: false,
+			//启用章节反向顺序
+			enableChapterReverseOrder: false,
 			
 			//目录加载
 			tocs: tocs(document)

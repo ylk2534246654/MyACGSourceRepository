@@ -204,8 +204,8 @@ function detail(url) {
 			//作者
 			author: document.selectFirst('#content > div:nth-child(1) > table:nth-child(1) > tbody > tr:nth-child(2) > td:nth-child(2)').text(),
 			
-			//更新时间
-			update: document.selectFirst('dl:nth-child(5) > dd').text(),
+			//最近更新时间
+			lastUpdateTime: document.selectFirst('dl:nth-child(5) > dd').text(),
 			
 			//概览
 			summary: document.selectFirst('#content > div:nth-child(1) > table:nth-child(4) > tbody > tr > td:nth-child(2) > span:nth-child(13)').text(),
