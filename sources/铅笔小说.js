@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 3,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1703412682,
+		lastUpdateTime: 1703840714,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -270,7 +270,9 @@ function tocs(document) {
  * @returns {string} content
  */
 function content(url) {
-	const response = httpRequest(url);
-	var document = org.jsoup.Jsoup.parse(response,url);
-	return document.select('#TextContent > p:not(:matches(铅笔小说|阅读模式|继续下一页))').outerHtml();
+	const response = JavaUtils.httpRequest(url);
+	if(response.code() == 200){
+		const document = response.body().cssDocument();
+		return document.select('#TextContent > p:not(:matches(铅笔小说|阅读模式|继续下一页))').outerHtml();
+	}
 }
