@@ -110,8 +110,8 @@ function detail(url) {
 			//作者
 			//author: document.selectFirst('').text(),
 			
-			//更新时间
-			//update: document.selectFirst('').text(),
+			//最后章节名称
+			//lastChapterName: document.selectFirst('').text(),
 			
 			//概览
 			summary: document.selectFirst('#height_limit').text(),
