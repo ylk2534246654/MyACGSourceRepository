@@ -79,7 +79,7 @@ function search(key) {
 				//summary: child.vod_class,
 				
 				//封面
-				cover: child.vod_pic,
+				coverUrl: child.vod_pic,
 				
 				//网址
 				url: child.vod_id
