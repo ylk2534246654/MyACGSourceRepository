@@ -5,14 +5,14 @@ function manifest() {
 		id: 1670497985,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230811,
+		minMyACG: 20231215,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 30,
 		
-		//是否启用失效#默认关闭
+		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isEnabledInvalid: false,
+		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "云中书库",
@@ -28,15 +28,14 @@ function manifest() {
 
 		//搜索源自动同步更新网址
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/云中书库.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/云中书库.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/云中书库.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/云中书库.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/云中书库.js",
 		},
 		
-		//更新时间
-		updateTime: "2023年8月11日",
+		//最近更新时间
+		lastUpdateTime: 1703912727,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -60,7 +59,7 @@ const baseUrl = "http://www.yunxs.cc";
 /**
  * 搜索
  * @param {string} key
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = JavaUtils.urlJoin(baseUrl, '/plus/search.php?q=' + encodeURI(key));
@@ -91,7 +90,7 @@ function search(key) {
 
 /**
  * 详情
- * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = JavaUtils.httpRequest(url);
@@ -104,8 +103,8 @@ function detail(url) {
 			//作者
 			author: document.selectFirst('div.info > ul > li:nth-child(1)').text(),
 			
-			//更新时间
-			update: document.selectFirst('#cms_favorites').text(),
+			//最近更新时间
+			lastUpdateTime: document.selectFirst('#cms_favorites').text(),
 			
 			//概览
 			summary: document.selectFirst('.vote').text(),
@@ -113,8 +112,8 @@ function detail(url) {
 			//封面网址
 			coverUrl: document.selectFirst('.pic > a > img').absUrl('src'),
 			
-			//是否启用将章节置为倒序
-			isEnabledChapterReverseOrder: false,
+			//启用章节反向顺序
+			enableChapterReverseOrder: false,
 			
 			//目录加载
 			tocs: tocs(document)
