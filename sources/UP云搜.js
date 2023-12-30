@@ -74,8 +74,8 @@ function search(key) {
                     //概览
                     summary: child.insert_time + '\n' + child.content.length + '个文件',
             
-                    //封面
-                    //cover: ,
+                    //封面网址
+					//coverUrl: ,
             
                     //网址
                     url: page_url
