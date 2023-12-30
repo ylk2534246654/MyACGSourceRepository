@@ -192,8 +192,8 @@ function detail(url) {
 			//作者
 			author: document.selectFirst('div.box-back2 > p:nth-child(2)').text(),
 			
-			//更新时间
-			update: document.selectFirst('div.comic-info-box > div.box-back2 > p:nth-child(5)').text(),
+			//最近更新时间
+			lastUpdateTime: document.selectFirst('div.comic-info-box > div.box-back2 > p:nth-child(5)').text(),
 			
 			//概览
 			summary: document.selectFirst('span.comic-intro').text(),
