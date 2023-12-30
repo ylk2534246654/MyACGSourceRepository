@@ -53,9 +53,9 @@ function manifest() {
 		findList: {
 			category: {
 				"region": {
-					"新番": "20",
-					"番剧": "21",
-					"剧场": "22",
+					"新番": "122A",
+					"番剧": "T22A",
+					"剧场": "l22A",
 				},
 				"order": {
 					"时间排序": "time",
@@ -130,17 +130,17 @@ function search(key) {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(region, order) {
-	var url = JavaUtils.urlJoin(baseUrl, `/show/${region}/by/${order}/`);
+	var url = JavaUtils.urlJoin(baseUrl, `/vodshow/by/${order}/id/${region}/`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
-		const elements = document.select(".hl-list-item");
+		var elements = document.select(".module-item");
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			result.push({
 				//名称
-				name: element.selectFirst('.module-card-item-title').text(),
+				name: element.selectFirst('.module-poster-item-title').text(),
 				
 				//最后章节名称
 				lastChapterName: element.selectFirst('.module-item-note').text(),
@@ -155,7 +155,7 @@ function find(region, order) {
 				coverUrl: element.selectFirst('.lazy').absUrl('data-original'),
 				
 				//网址
-				url: element.selectFirst('.module-card-item-poster').absUrl('href')
+				url: element.selectFirst('.module-poster-item').absUrl('href')
 			});
 		}
 	}
