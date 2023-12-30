@@ -35,7 +35,7 @@ function manifest() {
 		},
 
 		//最近更新时间
-		lastUpdateTime: 1701275020,
+		lastUpdateTime: 1703936133,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -303,7 +303,7 @@ function tocs(document) {
 
 /**
  * 内容（部分搜索源通用过滤规则）
- * @version 2023/11/13
+ * @version 2023/12/30
  * 布米米、嘻嘻动漫、12wo动漫、路漫漫、风车动漫P、樱花动漫P、COCO漫画、Nike、cocoManga
  * @return {string} content
  */
@@ -346,9 +346,15 @@ function content(url) {
 		//https://xxxx.xxxx.xx:00000/kmopef/3.woff # [\w/]+[/km][\w/]+\.woff
 		'|([\\w/]+[/km][\\w/]+\\.woff)' +
 
+		//https://aba.xxxxxxx.cn/slot?2377029035902478992-27158		#slot\?[\d-]+$
+		'|(slot\\?[\\d-]+$)' +
+
 		//https://xxxx.xxxx.com/o.js # o\.js
 		//'|o\\.js' + //无法正常加载
 
+		//（!易误拦截） 例子过长，无法展示		#[\\w]{3}\?[\\S]{500,}
+		'|([\\w]{3}\?[\\S]{500,})' +
+		
 		')'+
 		''
 		,

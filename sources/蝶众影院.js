@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1703412181,
+		lastUpdateTime: 1703936133,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -255,6 +255,7 @@ function tocs(document) {
 	return newTocs;
 }
 
+
 /**
  * 内容（部分搜索源通用过滤规则）
  * @version 2023/12/30
@@ -281,22 +282,34 @@ function content(url) {
 		//https://xx.xx.com/0000/00/23030926631.txt 	#[\d]{4}\/\d{2}\/\d{11}\.txt
 		'|([\\d]{4}/\\d{2}/\\d{11}\\.txt)' +
 
+		//https://xxx.com/ba4fa4f070f761b057fbabfb3fd7925d.txt 	#\w{32}\.txt
+		'|(\\w{32}\\.txt)' +
+		
+		//https://zbg.xxx.com/candy14395.js 	#\w{32}\.txt
+		'|(candy\\d{5}\\.)' +
+
 		//https://xxxxx.xxxxxx.com/v2/stats/12215/157527 	#[\w]{2}\/\w{5}\/\d{5}\/\d{6}
 		'|([\\w]{2}/\\w{5}/\\d{5}/\\d{6})' +
 
 		//https://xxx.xxxxxx.com/sh/to/853	#sh\/[\w]{2}\/\d{3}
 		'|(sh/[\\w]{2}/\\d{3})' +
 
-		//https://xxx.rmb.xxxxxxxx.com/xxx/e3c5da206d50f116fc3a8f47502de66d.gif		#[\w]{3}\/[\w]{32}\.
+		//https://xxx.rmb.xxxxxxxx.com/xxx/e3c5da206d50f116fc3a8f47502de66d.gif #[\w]{3}\/[\w]{32}\.
 		'|([\\w]{3}/[\\w]{32}\\.)' +
 
 		//https://xxxx.xxxx.xx:00000/mnrt/kmrr1.woff
-		//https://xxxx.xxxx.xx:00000/kmopef/3.woff		# [\w/]+[/km][\w/]+\.woff
+		//https://xxxx.xxxx.xx:00000/kmopef/3.woff # [\w/]+[/km][\w/]+\.woff
 		'|([\\w/]+[/km][\\w/]+\\.woff)' +
 
 		//https://aba.xxxxxxx.cn/slot?2377029035902478992-27158		#slot\?[\d-]+$
 		'|(slot\\?[\\d-]+$)' +
 
+		//https://xxxx.xxxx.com/o.js # o\.js
+		//'|o\\.js' + //无法正常加载
+
+		//（!易误拦截） 例子过长，无法展示		#[\\w]{3}\?[\\S]{500,}
+		'|([\\w]{3}\?[\\S]{500,})' +
+		
 		')'+
 		''
 		,
