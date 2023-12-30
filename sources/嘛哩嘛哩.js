@@ -5,7 +5,7 @@ function manifest() {
 		id: 1654517761,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20231226,
+		minMyACG: 20231215,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 70,
