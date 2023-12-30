@@ -165,8 +165,8 @@ function detail(url) {
 			//作者
 			//author: document.selectFirst('').text(),
 			
-			//更新时间
-			//update: document.selectFirst('').text(),
+			//最近更新时间
+			//lastUpdateTime: document.selectFirst('').text(),
 			
 			//概览
 			summary: document.selectFirst('.detail_imform_desc_pre').text(),

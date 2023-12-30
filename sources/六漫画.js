@@ -183,7 +183,7 @@ function detail(url) {
 			author: document.selectFirst('p.author').text(),
 			
 			//更新时间
-			//update: document.selectFirst('').text(),
+			//lastUpdateTime: document.selectFirst('').text(),
 			
 			//概览
 			summary: document.selectFirst('p.introduction').text(),
