@@ -5,19 +5,19 @@ function manifest() {
 		id: 1660668834,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230810,
+		minMyACG: 20231215,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 70,
 		
-		//是否启用失效#默认关闭
+		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isEnabledInvalid: false,
+		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
 		name: "MX动漫",
 
-		//搜索源制作人
+		//搜索源作者
 		author: "雨夏",
 
 		//电子邮箱
@@ -28,15 +28,14 @@ function manifest() {
 
 		//搜索源自动同步更新链接
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/MX动漫.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/MX动漫.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/MX动漫.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/MX动漫.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/MX动漫.js",
 		},
 		
-		//更新时间
-		updateTime: "2023年8月10日",
+		//最近更新时间
+		lastUpdateTime: 1703913935,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -87,7 +86,7 @@ const baseUrl = "http://www.mxdm.tv";
 /**
  * 搜索
  * @param {string} key
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
 	var url = JavaUtils.urlJoin(baseUrl, '/search/-------------.html?wd=' + encodeURI(key));
@@ -118,8 +117,7 @@ function search(key) {
 
 /**
  * 发现
- * @param {string} url
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(region, label, year, sort) {
 	if(label == "全部")label = "";
@@ -153,7 +151,7 @@ function find(region, label, year, sort) {
 
 /**
  * 详情
- * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	const response = JavaUtils.httpRequest(url);
@@ -166,8 +164,8 @@ function detail(url) {
 			//作者
 			//author: document.selectFirst('').text(),
 			
-			//更新时间
-			//update: document.selectFirst('').text(),
+			//最近更新时间
+			//lastUpdateTime: document.selectFirst('').text(),
 			
 			//概览
 			summary: document.selectFirst('.video-info-content > p:nth-child(2)').text(),
@@ -175,8 +173,8 @@ function detail(url) {
 			//封面网址
 			coverUrl: document.selectFirst('div.video-cover > div > div > img').absUrl('data-src'),
 			
-			//是否启用将章节置为倒序
-			isEnabledChapterReverseOrder: false,
+			//启用章节反向顺序
+			enableChapterReverseOrder: false,
 			
 			//目录加载
 			tocs: tocs(document)
