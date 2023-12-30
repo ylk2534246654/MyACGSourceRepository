@@ -7,13 +7,12 @@ function manifest() {
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
 		minMyACG: 20220718,
 
-		//优先级1~100，数值越大越靠前
-		//参考：搜索结果多+10，响应/加载速度快+10，品质优秀+10，更新速度快+10，有封面+10，无需手动授权+10
+		//优先级 1~100，数值越大越靠前
 		priority: 50,
 		
-		//是否失效，默认关闭
+		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		invalid: true,
+		enableInvalid: true,
 		
 		//@NonNull 搜索源名称
 		name: "橘子盘搜",
@@ -35,50 +34,19 @@ function manifest() {
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/橘子盘搜.js",
 		},
 		
-		//更新时间
-		updateTime: "2022年8月17日",
+		//最近更新时间
+		lastUpdateTime: 1703410844,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 1,
 		
-		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截的请求处理，3：对内部浏览器拦截的框架处理
-		contentType: 0,
+		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
+		contentProcessType: 0,
 		
-		//自定义标签
-		tag: ["网盘"],
+		//分组
+		group: ["网盘"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: "https://www.nmme.cc",
 	});
-}
-const header = '';
-
-/**
- * 搜索
- * @params {string} key
- * @returns {[{title, summary, cover, url}]}
- */
-function search(key) {
-	var url = `https://www.nmme.cc/s/1/${encodeURI(key)}` + header;
-	const response = httpRequest(url);
-	
-	const list = jsoupArray(response,'.item').outerHtml();
-	var array= [];
-	for (var i=0;i<list.length;i++) {
-	    var data = list[i];
-		array.push({
-			//标题
-			title : jsoup(data,'.name').text(),
-			
-			//概览
-			summary : jsoup(data,'.mb-10').text(),
-			
-			//封面
-			cover : ToolUtil.urlJoin(url,jsoup(data,'.van-image > img').attr('src')),
-			
-			//网址
-			url : ToolUtil.urlJoin('https://www.nmme.cc/open/other/',jsoup(data,'a').attr('data-url'))
-			});
-	}
-	return JSON.stringify(array);
 }
