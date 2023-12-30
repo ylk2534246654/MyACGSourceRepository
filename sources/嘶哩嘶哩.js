@@ -5,19 +5,19 @@ function manifest() {
 		id: 1682766107,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230810,
+		minMyACG: 20231215,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 30,
 		
-		//是否启用失效#默认关闭
+		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		isEnabledInvalid: false,
+		enableInvalid: true,
 		
 		//@NonNull 搜索源名称
 		name: "嘶哩嘶哩",
 
-		//搜索源制作人
+		//搜索源作者
 		author: "雨夏",
 
 		//电子邮箱
@@ -28,15 +28,14 @@ function manifest() {
 
 		//搜索源自动同步更新网址
 		syncList: {
-			"Gitee":  "https://gitee.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/嘶哩嘶哩.js",
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/嘶哩嘶哩.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/嘶哩嘶哩.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/嘶哩嘶哩.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/嘶哩嘶哩.js",
 		},
 		
-		//更新时间
-		updateTime: "2023年8月10日",
+		//最近更新时间
+		lastUpdateTime: 1703913935,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -101,7 +100,7 @@ if(JavaUtils.getPreference().getBoolean("isPcUserAgent", false)){
 /**
  * 搜索
  * @param {string} key
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
 	if(JavaUtils.getPreference().getBoolean("isPcUserAgent", false)){
@@ -114,7 +113,7 @@ function search(key) {
 /**
  * 搜索
  * @param {string} key
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function android_search(key) {
 	var url = JavaUtils.urlJoin(baseUrl, '/vodsearch/?wd=' + encodeURI(key));
@@ -146,7 +145,7 @@ function android_search(key) {
 /**
  * 搜索
  * @param {string} key
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function pc_search(key) {
 	var url = JavaUtils.urlJoin(baseUrl, '/vodsearch/?wd=' + encodeURI(key));
@@ -178,7 +177,7 @@ function pc_search(key) {
 
 /**
  * 发现
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(year, order) {
 	if(JavaUtils.getPreference().getBoolean("isPcUserAgent", false)){
@@ -187,9 +186,10 @@ function find(year, order) {
 		return android_find(year, order);
 	}
 }
+
 /**
  * 发现
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function android_find(year, order) {
 	if(year == "全部")genre = "";
@@ -218,9 +218,10 @@ function android_find(year, order) {
 	}
 	return JSON.stringify(result);
 }
+
 /**
  * 发现
- * @return {[{name, summary, coverUrl, url}]}
+ * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function pc_find(year, order) {
 	if(year == "全部")genre = "";
@@ -252,7 +253,7 @@ function pc_find(year, order) {
 
 /**
  * 详情
- * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
 	if(JavaUtils.getPreference().getBoolean("isPcUserAgent", false)){
@@ -264,7 +265,7 @@ function detail(url) {
 
 /**
  * 详情
- * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function android_detail(url) {
 	const response = JavaUtils.httpRequest(url);
@@ -277,8 +278,8 @@ function android_detail(url) {
 			//作者
 			//author: document.selectFirst('').text(),
 			
-			//更新时间
-			update: document.selectFirst('.hl-full-box > ul > li:nth-child(11)').text(),
+			//最近更新时间
+			lastUpdateTime: document.selectFirst('.hl-full-box > ul > li:nth-child(11)').text(),
 			
 			//概览
 			summary: document.selectFirst('.hl-content-text').text(),
@@ -286,8 +287,8 @@ function android_detail(url) {
 			//封面网址
 			coverUrl: document.selectFirst('.hl-dc-pic > span').absUrl('data-original'),
 			
-			//是否启用将章节置为倒序
-			isEnabledChapterReverseOrder: false,
+			//启用章节反向顺序
+			enableChapterReverseOrder: false,
 			
 			//目录加载
 			tocs: android_tocs(document)
@@ -336,9 +337,10 @@ function android_tocs(document) {
 	}
 	return newTocs;
 }
+
 /**
  * 详情
- * @return {[{name, author, update, summary, coverUrl, isEnabledChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
+ * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function pc_detail(url) {
 	const response = JavaUtils.httpRequest(url);
@@ -351,8 +353,8 @@ function pc_detail(url) {
 			//作者
 			//author: document.selectFirst('').text(),
 			
-			//更新时间
-			update: document.selectFirst('.v_sd_r > p:nth-child(4) > :matchText').text(),
+			//最近更新时间
+			lastUpdateTime: document.selectFirst('.v_sd_r > p:nth-child(4) > :matchText').text(),
 			
 			//概览
 			summary: document.selectFirst('.v_cont > :matchText').text(),
@@ -360,8 +362,8 @@ function pc_detail(url) {
 			//封面网址
 			coverUrl: document.selectFirst('.v_sd_l > img').absUrl('src'),
 			
-			//是否启用将章节置为倒序
-			isEnabledChapterReverseOrder: false,
+			//启用章节反向顺序
+			enableChapterReverseOrder: false,
 			
 			//目录加载
 			tocs: pc_tocs(document)
