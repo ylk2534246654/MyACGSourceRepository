@@ -2,20 +2,20 @@ function manifest() {
 	return JSON.stringify({
 		//@NonNull 搜索源 ID 标识，设置后不建议更改
 		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
-		id: 1660803657,
+		id: 1703989084,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
 		minMyACG: 20231215,
 
 		//优先级 1~100，数值越大越靠前
-		priority: 70,
+		priority: 40,
 		
 		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
 		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
-		name: "风车动漫P",
+		name: "布丁动画",
 
 		//搜索源作者
 		author: "雨夏",
@@ -24,18 +24,18 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 10,
+		version: 1,
 
-		//搜索源自动同步更新链接
+		//搜索源自动同步更新网址
 		syncList: {
-			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/风车动漫P.js",
-			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/风车动漫P.js",
-			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/风车动漫P.js",
-			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/风车动漫P.js",
+			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/布丁动画.js",
+			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/布丁动画.js",
+			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/布丁动画.js",
+			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/布丁动画.js",
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1703913935,
+		lastUpdateTime: 1703989101,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -43,40 +43,39 @@ function manifest() {
 		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
 		contentProcessType: 2,
 		
-		//自定义标签
+		//分组
 		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,
-		
+
+		//网络限流 - 如果{regexUrl}匹配网址，则限制其{period}毫秒内仅允许{maxRequests}个请求
+		networkRateLimitList: [
+			{
+				regexUrl: "/search.php",//表示需要限流的 Url，使用正则表达式格式（不允许为空）
+				maxRequests: 0,//在指定的时间内允许的请求数量（必须 >= 0 才会生效）
+				period: 5100,//时间周期，毫秒（必须 > 0 才会生效）
+			}
+		],
+
 		//发现
 		findList: {
-			category: {
-				"region": ["全部","日本","欧美","其他"],
-				"genre": ["全部","TV","剧场版","WEB","OVA","其他"],
-				"status": ["全部","连载中","已完结","未播放"],
-				"label": ["全部","搞笑","运动","励志","武侠","特摄","热血","战斗","竞技","校园","青春","爱情","冒险","后宫","百合","治愈","萝莉","魔法","悬疑","推理","奇幻","神魔","恐怖","血腥","机战","战争","犯罪","社会","职场","剧情","伪娘","耽美","歌舞","肉番","美少女","吸血鬼","泡面番","欢乐向","其他"],
-				"year": ["全部","2023","2022","2021","2020","2019","2018","2017","2016","2015","2014","2013","2012","2011","2010","2009","2008","2007","2006","2005","2004","2003","2002","2001","2000","更早"],
-				"order": ["时间排序","名称","点击量"],
-			},
-			"动漫": ["region", "genre", "year", "status", "label", "order"]
+			"动漫": "/acg/",
+			"电视剧": "/tv/",
+			"电影": "/mov/",
+			"综艺": "/zongyi/"
 		},
-
-		//全局 HTTP 请求头列表
-		httpRequestHeaderList: {
-			"user-agent": "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.91 Mobile Safari/537.36 Edg/112.0.0.0",
-			"user-agent-platform": "Win32",
-		}
 	});
 }
-
-const baseUrl = "https://www.dm530w.org";
+const baseUrl = "https://buding3.com";
 /**
- * 已关闭网址
- * dm530p.com
- * dm530p.info
+ * buding2.com
+ * buding3.com
+ * buding6.com
+ * buding20.com
+ * 站长 elizabethholmes3740@gmail.com
  * 
- * 和樱花动漫P是同源同模板不同名的网站
+ * 和奇奇动漫相似
  */
 
 /**
@@ -85,26 +84,30 @@ const baseUrl = "https://www.dm530w.org";
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl, '/s_all?ex=1&kw=' + encodeURI(key));
+	//没找到相关视频,请缩短关键词重新搜索,宁可少字,不可错字,如"你和我的倾城时光",只需输入"你和我的"
+	if(key.replace(/[^\x00-\xff]/g, "00").length > 30){
+		return null;
+	}
+	var url = JavaUtils.urlJoin(baseUrl, '/search.php@enabledFrameSource->true@post->searchword=' + key);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
-		var elements = document.select("div[class] > ul:not([class]) > li:not([class])");
+		var elements = document.select("ul > .mb");
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			result.push({
 				//名称
-				name: element.selectFirst('h2').text(),
+				name: element.selectFirst('.name').text(),
 				
 				//概览
-				summary: element.selectFirst('span').text(),
+				summary: element.selectFirst('.bz').text(),
 				
 				//封面网址
-				coverUrl: element.selectFirst('img[src]').absUrl('src'),
+				coverUrl: element.selectFirst('div.img > img').absUrl('src'),
 				
 				//网址
-				url: element.selectFirst('h2 > a').absUrl('href')
+				url: element.selectFirst('.li-hv').absUrl('href')
 			});
 		}
 	}
@@ -115,39 +118,31 @@ function search(key) {
  * 发现
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
-function find(region, genre, year, status, label, order) {
-	if(region == "全部")region = "";
-	if(genre == "全部")genre = "";
-	if(status == "全部")status = "";
-	if(label == "全部")label = "";
-	if(year == "全部")year = "";
-
-	var url = JavaUtils.urlJoin(baseUrl, `/list/?region=${encodeURI(region)}&genre=${encodeURI(genre)}&year=${encodeURI(year)}&status=${encodeURI(status)}&label=${encodeURI(label)}&order=${encodeURI(order)}`);
+function find(url) {
 	var result = [];
-	const response = JavaUtils.httpRequest(url);
+	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, url));
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
-		const elements = document.select("div[class] > ul:not([class]) > li:not([class])");
+		const elements = document.select("ul > li.mb");
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			result.push({
 				//名称
-				name: element.selectFirst('h2').text(),
+				name: element.selectFirst('.name').text(),
 				
 				//概览
-				summary: element.selectFirst('span').text(),
+				summary: element.selectFirst('.bz').text(),
 				
 				//封面网址
-				coverUrl: element.selectFirst('img[src]').absUrl('src'),
+				coverUrl: element.selectFirst('img.lazy').absUrl('data-original'),
 				
 				//网址
-				url: element.selectFirst('h2 > a').absUrl('href')
+				url: element.selectFirst('.li-hv').absUrl('href')
 			});
 		}
 	}
 	return JSON.stringify(result);
 }
-
 
 /**
  * 详情
@@ -159,22 +154,22 @@ function detail(url) {
 		const document = response.body().cssDocument();
 		return JSON.stringify({
 			//标题
-			name: document.selectFirst('div:nth-child(2) > div > h1').text(),
+			name: document.selectFirst('dt.name').text(),
 			
 			//作者
-			author: document.selectFirst('div.info-sub > p:nth-child(1)').text(),
+			//author: document.selectFirst('').text(),
 			
 			//最近更新时间
 			//lastUpdateTime: document.selectFirst('').text(),
 			
 			//概览
-			summary: document.selectFirst('div.info').text(),
+			summary: document.selectFirst('#quanjq > p').text(),
 	
 			//封面网址
-			coverUrl: document.selectFirst('div.show > img').absUrl('src'),
+			coverUrl: document.selectFirst('.pic > img').absUrl('data-original'),
 			
 			//启用章节反向顺序
-			enableChapterReverseOrder: false,
+			enableChapterReverseOrder: true,
 			
 			//目录加载
 			tocs: tocs(document)
@@ -185,13 +180,11 @@ function detail(url) {
 
 /**
  * 目录
- * @return {[{name, chapters:{[{name, url}]}}]}
+ * @returns {[{name, chapters:{[{name, url}]}}]}
  */
 function tocs(document) {
-	const tagElements = document.select('#menu0 > li');
-	
 	//目录元素选择器
-	const tocElements = document.select('#main0 > div.movurl');
+	const tocElements = document.select('.urlli');
 	
 	//创建目录数组
 	var newTocs = [];
@@ -215,14 +208,13 @@ function tocs(document) {
 		}
 		newTocs.push({
 			//目录名称
-			name: tagElements.get(i).selectFirst('li').text(),
+			name: '线路 '+ (i + 1),
 			//章节
-			chapters: newChapters
+			chapters : newChapters
 		});
 	}
-	return newTocs
+	return newTocs;
 }
-
 
 /**
  * 内容（部分搜索源通用过滤规则）
