@@ -18,7 +18,7 @@ function manifest() {
 		name: "番茄小说",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 3,
+		version: 4,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -29,7 +29,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1694591085,
+		lastUpdateTime: 1704020184,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -156,7 +156,7 @@ function find(label) {
  * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(book_id) {
-	var url = JavaUtils.urlJoin(baseUrl, `/api/novel/book/directory/list/v1?device_platform=android&parent_enterfrom=novel_channel_search.tab.&aid=1967&book_id=${book_id}`);
+	var url = JavaUtils.urlJoin(baseUrl, `/api/novel/book/directory/list/v1/?device_platform=android&version_code=600&novel_version=&app_name=news_article&version_name=6.0.0&app_version=6.0.0aid=520&channel=1&device_type=landseer&os_api=25&os_version=10&book_id=${book_id}`);
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const $ = JSON.parse(response.body().string());
