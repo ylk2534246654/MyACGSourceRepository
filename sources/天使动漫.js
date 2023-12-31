@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1695218158,
+		lastUpdateTime: 1703991929,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -52,7 +52,7 @@ function manifest() {
 		//发现
 		findList: {
 			category: {
-				"label": ["僧侣档","BD无修","奇幻","恋爱","后宫","学園","热血","神魔","萝莉","治愈","搞笑","百合","冒险","魔法","机战","战争","战斗","犯罪","悬疑","推理","科幻","竞技","运动","耽美","其他","OVA","剧场版","真人版"],
+				"label": ["恋爱","BD无修","奇幻","后宫","学園","热血","神魔","萝莉","治愈","搞笑","百合","冒险","魔法","机战","战争","战斗","犯罪","悬疑","推理","科幻","竞技","运动","耽美","其他","OVA","剧场版","真人版"],
 				"year": ["全部","2024","2023","2022","2021","2020","2019","2018","2017","2016","2015","2014","2013","2012","2011","2010","2009","2008","2007","2006","2005","2004","2003","2002","2001","2000"],
 				"order": {
 					"时间排序": "time",
@@ -73,9 +73,15 @@ function manifest() {
 }
 
 const baseUrl = "http://www.sbdm.net";
-//导航页：http://www.kudm.vip/
-//同布局备份：http://tv.kudm.net/
-//备份：https://www.gqdm.net/ ，http://ysjdm.net/，https://www.mikudm.com/
+/**
+ * 导航页：http://www.kudm.vip/
+ * 同布局备份：http://tv.kudm.net/
+ * 备份：
+ * www.gqdm.net
+ * ysjdm.net
+ * www.mikudm.com
+ * www.sbdm.net
+ */
 
 /**
  * 搜索
@@ -237,14 +243,14 @@ function tocs(document) {
 
 /**
  * 内容（部分搜索源通用过滤规则）
- * @version 2023/9/21
+ * @version 2023/12/31
  * 布米米、嘻嘻动漫、12wo动漫、路漫漫、风车动漫P、樱花动漫P、COCO漫画、Nike、cocoManga
  * @return {string} content
  */
 function content(url) {
 	var re = new RegExp(
 		//https://
-		'[a-zA-z]+://[^\\s/]+/(' +
+		'^[a-zA-z]+://[^\\s/]+/(' +
 
 		//https://knr.xxxxx.cn/j/140000		#[a-z]{1}\/\d{6}
 		'([a-z]{1}/\\d)' +
@@ -261,6 +267,12 @@ function content(url) {
 		//https://xx.xx.com/0000/00/23030926631.txt 	#[\d]{4}\/\d{2}\/\d{11}\.txt
 		'|([\\d]{4}/\\d{2}/\\d{11}\\.txt)' +
 
+		//https://xxx.com/ba4fa4f070f761b057fbabfb3fd7925d.txt 	#\w{32}\.txt
+		'|(\\w{32}\\.txt)' +
+		
+		//https://zbg.xxx.com/candy14395.js 	#\w{32}\.txt
+		'|(candy\\d{5}\\.)' +
+
 		//https://xxxxx.xxxxxx.com/v2/stats/12215/157527 	#[\w]{2}\/\w{5}\/\d{5}\/\d{6}
 		'|([\\w]{2}/\\w{5}/\\d{5}/\\d{6})' +
 
@@ -274,6 +286,15 @@ function content(url) {
 		//https://xxxx.xxxx.xx:00000/kmopef/3.woff # [\w/]+[/km][\w/]+\.woff
 		'|([\\w/]+[/km][\\w/]+\\.woff)' +
 
+		//https://aba.xxxxxxx.cn/slot?2377029035902478992-27158		#slot\?[\d-]+$
+		'|(slot\\?[\\d-]+$)' +
+
+		//https://xxxx.xxxx.com/o.js # o\.js
+		//'|o\\.js' + //无法正常加载
+
+		//（!易误拦截） 例子过长，无法展示		#[\\w]{3}\?[\\S]{500,}
+		'|([\\w]{3}\?[\\S]{500,})' +
+		
 		')'+
 		''
 		,
