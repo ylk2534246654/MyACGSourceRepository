@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 3,
+		version: 4,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1703840714,
+		lastUpdateTime: 1703988234,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -99,7 +99,7 @@ function manifest() {
 		enableUserLogin: true,
 		
 		//用户登录网址
-		userLoginUrl: "https://www.23qb.net/login.php",
+		userLoginUrl: JavaUtils.urlJoin(baseUrl, "/login.php"),
 		
 		//需要用户登录列表（search，detail，content，find）
 		requiresUserLoginList: ["search"],
@@ -129,7 +129,7 @@ function isUserLoggedIn(url, responseHtml) {
  * @return {boolean} 登录结果
  */
 function verifyUserLoggedIn() {
-	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, "https://www.23qb.net/saerch.php"));
+	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, JavaUtils.urlJoin(baseUrl, "/saerch.php")));
 	if(response.code() == 200){
 		if(response.body().string().indexOf('个人中心') != -1){
 			return true;
@@ -138,7 +138,10 @@ function verifyUserLoggedIn() {
 	return false;
 }
 
-const baseUrl = "https://www.23qb.net";
+/**
+ * https://www.23qb.net
+ */
+const baseUrl = "https://www.23qb.com";
 
 /**
  * 搜索
