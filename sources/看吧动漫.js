@@ -15,7 +15,7 @@ function manifest() {
 		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
-		name: "看吧动漫",
+		name: "看吧动漫(E-ACG)",
 
 		//搜索源作者
 		author: "雨夏",
@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1695211139,
+		lastUpdateTime: 1704073737,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -70,7 +70,12 @@ function manifest() {
 }
 
 const baseUrl = "https://www.qkan9.com";
-//备用网址：https://eacg.net | https://my.cbox.ws/qkan8
+/**
+ * 备用网址：
+ * eacg.net
+ * eacg1.com
+ * https://my.cbox.ws/qkan8
+ */
 
 /**
  * 搜索
@@ -222,14 +227,14 @@ function tocs(document) {
 
 /**
  * 内容（部分搜索源通用过滤规则）
- * @version 2023/9/21
+ * @version 2023/12/31
  * 布米米、嘻嘻动漫、12wo动漫、路漫漫、风车动漫P、樱花动漫P、COCO漫画、Nike、cocoManga
  * @return {string} content
  */
 function content(url) {
 	var re = new RegExp(
 		//https://
-		'[a-zA-z]+://[^\\s/]+/(' +
+		'^[a-zA-z]+://[^\\s/]+/(' +
 
 		//https://knr.xxxxx.cn/j/140000		#[a-z]{1}\/\d{6}
 		'([a-z]{1}/\\d)' +
@@ -246,6 +251,12 @@ function content(url) {
 		//https://xx.xx.com/0000/00/23030926631.txt 	#[\d]{4}\/\d{2}\/\d{11}\.txt
 		'|([\\d]{4}/\\d{2}/\\d{11}\\.txt)' +
 
+		//https://xxx.com/ba4fa4f070f761b057fbabfb3fd7925d.txt 	#\w{32}\.txt
+		'|(\\w{32}\\.txt)' +
+		
+		//https://zbg.xxx.com/candy14395.js 	#\w{32}\.txt
+		'|(candy\\d{5}\\.)' +
+
 		//https://xxxxx.xxxxxx.com/v2/stats/12215/157527 	#[\w]{2}\/\w{5}\/\d{5}\/\d{6}
 		'|([\\w]{2}/\\w{5}/\\d{5}/\\d{6})' +
 
@@ -259,6 +270,15 @@ function content(url) {
 		//https://xxxx.xxxx.xx:00000/kmopef/3.woff # [\w/]+[/km][\w/]+\.woff
 		'|([\\w/]+[/km][\\w/]+\\.woff)' +
 
+		//https://aba.xxxxxxx.cn/slot?2377029035902478992-27158		#slot\?[\d-]+$
+		'|(slot\\?[\\d-]+$)' +
+
+		//https://xxxx.xxxx.com/o.js # o\.js
+		//'|o\\.js' + //无法正常加载
+
+		//（!易误拦截） 例子过长，无法展示		#[\\w]{3}\?[\\S]{500,}
+		'|([\\w]{3}\?[\\S]{500,})' +
+		
 		')'+
 		''
 		,
