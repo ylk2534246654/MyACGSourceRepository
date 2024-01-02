@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 4,
+		version: 5,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1695364315,
+		lastUpdateTime: 1704173010,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -56,7 +56,7 @@ function manifest() {
 	});
 }
 
-const baseUrl = "http://bumimi5.com";
+const baseUrl = "http://bumimi12.com";
 //备用http://bumimi.vip/
 
 /**
@@ -65,7 +65,8 @@ const baseUrl = "http://bumimi5.com";
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = 'http://119.91.129.193:7899/sssv.php?top=10&q='+ encodeURI(key) + '@header->referer:http://bumimi.com/@header->Origin:http://bumimi.com';
+	//http://119.91.129.193:7899
+	var url = `http://119.29.15.48:12334/sssv.php?top=10&q=${encodeURI(key)}@header->referer:${baseUrl}@header->Origin:${baseUrl}`;
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
