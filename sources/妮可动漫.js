@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 3,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1695218158,
+		lastUpdateTime: 1704248827,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -71,8 +71,16 @@ function manifest() {
 	});
 }
 
-const baseUrl = "http://www.nicotv.org";
-//备份：www.nicotv.fun,www.nicotv.club,www.nicotv.org
+const baseUrl = "http://www.nicotv.wtf";
+/**
+ * 备份：
+ * help.nicotv.info
+ * www.nicotv.info
+ * www.nicotv.work
+ * www.nicotv.fun
+ * www.nicotv.club
+ * www.nicotv.org
+ */
 
 /**
  * 搜索
