@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 4,
+		version: 5,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1699268045,
+		lastUpdateTime: 1704331670,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -79,11 +79,14 @@ function manifest() {
 	});
 }
 
-const baseUrl = "https://novel-api.elklk.cn";
-//备份：
-//gfnormal05at.com
-//nso92.xsafetech.com
-//novel-api.xiaoppkk.com
+const baseUrl = "https://novel-api.xiaoshuottaa.com";
+/**
+ * 备份：
+ * gfnormal05at.com
+ * nso92.xsafetech.com
+ * novel-api.xiaoppkk.com
+ * novel-api.elklk.cn
+ */
 
 /**
  * 搜索
