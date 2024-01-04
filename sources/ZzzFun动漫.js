@@ -12,7 +12,7 @@ function manifest() {
 		
 		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		enableInvalid: false,
+		enableInvalid: true,
 		
 		//@NonNull 搜索源名称
 		name: "ZzzFun动漫",
@@ -59,7 +59,7 @@ function manifest() {
 		requiresUserLoginList: ["content"],
 	});
 }
-const baseUrl 	= "http://service-i86gk1am-1251249846.gz.apigw.tencentcs.com";
+const baseUrl 	= "http://service-9wjjjdsa-1251249846.gz.apigw.tencentcs.com/";
 
 const header = '@header->Timestamp: 1696059843192@header->Authorization: 43dcb64dad05238440dd02b5feb7c327@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36';
 
@@ -97,7 +97,7 @@ function verifyUserLoggedIn() {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl, `/and116/search@post->key=${encodeURI(key)}`) + header;
+	var url = JavaUtils.urlJoin(baseUrl, `/release/and119/search@post->key=${encodeURI(key)}`) + header;
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -129,7 +129,7 @@ function search(key) {
  * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(id) {
-	var url = JavaUtils.urlJoin(baseUrl, `/and116/video/list_video?userid=622214&videoId=${id}`) + header;
+	var url = JavaUtils.urlJoin(baseUrl, `/release/and119/video/list_video?userid=622214&videoId=${id}`) + header;
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		var $ = JSON.parse(response.body().string());
@@ -189,3 +189,5 @@ function tocs(videoSets) {
 	});
 	return newTocs
 }
+
+///zzzfun123pch/pv/2114.m3u8?sign=6f9285f0051f4dc978630a854b5d2863&t=1704334471
