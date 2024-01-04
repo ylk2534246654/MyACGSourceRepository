@@ -54,7 +54,7 @@ function manifest() {
 			category: {
 				"region": ["全部","日本","大陆","欧美","其他"],
 				"label": ["全部","热血","恋爱","科幻","奇幻","百合","后宫","励志","搞笑","冒险","校园","战斗","机战","运动","战争","萝莉"],
-				"year": ["全部","2023","2022","2021","2020","2019","2018","2017","2016","2015","2014"],
+				"year": ["全部","2024","2023","2022","2021","2020","2019","2018","2017","2016","2015","2014"],
 				"order": {
 					"时间排序": "addtime",
 					"人气排序": "hits",
@@ -74,7 +74,7 @@ function manifest() {
 const baseUrl = "http://www.nicotv.wtf";
 /**
  * 备份：
- * help.nicotv.info
+ * 导航：http://help.nicotv.info/
  * www.nicotv.info
  * www.nicotv.work
  * www.nicotv.fun
