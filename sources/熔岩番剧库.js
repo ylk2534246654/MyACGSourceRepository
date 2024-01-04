@@ -262,11 +262,26 @@ function tocs(id) {
 	//目录标签请求
 	//const tagResponse = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, '/v2/drive/all' + getHeader()));
 	//if(tagResponse.code() == 200){
-		const defaultDrive = JavaUtils.getPreference().getString("drive", "2AG_CHUN_CDN")
+		const drive = JavaUtils.getPreference().getString("drive", "2AG_CHUN_CDN")
+		var driveName = drive;
+		if(drive == "3A_Xinxiang"){
+			driveName = "番剧库本地节点"
+		}else if(drive == "2AG_CF"){
+			driveName = "Cloudflare"
+		}else if(drive == "2AG_CF2"){
+			driveName = "CF 环大陆自选"
+		}else if(drive == "2AG_CF3"){
+			driveName = "CF 环大陆自选 2"
+		}else if(drive == "2AG"){
+			driveName = "OneDrive 新加坡"
+		}else if(drive == "2AG_CHUN_CDN"){
+			driveName = "大陆加速"
+		}else if(drive == "4AG"){
+			driveName = "谷歌云端硬盘每日镜像"
+		}
 		//const defaultDrive = JSON.parse(tagResponse.body().string()).data.default;
 		//创建章节数组
 		var newChapters = [];
-
 		//目录请求
 		var url;
 		if(JavaUtils.isNetworkUrl(id)){
@@ -274,7 +289,7 @@ function tocs(id) {
 		}else{
 			url = JavaUtils.urlJoin(baseUrl, '/v2/anime/file?id=' + id);
 		}
-		url = url + '&drive=' + defaultDrive + getHeader();
+		url = url + '&drive=' + drive + getHeader();
 
 		const tocResponse = JavaUtils.httpRequest(url);
 		if(tocResponse.code() == 401){
@@ -309,7 +324,7 @@ function tocs(id) {
 			//添加目录
 			newTocs.push({
 				//目录名称
-				name: defaultDrive,
+				name: driveName,
 				//章节
 				chapters : newChapters
 			});
