@@ -107,9 +107,9 @@ function manifest() {
 					"更早": "year-1900,1980"
 				},
 				"order": {
-					"按时间": "order-addtime",
-					"按人气": "order-hits",
-					"按评分": "order-gold",
+					"更新排序": "order-addtime",
+					"人气排序": "order-hits",
+					"评分排序": "order-gold",
 				}
 			},
 			"动漫": ["region","label","year","order"],
