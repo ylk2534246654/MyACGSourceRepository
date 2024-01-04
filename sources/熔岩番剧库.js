@@ -287,10 +287,19 @@ function tocs(id) {
 					var name = child2.parseResult.episode;
 					if(name == null){
 						name = child2.parseResult.animeTitle;
+					}else {
+						name = "第" + name + "集"
 					}
 					newChapters.push({
 						//章节名称
 						name: name,
+
+						//最近更新时间
+						lastUpdateTime: child2.updated,
+			
+						//概览
+						//summary: child2,
+
 						//章节网址
 						url: child2.url
 					});
