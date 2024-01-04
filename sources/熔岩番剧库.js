@@ -310,7 +310,7 @@ function tocs(id) {
 						name: name,
 
 						//最近更新时间 仅兼容 1.4.9
-						//lastUpdateTime: JavaUtils.stringToTime(child2.updated, "yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSZ"),
+						//lastUpdateTime: JavaUtils.stringToTime(child2.updated, "yyyy-MM-dd'T'HH:mm:ss'Z'", "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSZ"),
 			
 						//概览
 						//summary: child2.updated,
