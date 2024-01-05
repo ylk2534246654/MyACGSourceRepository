@@ -89,7 +89,11 @@ function manifest() {
 }
 
 const defaultBaseUrl = "https://www.agemys.org";
-//备用 http://age.tv
+/**
+ * 发布页
+ * https://github.com/agefanscom/website
+ * http://age.tv
+ */
 
 function UpdateBaseUrl() {
 	var preference = JavaUtils.getPreference();
