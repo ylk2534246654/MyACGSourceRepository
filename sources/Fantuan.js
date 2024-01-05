@@ -5,7 +5,7 @@ function manifest() {
 		id: 1654757510,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20231215,
+		minMyACG: 20240105,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 1,//加载速度慢，经常无法连接
@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 3,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1703913935,
+		lastUpdateTime: 1704443247,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -47,7 +47,7 @@ function manifest() {
 		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: baseUrl,//备份
+		baseUrl: JavaUtils.getPreference().getString("baseUrl", defaultBaseUrl),//备份
 		
 		//发现
 		findList: {
@@ -58,13 +58,13 @@ function manifest() {
 		},
 	});
 }
-const baseUrl = getBaseUrl();
+const defaultBaseUrl = "https://acgfta2.com";
 /**
  * https://acgfantuan.com
  * 
  * 导航：https://fantuantv.com
  */
-function getBaseUrl() {
+function UpdateBaseUrl() {
 	var preference = JavaUtils.getPreference();
 	var baseUrlTime = preference.getLong("baseUrlTime");
 	var oneDay = 1000*60*60*24;
@@ -81,7 +81,7 @@ function getBaseUrl() {
 		}
 		edit.putLong("baseUrlTime", time).apply();//更新时间
 	}
-	return preference.getString("baseUrl", "https://acgfta.com");
+	JavaUtils.getManifest().setBaseUrl(preference.getString("baseUrl", defaultBaseUrl));
 }
 
 /**
@@ -90,7 +90,8 @@ function getBaseUrl() {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl, '/index.php/vod/search.html?wd=' + encodeURI(key));
+	UpdateBaseUrl()
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), '/search.html?wd=' + encodeURI(key));
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -121,7 +122,8 @@ function search(key) {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(url) {
-	var url = JavaUtils.urlJoin(baseUrl, url);
+	UpdateBaseUrl()
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), url);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -152,6 +154,7 @@ function find(url) {
  * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
+	UpdateBaseUrl()
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();

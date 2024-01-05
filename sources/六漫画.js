@@ -5,7 +5,7 @@ function manifest() {
 		id: 1652779713,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20231215,
+		minMyACG: 20240105,
 		
 		//优先级 1~100，数值越大越靠前
 		priority: 30,
@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 7,
+		version: 8,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1703407068,
+		lastUpdateTime: 1704443247,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -47,7 +47,7 @@ function manifest() {
 		group: ["漫画"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: baseUrl,
+		baseUrl: JavaUtils.getPreference().getString("baseUrl", defaultBaseUrl),
 
 		//发现
 		findList: {
@@ -69,7 +69,7 @@ function manifest() {
 	});
 }
 
-const baseUrl = getBaseUrl();
+const defaultBaseUrl = "http://m.sixmanhua.com";
 /**
  * sixmh7.com
  * sixmh6.com
@@ -77,7 +77,7 @@ const baseUrl = getBaseUrl();
  * 6mh66.com
  * 此源和七夕漫画相似
  */
-function getBaseUrl() {
+function UpdateBaseUrl() {
 	var preference = JavaUtils.getPreference();
 	var baseUrlTime = preference.getLong("baseUrlTime");
 	var oneDay = 1000*60*60*24;
@@ -94,7 +94,7 @@ function getBaseUrl() {
 			edit.putLong("baseUrlTime", time).apply();//更新时间
 		}
 	}
-	return preference.getString("baseUrl", "http://m.sixmanhua.com");
+	JavaUtils.getManifest().setBaseUrl(preference.getString("baseUrl", defaultBaseUrl));
 }
 
 /**
@@ -103,7 +103,8 @@ function getBaseUrl() {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl, '/search?keyword=' + encodeURI(key));
+	UpdateBaseUrl()
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), '/search?keyword=' + encodeURI(key));
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -140,7 +141,8 @@ function search(key) {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(label) {
-	var url = JavaUtils.urlJoin(baseUrl, `/sortdata.php@post->page_num=1&type=${label}`);
+	UpdateBaseUrl()
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), `/sortdata.php@post->page_num=1&type=${label}`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -160,7 +162,7 @@ function find(label) {
 				coverUrl: child.imgurl,
 				
 				//网址
-				url: JavaUtils.urlJoin(baseUrl, child.id + "/")
+				url: JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), child.id + "/")
 			})
 		});
 	}
@@ -172,6 +174,7 @@ function find(label) {
  * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
+	UpdateBaseUrl()
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
@@ -232,7 +235,7 @@ function tocs(document, url) {
 		
 		var vidElement = document.selectFirst('#__layout > div > dl.cartoon-directory.chalist2 > dd');
 		if(vidElement != null){
-			const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl,'/bookchapter/') + '@post->id=' + vidElement.attr('data-id') + '&id2=' + vidElement.attr('data-vid'));
+			const response = JavaUtils.httpRequest(JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(),'/bookchapter/') + '@post->id=' + vidElement.attr('data-id') + '&id2=' + vidElement.attr('data-vid'));
 			if(response.code() == 200){
 				JSON.parse(response.body().string()).forEach((child) => {
 					newChapters.push({

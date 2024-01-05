@@ -98,6 +98,7 @@ function manifest() {
 const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://novel-api.xiaoxiaommkk.com");;
 /**
  * 备份：
+ * 200669.com
  * gfnormal05at.com
  * nso92.xsafetech.com
  * novel-api.xiaoppkk.com

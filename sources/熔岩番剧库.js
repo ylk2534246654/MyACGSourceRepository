@@ -5,7 +5,7 @@ function manifest() {
 		id: 1660927525,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20231215,
+		minMyACG: 20240105,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 80,
@@ -50,15 +50,15 @@ function manifest() {
 				key: "drive",
 				name: "选择节点",
 				entries: {
-					"番剧库本地节点": 	"3A_Xinxiang",
-					"CF 环大陆自选": 	"2AG_CF2",
-					"CF 环大陆自选 2": 	"2AG_CF3",
 					"OneDrive 新加坡":	"2AG",
 					"Cloudflare":		"2AG_CF",
+					"CF 环大陆自选": 	"2AG_CF2",
+					"CF 环大陆自选 2": 	"2AG_CF3",
 					"大陆加速": 		"2AG_CHUN_CDN",
+					"番剧库本地节点": 	"3A_Xinxiang",
 					"谷歌云端硬盘每日镜像": "4AG",
 				},
-				defaultValue: 0
+				defaultValue: 1
 			}
 		],
 		
@@ -72,7 +72,7 @@ function manifest() {
 		findList: {
 			category: {
 				"type": ["全部","1月冬","4月春","7月夏","10月秋","SP、OVA、OAD等","三次元","其他地区","剧场版","网络动画"],
-				"year": ["全部","2023年","2022年","2021年","2020年","2019年","2018年","2017年","2016年","2015年","2014年","2013年","2012年","2011年","2010年","2009年","2008年","2007年","2006年","2005年","1999年","1998年","1997年","1987年"],
+				"year": ["全部","2024年","2023年","2022年","2021年","2020年","2019年","2018年","2017年","2016年","2015年","2014年","2013年","2012年","2011年","2010年","2009年","2008年","2007年","2006年","2005年","1999年","1998年","1997年","1987年"],
 			},
 			"动漫": ["type","year"]
 		},
@@ -239,7 +239,7 @@ function detail(id) {
 			enableChapterReverseOrder: false,
 			
 			//目录加载
-			tocs: tocs(id)
+			tocs: tocs(id, $.date)
 		});
 	}
 	return JSON.stringify({
@@ -255,7 +255,7 @@ function detail(id) {
  * 目录
  * @return {[{name, chapters:{[{name, url}]}}]}
  */
-function tocs(id) {
+function tocs(id, date) {
 	//创建目录数组
 	var newTocs = [];
 
@@ -297,34 +297,71 @@ function tocs(id) {
 		}
 		if(tocResponse.code() == 200){
 			JavaUtils.setUserLoginStatus(true);
-			JSON.parse(tocResponse.body().string()).data.forEach((child2, index2) => {
-				if(child2.parseResult.extensionName.type == 'video'){
-					var name = child2.parseResult.episode;
-					if(name == null){
-						name = child2.parseResult.animeTitle;
-					}else {
-						name = "第" + name + "集"
+			var mapChapters = new Map();
+
+			const data = JSON.parse(tocResponse.body().string()).data
+			if(data.length > 0){
+				data.forEach((child2, index2) => {
+					if(child2.parseResult.extensionName.type == 'video'){
+						var name = child2.parseResult.episode;
+						if(name != null){
+							name = "第" + name + "集"
+						}else {
+							name = child2.parseResult.animeTitle;
+						}
+						if(name == null){
+							name = child2.parseResult.extensionName.trueName;
+						}
+						if(mapChapters.get(name) != null){
+							mapChapters.get(name).urls.push({
+								//章节名称
+								name: child2.parseResult.animeTitle,
+				
+								//章节网址
+								url: child2.url,
+							});
+						}else{
+							mapChapters.set(name, {
+								//章节名称
+								name: name,
+		
+								//最近更新时间 仅兼容 1.4.9
+								lastUpdateTime: JavaUtils.stringToTime(child2.updated, "yyyy-MM-dd'T'HH:mm:ss'Z'", "yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSZ"),
+					
+								//概览
+								//summary: child2.updated,
+	
+								//章节网址
+								urls: [
+									{
+										//章节名称
+										name: child2.parseResult.animeTitle,
+						
+										//章节网址
+										url: child2.url,
+									}
+								],
+							})
+						}
 					}
-					newChapters.push({
-						//章节名称
-						name: name,
-
-						//最近更新时间 仅兼容 1.4.9
-						//lastUpdateTime: JavaUtils.stringToTime(child2.updated, "yyyy-MM-dd'T'HH:mm:ss'Z'", "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSZ"),
-			
-						//概览
-						//summary: child2.updated,
-
-						//章节网址
-						url: child2.url
-					});
+				});
+				for (let [key, value] of mapChapters) { 
+					newChapters.push(value);
 				}
-			});
-			//
+			}else{
+				newChapters.push({
+					//章节名称
+					name: "暂无资源 敬请期待",
+					
+					//概览
+					summary: `来自 Bangumi 的放送时间 ${date}`,
+				})
+			}
 			//添加目录
 			newTocs.push({
 				//目录名称
 				name: driveName,
+				
 				//章节
 				chapters : newChapters
 			});

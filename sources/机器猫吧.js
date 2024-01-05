@@ -5,7 +5,7 @@ function manifest() {
 		id: 1704338350,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230911,
+		minMyACG: 20240105,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 80,
@@ -115,24 +115,37 @@ function tocs(document) {
     var newChapters = [];
 	//章节元素选择器
     var chapterElements = document.select('.listCell');
-		
-    for (var i2 = 0;i2 < chapterElements.size();i2+=2) {
+	
+	var urls = []
+    for (var i2 = 0;i2 < chapterElements.size();i2++) {
         var chapterElement = chapterElements.get(i2);
-        var urlElement = chapterElements.get(i2 + 1);
-        
-        newChapters.push({
-            //章节名称
-            name: chapterElement.selectFirst('.textBold').text(),
+        if(JavaUtils.isEmpty(chapterElement.selectFirst('.effective').text())){
+            urls = []
+			var name = chapterElement.selectFirst('.textBold').text();
+			if(name.indexOf("合集") == -1){
+				newChapters.push({
+					//章节名称
+					name: name,
+		
+					//最近更新时间
+					lastUpdateTime: chapterElement.selectFirst('.textRegular').text(),
+					
+					//概览
+					summary: chapterElement.selectFirst('.textComment').text(),
+					
+					//章节网址
+					urls: urls
+				});
+			}
+		}else{
+			urls.push({
+				//章节名称
+				name: chapterElement.selectFirst('.flexContainer > span').text(),
 
-            //最近更新时间
-            lastUpdateTime: chapterElement.selectFirst('.textRegular').text(),
-
-			//概览
-			summary: chapterElement.selectFirst('.textComment').text(),
-            
-            //章节网址
-            url: urlElement.selectFirst('[data-src]').absUrl('data-src')
-        });
+				//章节网址
+				url: chapterElement.selectFirst('[data-src]').absUrl('data-src'),
+			})
+		}
     }
 	return [{
         //目录名称
@@ -141,4 +154,3 @@ function tocs(document) {
         chapters : newChapters
     }];
 }
-

@@ -5,7 +5,7 @@ function manifest() {
 		id: 1648714123,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230911,
+		minMyACG: 20240105,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 80,
@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 5,
+		version: 6,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1694957068,
+		lastUpdateTime: 1704443247,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -47,7 +47,7 @@ function manifest() {
 		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: baseUrl,
+		baseUrl: JavaUtils.getPreference().getString("baseUrl", defaultBaseUrl),
 		
 		//发现
 		findList: {
@@ -88,10 +88,10 @@ function manifest() {
 	});
 }
 
-const baseUrl = getBaseUrl();
+const defaultBaseUrl = "https://www.agemys.org";
 //备用 http://age.tv
 
-function getBaseUrl() {
+function UpdateBaseUrl() {
 	var preference = JavaUtils.getPreference();
 	var baseUrlTime = preference.getLong("baseUrlTime");
 	var oneDay = 1000*60*60*24;
@@ -106,9 +106,8 @@ function getBaseUrl() {
 			}
 		}
 		edit.putLong("baseUrlTime", time).apply();//更新时间
-		JavaUtils.log("baseUrlTime -> " + baseUrlTime + "<" + (time - oneDay));
 	}
-	return preference.getString("baseUrl", "https://www.agemys.org");
+	JavaUtils.getManifest().setBaseUrl(preference.getString("baseUrl", defaultBaseUrl));
 }
 
 /**
@@ -117,8 +116,8 @@ function getBaseUrl() {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	JavaUtils.log("baseUrlTime -> " + JavaUtils.getPreference().getLong("baseUrlTime"));
-	var url = JavaUtils.urlJoin(baseUrl, '/search?&query=' + encodeURI(key));
+	UpdateBaseUrl()
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), '/search?&query=' + encodeURI(key));
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -155,6 +154,7 @@ function search(key) {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(genre, year, label, resources, order, region, status) {
+	UpdateBaseUrl()
 	if(genre == "全部")genre = "all";
 	if(year == "全部")year = "all";
 	if(year == "更早")year = "2000以前";
@@ -163,7 +163,7 @@ function find(genre, year, label, resources, order, region, status) {
 	if(region == "全部")region = "all";
 	if(status == "全部")status = "all";
 	
-	var url = JavaUtils.urlJoin(baseUrl, `/catalog/${genre}-${year}-all-${label}-${resources}-${order}-1-${region}-all-${status}`);
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), `/catalog/${genre}-${year}-all-${label}-${resources}-${order}-1-${region}-all-${status}`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -200,7 +200,7 @@ function find(genre, year, label, resources, order, region, status) {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find2(url) {
-	var url = JavaUtils.urlJoin(baseUrl, url);
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), url);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -237,6 +237,7 @@ function find2(url) {
  * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
+	UpdateBaseUrl()
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();

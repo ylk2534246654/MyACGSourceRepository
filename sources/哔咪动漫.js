@@ -5,7 +5,7 @@ function manifest() {
 		id: 1655214571,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230911,
+		minMyACG: 20240105,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 0,//资源大部分无法播放，考虑列为失效搜索源
@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 9,
+		version: 10,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1699867970,
+		lastUpdateTime: 1704443247,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -47,7 +47,7 @@ function manifest() {
 		group: ["动漫", "影视"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: baseUrl,
+		baseUrl: JavaUtils.getPreference().getString("baseUrl", defaultBaseUrl),
 		
 		//发现
 		findList: {
@@ -62,7 +62,7 @@ function manifest() {
 		},
 	});
 }
-const baseUrl = getBaseUrl();
+const defaultBaseUrl = "https://www.bimiacg10.net";
 /**
  * http://bimiacg4.net
  * http://bimiacg5.net
@@ -71,7 +71,7 @@ const baseUrl = getBaseUrl();
  * 
  * 导航：https://bimiacg.icu
  */
-function getBaseUrl() {
+function UpdateBaseUrl() {
 	var preference = JavaUtils.getPreference();
 	var baseUrlTime = preference.getLong("baseUrlTime");
 	var oneDay = 1000*60*60*24;
@@ -88,7 +88,7 @@ function getBaseUrl() {
 		}
 		edit.putLong("baseUrlTime", time).apply();//更新时间
 	}
-	return preference.getString("baseUrl", "https://www.bimiacg10.net");
+	JavaUtils.getManifest().setBaseUrl(preference.getString("baseUrl",defaultBaseUrl));
 }
 
 //网页浏览时不需要，所以未使用 httpRequestHeaderList
@@ -100,7 +100,8 @@ const header = '@header->user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl, '/vod/search/@post->wd='+ encodeURI(key));
+	UpdateBaseUrl();
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), '/vod/search/@post->wd='+ encodeURI(key));
 	var result = [];
 	const response = JavaUtils.httpRequest(url + header);
 	if(response.code() == 200){
@@ -131,8 +132,9 @@ function search(key) {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(url) {
+	UpdateBaseUrl();
 	var result = [];
-	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, url) + header);
+	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), url) + header);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
 		const elements = document.select("ul.tab-cont > li");
@@ -161,6 +163,7 @@ function find(url) {
  * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
+	UpdateBaseUrl();
 	const response = JavaUtils.httpRequest(url + header);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
@@ -233,14 +236,14 @@ function tocs(document) {
 
 /**
  * 内容（部分搜索源通用过滤规则）
- * @version 2023/11/13
+ * @version 2024/1/4
  * 布米米、嘻嘻动漫、12wo动漫、路漫漫、风车动漫P、樱花动漫P、COCO漫画、Nike、cocoManga
  * @return {string} content
  */
 function content(url) {
 	var re = new RegExp(
 		//https://
-		'[a-zA-z]+://[^\\s/]+/(' +
+		'(^[a-zA-z]+://[^\\s/]+/(' +
 
 		//https://knr.xxxxx.cn/j/140000		#[a-z]{1}\/\d{6}
 		'([a-z]{1}/\\d)' +
@@ -276,11 +279,18 @@ function content(url) {
 		//https://xxxx.xxxx.xx:00000/kmopef/3.woff # [\w/]+[/km][\w/]+\.woff
 		'|([\\w/]+[/km][\\w/]+\\.woff)' +
 
-		//https://xxxx.xxxx.com/o.js # o\.js
-		'|o\\.js' +
+		//https://aba.xxxxxxx.cn/slot?2377029035902478992-27158		#slot\?[\d-]+$
+		'|(slot\\?[\\d-]+$)' +
 
-		')'+
-		''
+		//https://xxxx.xxxx.com/o.js # o\.js
+		//'|o\\.js' + //无法正常加载
+
+		//（!易误拦截） 例子过长，无法展示		#[\\w]{3}\?[\\S]{500,}
+		'|([\\w]{3}\?[\\S]{500,})' +
+		
+		'))' +
+        //Google
+		'|(^[a-zA-z]+://[^\\s/]+doubleclick\\.net/)'
 		,
 		'i'
 	);

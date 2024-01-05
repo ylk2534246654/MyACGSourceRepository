@@ -5,7 +5,7 @@ function manifest() {
 		id: 1654920600,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20231215,
+		minMyACG: 20240105,
 		
 		//优先级 1~100，数值越大越靠前
 		priority: 1,
@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 8,
+		version: 9,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1703407068,
+		lastUpdateTime: 1704443247,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -47,7 +47,7 @@ function manifest() {
 		group: ["漫画"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: baseUrl,
+		baseUrl: JavaUtils.getPreference().getString("baseUrl", defaultBaseUrl),
 
 		//发现
 		findList: {
@@ -70,7 +70,7 @@ function manifest() {
 }
 
 //此源和七夕漫画，六漫画相似
-const baseUrl = getBaseUrl();
+const defaultBaseUrl = "http://m.qmanwu2.com";
 /**
  * http://www.qmanwu2.com
  * http://qiman5.com
@@ -80,7 +80,7 @@ const baseUrl = getBaseUrl();
  * http://qiman52.com
  * http://m.qiman59.com
  */
-function getBaseUrl() {
+function UpdateBaseUrl() {
 	var preference = JavaUtils.getPreference();
 	var baseUrlTime = preference.getLong("baseUrlTime");
 	var oneDay = 1000*60*60*24;
@@ -98,7 +98,7 @@ function getBaseUrl() {
 		}
 		
 	}
-	return preference.getString("baseUrl", "http://m.qmanwu2.com");
+	JavaUtils.getManifest().setBaseUrl(preference.getString("baseUrl", defaultBaseUrl));
 }
 
 
@@ -108,7 +108,8 @@ function getBaseUrl() {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl, '/spotlight/?keyword=' + encodeURI(key));
+	UpdateBaseUrl()
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), '/spotlight/?keyword=' + encodeURI(key));
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -145,7 +146,8 @@ function search(key) {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(label) {
-	var url = JavaUtils.urlJoin(baseUrl, `/sort/${label}-1.html`);
+	UpdateBaseUrl()
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), `/sort/${label}-1.html`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -182,6 +184,7 @@ function find(label) {
  * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
+	UpdateBaseUrl()
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
@@ -238,7 +241,7 @@ function tocs(response, url) {
 	var id = match1[1];
 	var vid = match1[2];
 	if(vid.length > 0){
-		const response2 = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl,'/bookchapter/') + '@post->id=' + id + '&id2=' + vid);
+		const response2 = JavaUtils.httpRequest(JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(),'/bookchapter/') + '@post->id=' + id + '&id2=' + vid);
 		if(response2.code() == 200){
 			JSON.parse(response2.body().string()).forEach((child) => {
 				newChapters.push({
