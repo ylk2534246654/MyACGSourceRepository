@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 5,
+		version: 6,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -35,13 +35,29 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1704331670,
+		lastUpdateTime: 1704437373,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
 		
 		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
 		contentProcessType: 1,
+		
+		//首选项配置 type：（1:文本框，2:开关，3:单选框，4:编辑框，5:跳转链接）
+		preferenceOptionList: [
+			{
+				type: 3,
+				key: "baseUrl",
+				name: "不能加载尝试切换线路",
+				entries: {
+					"elklk": "https://novel-api.elklk.cn",
+					"xiaoppkk": "https://novel-api.xiaoppkk.com",
+					"xiaoxiaommkk": "https://novel-api.xiaoxiaommkk.com",
+					"xiaoshuottaa": "https://novel-api.xiaoshuottaa.com",
+				},
+				defaultValue: 2
+			}
+		],
 		
 		//分组
 		group: ["小说"],
@@ -79,13 +95,14 @@ function manifest() {
 	});
 }
 
-const baseUrl = "https://novel-api.xiaoshuottaa.com";
+const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://novel-api.xiaoxiaommkk.com");;
 /**
  * 备份：
  * gfnormal05at.com
  * nso92.xsafetech.com
  * novel-api.xiaoppkk.com
  * novel-api.elklk.cn
+ * novel-api.xiaoshuottaa.com
  */
 
 /**
