@@ -50,8 +50,8 @@ function manifest() {
 				key: "baseUrl",
 				name: "选择域名",
 				entries: {
-					"www.wenku8.net":	"https://www.wenku8.net",
-					"www.wenku8.cc":	"https://www.wenku8.cc",
+					"非移动网络":	"https://www.wenku8.net",
+					"移动网络":	"https://www.wenku8.cc",
 				},
 				defaultValue: 1
 			}
