@@ -48,7 +48,7 @@ function manifest() {
 			{
 				type: 3,
 				key: "baseUrl",
-				name: "选择域名",
+				name: "选择网络类型",
 				entries: {
 					"非移动网络":	"https://www.wenku8.net",
 					"移动网络":	"https://www.wenku8.cc",
