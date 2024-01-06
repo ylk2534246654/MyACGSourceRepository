@@ -35,7 +35,7 @@ function manifest() {
 		},
 
 		//最近更新时间
-		lastUpdateTime: 1702620617,
+		lastUpdateTime: 1704510170,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -312,10 +312,16 @@ function tocs(id, date) {
 						if(name == null){
 							name = child2.parseResult.extensionName.trueName;
 						}
+						var tagedNames = [];
+						child2.parseResult.tagedName.forEach((child3, index3) => {
+							if(typeof child3 === 'string'){
+								tagedNames.push(child3)
+							}
+						})
 						if(mapChapters.get(name) != null){
 							mapChapters.get(name).urls.push({
 								//章节名称
-								name: child2.parseResult.animeTitle,
+								name: tagedNames.join(" "),
 				
 								//章节网址
 								url: child2.url,
@@ -335,7 +341,7 @@ function tocs(id, date) {
 								urls: [
 									{
 										//章节名称
-										name: child2.parseResult.animeTitle,
+										name: tagedNames.join(" "),
 						
 										//章节网址
 										url: child2.url,
