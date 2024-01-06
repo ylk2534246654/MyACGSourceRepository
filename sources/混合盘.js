@@ -52,6 +52,12 @@ function manifest() {
 }
 
 const baseUrl = "https://api.hunhepan.com";
+/**
+ * hunhepan.com
+ * wwb.lanzouw.com/b037ns0eb
+ * pan.quark.cn/s/de7caa551de7
+ * www.123pan.com/s/zCHSVv-3NYvd.html
+ */
 
 /**
  * 搜索
