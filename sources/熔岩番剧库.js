@@ -262,7 +262,7 @@ function tocs(id, date) {
 	//目录标签请求
 	//const tagResponse = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, '/v2/drive/all' + getHeader()));
 	//if(tagResponse.code() == 200){
-		const drive = JavaUtils.getPreference().getString("drive", "2AG_CHUN_CDN")
+		const drive = JavaUtils.getPreference().getString("drive", "2AG_CF")
 		var driveName = drive;
 		if(drive == "3A_Xinxiang"){
 			driveName = "番剧库本地节点"

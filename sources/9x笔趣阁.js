@@ -95,7 +95,7 @@ function manifest() {
 	});
 }
 
-const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://novel-api.xiaoxiaommkk.com");;
+const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://novel-api.xiaoxiaommkk.com");
 /**
  * 备份：
  * 200669.com

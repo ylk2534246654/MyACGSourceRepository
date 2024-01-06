@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1703412682,
+		lastUpdateTime: 1704519781,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -43,6 +43,20 @@ function manifest() {
 		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
 		contentProcessType: 1,
 		
+		//首选项配置 type：（1:文本框，2:开关，3:单选框，4:编辑框，5:跳转链接）
+		preferenceOptionList: [
+			{
+				type: 3,
+				key: "baseUrl",
+				name: "选择域名",
+				entries: {
+					"www.wenku8.net":	"https://www.wenku8.net",
+					"www.wenku8.cc":	"https://www.wenku8.cc",
+				},
+				defaultValue: 1
+			}
+		],
+
 		//分组
 		group: ["小说","轻小说"],
 		
@@ -80,7 +94,11 @@ function manifest() {
 	});
 }
 
-const baseUrl = "https://www.wenku8.net";
+const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://www.wenku8.cc");
+/**
+ * www.wenku8.net
+ * www.wenku8.cc
+ */
 
 /*
  * 是否完成登录
