@@ -72,10 +72,12 @@ function manifest() {
 		}
 	});
 }
-const baseUrl = "https://w.linovelib.com";
+
+const baseUrl = "https://www.bilinovel.com";
 /**
  * https://www.bilinovel.com
  * https://www.linovelib.com
+ * https://w.linovelib.com
  */
 
 /**
