@@ -35,7 +35,7 @@ function manifest() {
 		},
 
 		//最近更新时间
-		lastUpdateTime: 1704510170,
+		lastUpdateTime: 1704649534,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -66,7 +66,7 @@ function manifest() {
 		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: showBaseUrl,
+		baseUrl: baseUrl,
 		
 		//发现
 		findList: {
@@ -81,14 +81,14 @@ function manifest() {
 		enableUserLogin: true,
 		
 		//用户登录网址
-		userLoginUrl: "https://lavani.me/user",
+		userLoginUrl: JavaUtils.urlJoin(baseUrl, "user"),
 		
 		//需要用户登录列表（search，detail，content，find）
 		requiresUserLoginList: ["search","detail","content"],
 	});
 }
-const showBaseUrl = "https://lavani.me";
-const baseUrl = "https://anime-api.5t5.top";
+const baseUrl = "https://lavani.me";
+const apiBaseUrl = "https://anime-api.5t5.top";
 
 /*
  * 是否完成登录
@@ -98,7 +98,7 @@ const baseUrl = "https://anime-api.5t5.top";
  */
 function isUserLoggedIn(url, responseHtml) {
 	if(url != null && url.indexOf('follow/total') != -1){
-		const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, "/v2/user/info" + getHeader()));
+		const response = JavaUtils.httpRequest(JavaUtils.urlJoin(apiBaseUrl, "/v2/user/info" + getHeader()));
 		if(response.code() == 200){
 			if(response.body().string().indexOf('成功') != -1){
 				return true;
@@ -114,7 +114,7 @@ function isUserLoggedIn(url, responseHtml) {
  * @return {boolean} 登录结果
  */
 function verifyUserLoggedIn() {
-	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, "/v2/user/info" + getHeader()));
+	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(apiBaseUrl, "/v2/user/info" + getHeader()));
 	if(response.code() == 200){
 		if(response.body().string().indexOf('成功') != -1){
 			return true;
@@ -126,11 +126,10 @@ function verifyUserLoggedIn() {
 }
 
 function getHeader() {
-	const token = JavaUtils.getLocalStorage('https://lavani.me', 'token');
+	const token = JavaUtils.webViewEvalJS(baseUrl, `(function() {return localStorage.getItem('token');})();`, true);
 	try{
 		if(!JavaUtils.isEmpty(token)){
-			const authorization = JSON.parse(token).value;
-			return "@header->referer:https://lavani.me/@header->authorization:" + authorization;
+			return `@header->referer:${baseUrl}@header->authorization:${JSON.parse(token).value}`;
 		}
 	}catch(e){
 		//抛出异常
@@ -145,7 +144,7 @@ function getHeader() {
  */
 function search(key) {
 	var result = [];
-	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, `/v2/search?value=${encodeURI(key)}` + getHeader()));
+	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(apiBaseUrl, `/v2/search?value=${encodeURI(key)}` + getHeader()));
 	if(response.code() == 401){
 		JavaUtils.setUserLoginStatus(false);
 	}
@@ -187,8 +186,11 @@ function find(type, year) {
 	}else if(year == "全部"){
 		year = "";
 	}
-	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, `/v2/index/query@post->{"year":"${year}","type":"${type}"}${getHeader()}@header->content-type:application/json`));
+	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(apiBaseUrl, `/v2/index/query@post->{"year":"${year}","type":"${type}"}${getHeader()}@header->content-type:application/json`));
 	var result = [];
+	if(response.code() == 401){
+		JavaUtils.setUserLoginStatus(false);
+	}
 	if(response.code() == 200){
 		const $ = JSON.parse(response.body().string());
 		$.data.forEach((child) => {
@@ -218,7 +220,10 @@ function find(type, year) {
  * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(id) {
-	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, `/v2/anime/get?id=${id}&full=true${getHeader()}`));
+	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(apiBaseUrl, `/v2/anime/get?id=${id}&full=true${getHeader()}`));
+	if(response.code() == 401){
+		JavaUtils.setUserLoginStatus(false);
+	}
 	if(response.code() == 200){
 		const $ = JSON.parse(response.body().string()).data;
 
@@ -260,7 +265,7 @@ function tocs(id, date) {
 	var newTocs = [];
 
 	//目录标签请求
-	//const tagResponse = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, '/v2/drive/all' + getHeader()));
+	//const tagResponse = JavaUtils.httpRequest(JavaUtils.urlJoin(apiBaseUrl, '/v2/drive/all' + getHeader()));
 	//if(tagResponse.code() == 200){
 		const drive = JavaUtils.getPreference().getString("drive", "2AG_CF")
 		var driveName = drive;
@@ -285,9 +290,9 @@ function tocs(id, date) {
 		//目录请求
 		var url;
 		if(JavaUtils.isNetworkUrl(id)){
-			url = id.replace(showBaseUrl, baseUrl);
+			url = id.replace(baseUrl, apiBaseUrl);
 		}else{
-			url = JavaUtils.urlJoin(baseUrl, '/v2/anime/file?id=' + id);
+			url = JavaUtils.urlJoin(apiBaseUrl, '/v2/anime/file?id=' + id);
 		}
 		url = url + '&drive=' + drive + getHeader();
 
@@ -301,7 +306,7 @@ function tocs(id, date) {
 
 			const data = JSON.parse(tocResponse.body().string()).data
 			if(data.length > 0){
-				data.forEach((child2, index2) => {
+				data.forEach((child2) => {
 					if(child2.parseResult.extensionName.type == 'video'){
 						var name = child2.parseResult.episode;
 						if(name != null){
@@ -313,7 +318,7 @@ function tocs(id, date) {
 							name = child2.parseResult.extensionName.trueName;
 						}
 						var tagedNames = [];
-						child2.parseResult.tagedName.forEach((child3, index3) => {
+						child2.parseResult.tagedName.forEach((child3) => {
 							if(typeof child3 === 'string'){
 								tagedNames.push(child3)
 							}
