@@ -5,17 +5,17 @@ function manifest() {
 		id: 1660118962,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230911,
+		minMyACG: 20240105,
 
 		//优先级 1~100，数值越大越靠前
-		priority: 10,
+		priority: 40,
 		
 		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
 		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
-		name: "9x笔趣阁",
+		name: "9x笔趣阁-小说",
 
 		//搜索源作者
 		author: "雨夏",
@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1704437373,
+		lastUpdateTime: 1704619369,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -54,6 +54,7 @@ function manifest() {
 					"xiaoppkk": "https://novel-api.xiaoppkk.com",
 					"xiaoxiaommkk": "https://novel-api.xiaoxiaommkk.com",
 					"xiaoshuottaa": "https://novel-api.xiaoshuottaa.com",
+					"qwezxc4": "https://novelapi.qwezxc4.cn",
 				},
 				defaultValue: 2
 			}
@@ -116,7 +117,7 @@ function search(key) {
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
-		JSON.parse(response.body().string()).result.list.forEach((child) => {
+		JSON.parse(_toString(response.body().string())).result.list.forEach((child) => {
 			result.push({
 				//名称
 				name: child.name,
@@ -147,7 +148,7 @@ function find(label, order) {
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
-		JSON.parse(response.body().string()).result.list.forEach((child) => {
+		JSON.parse(_toString(response.body().string())).result.list.forEach((child) => {
 			result.push({
 				//名称
 				name: child.name,
@@ -184,7 +185,7 @@ function detail(id) {
 	var url = JavaUtils.urlJoin(baseUrl, `/api/book-info?id=${id}&source_id=1`);
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
-		var book = JSON.parse(response.body().string()).result.book;
+		var book = JSON.parse(_toString(response.body().string())).result.book;
 		return JSON.stringify({
 			//名称
 			name: book.name,
@@ -220,12 +221,24 @@ function tocs(id) {
 	if(response.code() == 200){
 		//创建章节数组
 		var newChapters = [];
-		JSON.parse(response.body().string()).result.list[0].list.forEach((child) => {
-			newChapters.push({
-				//章节名称
-				name: child.name,
-				//章节网址
-				url: JavaUtils.urlJoin(baseUrl, child.url.replace(/https:\/\/contentxs\.pysmei\.com\/BookFiles\/Html\/(\d+)\/(\d+)\/(\d+)\.html/, '/cdn/book/content/$2/$3.html'))
+		JSON.parse(_toString(response.body().string())).result.list.forEach((child1) => {
+			child1.list.forEach((child2) => {
+				var time = null;
+				if(child2.mtime != null && child2.mtime > 0){
+					time = child2.mtime
+				}else {
+					time = "---"
+				}
+				newChapters.push({
+					//章节名称
+					name: child2.name,
+
+					//最近更新时间
+					lastUpdateTime: time,
+
+					//章节网址
+					url: JavaUtils.urlJoin(baseUrl, child2.url.replace(/https:\/\/contentxs\.pysmei\.com\/BookFiles\/Html\/(\d+)\/(\d+)\/(\d+)\.html/, '/cdn/book/content/$2/$3.html'))
+				});
 			});
 		});
 
@@ -238,7 +251,11 @@ function tocs(id) {
 	}
 	return null;
 }
-
+/**
+ * 移植请注明出处
+ * @platform	MyACG
+ * @author	雨夏
+ */
 /**
  * 内容
  * @params {string} url
@@ -247,7 +264,23 @@ function tocs(id) {
 function content(url) {
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
-		return com.jayway.jsonpath.JsonPath.parse(response.body().string()).read("$..content").get(0);
+		return com.jayway.jsonpath.JsonPath.parse(_toString(response.body().string())).read("$..content").get(0);
 	}
 }
-
+/**
+ * 解密
+ * @param {byte[]} data
+ * @return 结果
+ */
+function _toString(word) {
+	if(word != null && word.indexOf("JP2") != -1){
+		var start = JavaUtils.substring(word, "", "JP2")
+		if(start != null){
+			//JavaUtils.log("word->" + word.substring(0, 10) + "..." + String(word).substring(String(word).length - 10));
+			word = String(word).substring(String(start).length, String(word).length - String(start).length - 1)
+			//JavaUtils.log("word->" + word.substring(0, 10) + "..." + String(word).substring(String(word).length - 10));
+		}
+		return JavaUtils.bytesToStr(JavaUtils.decryptAES(JavaUtils.base64Decode(word), "6CB1E21E","DES/CBC/PKCS5Padding", "1F0FB845"))
+	}
+	return word
+}
