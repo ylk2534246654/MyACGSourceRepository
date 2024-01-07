@@ -35,7 +35,7 @@ function manifest() {
 		},
 
 		//最近更新时间
-		lastUpdateTime: 1703936133,
+		lastUpdateTime: 1704595732,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -114,15 +114,13 @@ function manifest() {
 		},
 		
 		//网络限流 - 如果{regexUrl}匹配网址，则限制其{period}毫秒内仅允许{maxRequests}个请求
-		/*
 		networkRateLimitList: [
 			{
-				regexUrl: "www\.colamanhua\.com",//表示需要限流的 Url，使用正则表达式格式（不允许为空）
+				regexUrl: baseUrl,//表示需要限流的 Url，使用正则表达式格式（不允许为空）
 				maxRequests: 0,//在指定的时间内允许的请求数量（必须 >= 0 才会生效）
 				period: 5000,//时间周期，毫秒（必须 > 0 才会生效）
 			}
 		],
-		*/
 
 		//启用检测收藏更新
 		//enableDetectFavoriteUpdate: false,
@@ -161,7 +159,7 @@ function isEnableAuthenticator(url, responseHtml) {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl,`/search?searchString=${encodeURI(key)}@enableFrameSource->true`);
+	var url = JavaUtils.urlJoin(baseUrl,`/search?searchString=${encodeURI(key)}`);
 	const response = JavaUtils.httpRequest(url);
 	var result= [];
 	if(response.code() == 200){
@@ -198,7 +196,7 @@ function search(key) {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(state, type, orderBy) {
-	var url = JavaUtils.urlJoin(baseUrl, `/show?status=${state}&mainCategoryId=${type}&orderBy=${orderBy}@enableFrameSource->true`);
+	var url = JavaUtils.urlJoin(baseUrl, `/show?status=${state}&mainCategoryId=${type}&orderBy=${orderBy}`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -232,7 +230,7 @@ function find(state, type, orderBy) {
  * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
-	const response = JavaUtils.httpRequest(url + "@enableFrameSource->true");
+	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
 		return JSON.stringify({
@@ -304,14 +302,14 @@ function tocs(document) {
 
 /**
  * 内容（部分搜索源通用过滤规则）
- * @version 2023/12/31
+ * @version 2024/1/4
  * 布米米、嘻嘻动漫、12wo动漫、路漫漫、风车动漫P、樱花动漫P、COCO漫画、Nike、cocoManga
  * @return {string} content
  */
 function content(url) {
 	var re = new RegExp(
 		//https://
-		'^[a-zA-z]+://[^\\s/]+/(' +
+		'(^[a-zA-z]+://[^\\s/]+/(' +
 
 		//https://knr.xxxxx.cn/j/140000		#[a-z]{1}\/\d{6}
 		'([a-z]{1}/\\d)' +
@@ -356,8 +354,9 @@ function content(url) {
 		//（!易误拦截） 例子过长，无法展示		#[\\w]{3}\?[\\S]{500,}
 		'|([\\w]{3}\?[\\S]{500,})' +
 		
-		')'+
-		''
+		'))' +
+        //Google
+		'|(^[a-zA-z]+://[^\\s/]+doubleclick\\.net/)'
 		,
 		'i'
 	);
