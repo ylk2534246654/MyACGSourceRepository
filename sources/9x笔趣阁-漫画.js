@@ -54,9 +54,9 @@ function manifest() {
 					"xiaoppkk": "https://novel-api.xiaoppkk.com",
 					"xiaoxiaommkk": "https://novel-api.xiaoxiaommkk.com",
 					"xiaoshuottaa": "https://novel-api.xiaoshuottaa.com",
-					"qwezxc4": "https://novelapi.qwezxc4.cn",
+					"qwezxc4(部分页无法加载)": "https://novelapi.qwezxc4.cn",
 				},
-				defaultValue: 4
+				defaultValue: 3
 			}
 		],
 		
@@ -100,7 +100,7 @@ function manifest() {
 	});
 }
 
-const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://novelapi.qwezxc4.cn");
+const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://novel-api.xiaoxiaommkk.com");
 const imgPath = "/api/ComicBook-DecodeImage?path=";
 /**
  * 备份：
