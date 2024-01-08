@@ -8,7 +8,7 @@ function manifest() {
 		minMyACG: 20240105,
 		
 		//优先级 1~100，数值越大越靠前
-		priority: 30,
+		priority: 1,
 		
 		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
@@ -75,6 +75,8 @@ const defaultBaseUrl = "http://m.sixmanhua.com";
  * sixmh6.com
  * 6mh9.com
  * 6mh66.com
+ * m.sumanhua1.com
+ * m.sumanhua.com
  * 此源和七夕漫画相似
  */
 function UpdateBaseUrl() {
