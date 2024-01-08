@@ -56,7 +56,7 @@ function manifest() {
 					"xiaoshuottaa": "https://novel-api.xiaoshuottaa.com",
 					"qwezxc4(部分页无法加载)": "https://novelapi.qwezxc4.cn",
 				},
-				defaultValue: 3
+				defaultValue: 2
 			}
 		],
 		
