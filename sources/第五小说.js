@@ -197,7 +197,7 @@ function tocs(url) {
                 //章节名称
                 name: chapterElement.selectFirst('a').text(),
                 //章节网址
-                url: chapterElement.selectFirst('a').absUrl('href').replace('.html','_${p}.html@zero->1@start->1')
+                url: chapterElement.selectFirst('a').absUrl('href').replace('.html','_{1}.html')
             });
         }
 		return [{
