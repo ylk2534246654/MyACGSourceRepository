@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1695374379,
+		lastUpdateTime: 1704787634,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -97,7 +97,7 @@ function search(key) {
 	const response = JavaUtils.httpRequest(url);
 	var result = [];
 	if(response.code() == 200){
-		const $ = JSON.parse(response.html());
+		const $ = JSON.parse(response.body().string());
 		$.data.search.forEach((child) => {
 			result.push({
 				//标题
