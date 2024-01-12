@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1703412181,
+		lastUpdateTime: 1705061258,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -84,7 +84,11 @@ function manifest() {
 	});
 }
 
-const baseUrl = "https://www.dmxq.me";
+const baseUrl = "https://www.dmxq.fun";
+/**
+ * www.dmxq.me
+ * 发布页：www.damiq.cc
+ */
 
 /**
  * 是否启用人机身份验证
