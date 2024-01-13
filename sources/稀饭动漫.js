@@ -70,6 +70,10 @@ function manifest() {
 	});
 }
 const baseUrl = "https://dick.xfani.com";
+/**
+ * 稀饭动漫.com
+ * Q群：534319157
+ */
 
 /**
  * 搜索
