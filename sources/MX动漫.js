@@ -35,7 +35,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1703913935,
+		lastUpdateTime: 1705284208,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -225,14 +225,14 @@ function tocs(document) {
 
 /**
  * 内容（部分搜索源通用过滤规则）
- * @version 2023/9/21
+ * @version 2024/1/15
  * 布米米、嘻嘻动漫、12wo动漫、路漫漫、风车动漫P、樱花动漫P、COCO漫画、Nike、cocoManga
  * @return {string} content
  */
 function content(url) {
 	var re = new RegExp(
 		//https://
-		'[a-zA-z]+://[^\\s/]+/(' +
+		'(^[a-zA-z]+://[^\\s/]+/(' +
 
 		//https://knr.xxxxx.cn/j/140000		#[a-z]{1}\/\d{6}
 		'([a-z]{1}/\\d)' +
@@ -249,6 +249,12 @@ function content(url) {
 		//https://xx.xx.com/0000/00/23030926631.txt 	#[\d]{4}\/\d{2}\/\d{11}\.txt
 		'|([\\d]{4}/\\d{2}/\\d{11}\\.txt)' +
 
+		//https://xxx.com/ba4fa4f070f761b057fbabfb3fd7925d.txt 	#\w{32}\.txt
+		'|(\\w{32}\\.txt)' +
+		
+		//https://zbg.xxx.com/candy14395.js 	#\w{32}\.txt
+		'|(candy\\d{5}\\.)' +
+
 		//https://xxxxx.xxxxxx.com/v2/stats/12215/157527 	#[\w]{2}\/\w{5}\/\d{5}\/\d{6}
 		'|([\\w]{2}/\\w{5}/\\d{5}/\\d{6})' +
 
@@ -262,8 +268,21 @@ function content(url) {
 		//https://xxxx.xxxx.xx:00000/kmopef/3.woff # [\w/]+[/km][\w/]+\.woff
 		'|([\\w/]+[/km][\\w/]+\\.woff)' +
 
-		')'+
-		''
+		//https://aba.xxxxxxx.cn/slot?2377029035902478992-27158		#slot\?[\d-]+$
+		'|(slot\\?[\\d-]+$)' +
+
+		//https://xxxx.xxxx.com/o.js # o\.js
+		//'|o\\.js' + //无法正常加载
+
+		//https://br.xxxx.com:8891/vh3/3342
+		'|([\\w]{3}/[\\d]+$)' +
+
+		//（!易误拦截） 例子过长，无法展示		#[\\w]{3}\?[\\S]{400,}
+		'|([\\w]{3}\?[\\S]{400,})' +
+		
+		'))' +
+        //Google
+		'|(^[a-zA-z]+://[^\\s/]+doubleclick\\.net/)'
 		,
 		'i'
 	);
