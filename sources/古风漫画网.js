@@ -200,7 +200,7 @@ function tocs(document) {
 					//章节名称
 					name: name,
 					//章节网址
-					url: chapterElement.selectFirst('a').absUrl('href').replace('.html','-{1}.html')
+					url: chapterElement.selectFirst('a').absUrl('href')
 				});
 			}
 		}
@@ -215,46 +215,17 @@ function tocs(document) {
 }
 
 /**
- * 内容（部分漫画搜索源通用规则）
- * @version 2024/1/16
- * 168,思思，39 , 360 , 147 , 动漫画 ，依依 ，多多漫画
+ * 内容
+ * @params {string} url
  * @returns {string} content
  */
 function content(url) {
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
-		var imgList = [];
-		var elements = document.select('\
-mip-link > img:not([style=display: none;]),\
-div.UnderPag > mip-img,\
-div.erPag > mip-img,\
-mip-link > mip-img:not([style=display: none;]),\
-div:not([style]) > mip-link > mip-img:not([style],[width]),\
-mip-link > mip-img,\
-#image,\
-#scroll-image > div > [src],\
-#scroll-image > div > [data-src],\
-.chapter-content > div > a > img');
-		if(elements != null){
-			for (var i = 0; i < elements.size();i++) {
-				var element = elements.get(i);
-				var src = element.absUrl('data-src');
-				if(String(src).length <= 0){
-					src = element.absUrl('src');
-				}
-				imgList.push(src);
-			}
-		}
-
-		var newImgList = [];
-		for(var i = 0;i < imgList.length;i++){
-			var re = /default|cover|\.gif|\/manhua\//i;
-			if(!re.test(imgList[i])){
-				newImgList.push(imgList[i]);
-			}
-		}
-		return JSON.stringify(newImgList);
+		var imgBaseUrl = document.selectFirst('.chapter-content > div > a > img').absUrl('src');
+		eval(String(JavaUtils.substring(response.body().string(), '<script>;var', '</script>')));
+		var images = chapterImages.map(value => JavaUtils.urlJoin(imgBaseUrl, value));
+		return JSON.stringify(images);
 	}
-	return null;
 }

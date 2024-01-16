@@ -170,7 +170,7 @@ function tocs(document) {
 
 /**
  * 内容（部分漫画搜索源通用规则）
- * @version 2023/1/21
+ * @version 2024/1/16
  * 168,思思，39 , 360 , 147 , 动漫画 ，依依 ，多多漫画
  * @returns {string} content
  */
@@ -188,7 +188,8 @@ div:not([style]) > mip-link > mip-img:not([style],[width]),\
 mip-link > mip-img,\
 #image,\
 #scroll-image > div > [src],\
-#scroll-image > div > [data-src]');
+#scroll-image > div > [data-src],\
+.chapter-content > div > a > img');
 		if(elements != null){
 			for (var i = 0;i<elements.size();i++) {
 				var element = elements.get(i);
