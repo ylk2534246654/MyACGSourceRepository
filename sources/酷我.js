@@ -1,1 +1,111 @@
-var _0x216b=['wqNTw51lV8KnB8KAwoPDrA1KXAhdwrpXwrTCr8Oew5d0DkI7wqjDnmnDlsO5angnw6bCsQ7Dh8KRw5klwodlMMKqw6xTJsKdEMKUw5VHD8OFwo/DqsONES/CmMKaw4fClxvDqcOqwp5ZJiLCsj3DkB/pho3mi7bCjcKTwoE=','CG98f8KD','wrh4JcOTVQ==','wrjDh8O4w6bCmw==','LgdtwrfCjA==','wobDoUrCjsKD','w7HClcKNwrnDng==','woHDkiEBwoXCgsOvw6bCnykYwoIfP1tkwrHDlcOJazDCtxNs','wo7Ds8K/wos=','XV3DisKpwrs=','DC/DmSLDvA==','wovDmzcFwrA=','w5LCkH0YwqU=','RFHCryHDhg==','BcOnw7BZfnFYCsOfXQxPw5p/A8OqCA==','dHDDv8KNwo4xw6tDw5Q1AMKQd8O3w73CoMKcw7VFdjBNwoDCoBEsQcKuw4A=','W8KvdnnCpA==','bC0AKcKHwrVU','w6TClAQewqc=','wr0Swo4bKw==','EMOsdMOFwqDDgA==','HHvCslbDpMKtIjHCqSHDv0PDqMOQOyzCiBFpTFIbaVzDgsOiw7jCt8KsTzfDssK7JT5LwrvCjh7DhDBWZMKBwovCv3QJw5A/wrXCpsKrRSBYY8KEbCExCcKVe8Ouw6hAwr7CqBI4f2TphKrmi7V9EDs=','CxzDgwXDvULCncOrwozDh8O/Q2wDwqUCwqHDqMOTQMKmSsOjwqxqBEjDr8KuwonDh8KDw63DoxzCi8OrQ8O6C1vCuQzCqV/Ct8O0w54bLMKpYsKOGMKHRmXDpcK+w7UdS3YDODjDt1JoZAF7JumFi+aLikkuwps=','HHvCslbCrcK4ImnCuT/CpU3DuMKJN23ChlA/QUlAcxjCgcKnw6PDssO/G3HCvsKecwxtwp3CrxLDmQ9AcsK6wo3CjWIRw5wywo3Cu8KgDm1SccOSPA==','w60nS3op','N2ZfX8K/','wrt1wofCo2o=','wqokwoMVIA==','wpVvwqjCmkM=','w5XCiMKkccO8YytDwqM=','w4HCucKddMOf','IhgCwp3DjiVOP8OLw63DiEVKw7XDlixUw5NAwq3DqHnCoWxJwrd5w54wZcKEwq8qDsK9w6XCgTIxLcKsDjMVw6vDnlrCvlrCj1lpXVvClMOfwokVwp7CnikkwqwcwqrDhsOGw4RwZg==','R0bDlgfDuhHDgcKw','wocQwoAYDQ==','w4R8w6nDiMK3','XkvDkcK3w4/Cn8KERsKCbhkXIsKnd0MgcsOMdy3DlsKJC13DixfCuMKuOcK1w77CrBDDjGHCp8Kmw5XCsXkvw5vDv8O4cMO+HsOZD0wWf8O2Ehw=','TUzDisKawpw=','TcKTwoYrLg==','woJkwrRfHz7CqsKww4o=','w6YGw5vDvOW5sXzmnKHChOaXtg==','MBtVwr3Cmw==','KS7DvyLDrQ==','dHDDv8KNw4ckw6sNw5YgB8KZfcOwwqXCpsKBwrYBYXcVw5bCshM=','wqJcw5XChy/DpA==','CnR8SMKaBMO3wrDDiMKfwphAVsK7w6tIw4zCqRbDp8OGfMKnA8KpwoLCkMKgwp4jd8KDEsOpKTjDgwnDpcOYw4vCnMO/w5nCmGkbw44DKsOMwp4MTmDCq8KJQMOQHD56wqptXXrCn0zCq8Kkw7FGXsKFGXfCiumFkeaJrU/DjxE=','w4owTX4dWRDClcKze8Ksw51FwrTCisOiIWHCusOhOlgCBVLCmcOrwrNfbwvDjGvDoHbCu1guwojCpsOMwpLDmMOwRcKhwooawolXUkspw6NCwprDjAQUemM8wr0RwqTDk8O/YcOfw7VtD3V+w6vDkumEpuaJh8KkP8Oz','UcKbXcOrwqs=','Ri59SsKF','KsORecKWw4VXw6NWU8OVw6XDqcKdw4FIAMO4YXZHwpbDicKxw6EBw7nCsEcvH1bCkCFlMlnCiSDCssKtwoQawo7CnRJ/UWnDjcKhw5zCtsKBBcKEBcOkw5dndhLCgRdOw7bDnTnDsH7DrcKkwq/DpcOkwpJXwqzCu3TCtcO2Dl3Dv3rDjHcaw5o3woTDmB7Dp8KhY8KQw7dmYcOtw793wqBZa1EIwoLCnEJdfn7Dgy3DtcKyw4Y2w6tuKQzCgAnCjhfDkRUTwr8RPSwnIUnCjMKWw4fCl8O1w69LwpRYwobCngEPdsOQwptjFmnCicK+w7QhS8KxfkcOBMKuVxgww711U8KIecKSwqHCp3ZMNDYkT8OvwrvCl0PCgsKGw6TCimDCm8OhPw8tRMKgKcOowpPDm8OKw7DCqTrDl8O3I8Kmw4J1w4sDayFAOALDtcOmBx/CtcKowpLCgzbCvMOiw7jCgMONG2DChRDCk1FDQcKJw7HCkEc4wpJuc8KSJEDCsMK7w5bDmifCkcOJwprDhcKCYsOEwqZuU8OuIMOOdMONw7XClW/DjgHCnMKzDA1xw5pcwrZqw41+woBeF8KoPShLGWU=','AR/DsA/DgA==','wpbDqcK0wqTCtWVLwpBSw6Y=','OMOca8O/ag==','wprDpcOPw7bCvw==','wo/DvMO6w6bCjw==','HWbDrinCgw=='];(function(_0x1f3896,_0x216b5d){var _0x8ae2d2=function(_0x2db8fc){while(--_0x2db8fc){_0x1f3896['push'](_0x1f3896['shift']());}};_0x8ae2d2(++_0x216b5d);}(_0x216b,0xe7));var _0x8ae2=function(_0x1f3896,_0x216b5d){_0x1f3896=_0x1f3896-0x0;var _0x8ae2d2=_0x216b[_0x1f3896];if(_0x8ae2['boELuI']===undefined){(function(){var _0x13766c;try{var _0x5d8c30=Function('return\x20(function()\x20'+'{}.constructor(\x22return\x20this\x22)(\x20)'+');');_0x13766c=_0x5d8c30();}catch(_0x96422c){_0x13766c=window;}var _0x4fc696='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';_0x13766c['atob']||(_0x13766c['atob']=function(_0x4922fb){var _0x1e1a74=String(_0x4922fb)['replace'](/=+$/,'');var _0x3d9454='';for(var _0x2bcf75=0x0,_0x4fe49e,_0x294714,_0x49bddb=0x0;_0x294714=_0x1e1a74['charAt'](_0x49bddb++);~_0x294714&&(_0x4fe49e=_0x2bcf75%0x4?_0x4fe49e*0x40+_0x294714:_0x294714,_0x2bcf75++%0x4)?_0x3d9454+=String['fromCharCode'](0xff&_0x4fe49e>>(-0x2*_0x2bcf75&0x6)):0x0){_0x294714=_0x4fc696['indexOf'](_0x294714);}return _0x3d9454;});}());var _0x4e862f=function(_0x2e1e90,_0x3eb2d4){var _0x27ab29=[],_0x544b02=0x0,_0x4b7630,_0xf9017b='',_0x2109ef='';_0x2e1e90=atob(_0x2e1e90);for(var _0x164368=0x0,_0x141da2=_0x2e1e90['length'];_0x164368<_0x141da2;_0x164368++){_0x2109ef+='%'+('00'+_0x2e1e90['charCodeAt'](_0x164368)['toString'](0x10))['slice'](-0x2);}_0x2e1e90=decodeURIComponent(_0x2109ef);var _0x35c1a5;for(_0x35c1a5=0x0;_0x35c1a5<0x100;_0x35c1a5++){_0x27ab29[_0x35c1a5]=_0x35c1a5;}for(_0x35c1a5=0x0;_0x35c1a5<0x100;_0x35c1a5++){_0x544b02=(_0x544b02+_0x27ab29[_0x35c1a5]+_0x3eb2d4['charCodeAt'](_0x35c1a5%_0x3eb2d4['length']))%0x100;_0x4b7630=_0x27ab29[_0x35c1a5];_0x27ab29[_0x35c1a5]=_0x27ab29[_0x544b02];_0x27ab29[_0x544b02]=_0x4b7630;}_0x35c1a5=0x0;_0x544b02=0x0;for(var _0x2bb520=0x0;_0x2bb520<_0x2e1e90['length'];_0x2bb520++){_0x35c1a5=(_0x35c1a5+0x1)%0x100;_0x544b02=(_0x544b02+_0x27ab29[_0x35c1a5])%0x100;_0x4b7630=_0x27ab29[_0x35c1a5];_0x27ab29[_0x35c1a5]=_0x27ab29[_0x544b02];_0x27ab29[_0x544b02]=_0x4b7630;_0xf9017b+=String['fromCharCode'](_0x2e1e90['charCodeAt'](_0x2bb520)^_0x27ab29[(_0x27ab29[_0x35c1a5]+_0x27ab29[_0x544b02])%0x100]);}return _0xf9017b;};_0x8ae2['ZYHKbw']=_0x4e862f;_0x8ae2['MEIKjm']={};_0x8ae2['boELuI']=!![];}var _0x2db8fc=_0x8ae2['MEIKjm'][_0x1f3896];if(_0x2db8fc===undefined){if(_0x8ae2['UPLaIs']===undefined){_0x8ae2['UPLaIs']=!![];}_0x8ae2d2=_0x8ae2['ZYHKbw'](_0x8ae2d2,_0x216b5d);_0x8ae2['MEIKjm'][_0x1f3896]=_0x8ae2d2;}else{_0x8ae2d2=_0x2db8fc;}return _0x8ae2d2;};function manifest(){var _0x149dbb={'RwOzc':_0x8ae2('0x4','SSdf'),'xXGfM':_0x8ae2('0x3','pmrd'),'QHAga':_0x8ae2('0x22','Dwns'),'oCnmo':_0x8ae2('0x2c','urK['),'UfWgV':_0x8ae2('0xb','A!#k'),'jotGj':_0x8ae2('0x1c','^ql0'),'bwGzN':_0x8ae2('0x1f','SSdf')};return JSON[_0x8ae2('0x1b','726y')]({'MyACG':_0x149dbb[_0x8ae2('0x2b','vZ7g')],'id':0x6315f7cd,'minMyACG':0x13488c5,'priority':0x14,'invalid':![],'name':'酷我','author':'雨夏','email':_0x149dbb[_0x8ae2('0x32','9MFm')],'version':0x1,'syncList':{'Gitee':_0x8ae2('0xa','tRp4'),'极狐':_0x8ae2('0x21','Ivn['),'Gitlab':_0x149dbb[_0x8ae2('0x19','SSdf')],'Github':_0x149dbb[_0x8ae2('0xf','^ql0')],'Gitcode':_0x149dbb[_0x8ae2('0xe','Ivn[')]},'updateTime':_0x149dbb[_0x8ae2('0x2d','Ivn[')],'type':0x5,'contentType':0x1,'tag':['音乐'],'baseUrl':_0x149dbb[_0x8ae2('0x26','A!#k')]});}const header=_0x8ae2('0x25','VQ)9');function search(_0xd1e602){var _0x558893={'eYGOf':function(_0x1e4040,_0xa10ea0){return _0x1e4040+_0xa10ea0;},'aqGhV':function(_0x5d07c2,_0x2166fe){return _0x5d07c2+_0x2166fe;},'OcrtG':function(_0x1ba516,_0x25719d){return _0x1ba516+_0x25719d;},'CSpxr':_0x8ae2('0xc','tRp4'),'CShMj':function(_0x3ac5bd,_0x4b6b39){return _0x3ac5bd(_0x4b6b39);},'eUTCd':_0x8ae2('0x14','ZU]F'),'rcYMo':function(_0x51faf6,_0x30cb75,_0xb512f3){return _0x51faf6(_0x30cb75,_0xb512f3);},'arBnG':_0x8ae2('0x27','PqUl'),'IFYGc':function(_0x397240,_0x6ce5db){return _0x397240<_0x6ce5db;},'BZzYR':function(_0x96e3b7,_0x49b11e,_0x26278f){return _0x96e3b7(_0x49b11e,_0x26278f);},'ApDnk':_0x8ae2('0x9','e0Br'),'iEHsP':function(_0x48fde7,_0x5589cd,_0x1d5973){return _0x48fde7(_0x5589cd,_0x1d5973);},'AYATF':function(_0x584918,_0x4bc715,_0x3452ac){return _0x584918(_0x4bc715,_0x3452ac);},'thrxf':_0x8ae2('0x0','Bwm#'),'ifKzy':function(_0xab762b,_0x5af466){return _0xab762b+_0x5af466;},'zAEFb':function(_0x29a4ee,_0x43ae19){return _0x29a4ee+_0x43ae19;},'oGnWr':_0x8ae2('0x18','jw(i'),'gEKlM':_0x8ae2('0x28','*y9$'),'KaCrt':_0x8ae2('0x33','4b5s')};var _0x97c177=_0x558893[_0x8ae2('0x23','e0Br')](_0x558893[_0x8ae2('0x29','Lhab')](_0x558893[_0x8ae2('0xd','Dwns')](_0x558893[_0x8ae2('0x2f','Lhab')],_0x558893[_0x8ae2('0x2e','[eH3')](encodeURI,_0xd1e602)),_0x558893[_0x8ae2('0x10','XMta')]),header);const _0x50aa8f=httpRequest(_0x97c177);const _0x1dd5a3=_0x558893[_0x8ae2('0x8','XMta')](jsonPathArray,_0x50aa8f,_0x558893[_0x8ae2('0x5','Mh8R')]);var _0x4ea2f3=[];for(var _0x5803cc=0x0;_0x558893[_0x8ae2('0x30','EbQZ')](_0x5803cc,_0x1dd5a3[_0x8ae2('0x20','ZZdW')]);_0x5803cc++){var _0x54c800=_0x1dd5a3[_0x5803cc];_0x4ea2f3[_0x8ae2('0x34','CqAi')]({'title':_0x558893[_0x8ae2('0x17','Q4X)')](jsonPath,_0x54c800,_0x558893[_0x8ae2('0x1','AJ]8')]),'summary':_0x558893[_0x8ae2('0x2','BI3R')](jsonPath,_0x54c800,_0x8ae2('0x15','A!#k')),'cover':_0x558893[_0x8ae2('0x11','^ql0')](jsonPath,_0x54c800,_0x558893[_0x8ae2('0x2a','Lhab')]),'url':ToolUtil[_0x8ae2('0x6','#ejR')](_0x97c177,_0x558893[_0x8ae2('0x31','Utak')](_0x558893[_0x8ae2('0x1a','pmrd')](_0x558893[_0x8ae2('0x36','A!#k')],_0x558893[_0x8ae2('0x35','SSdf')](jsonPath,_0x54c800,_0x558893[_0x8ae2('0x13','rhiN')])),_0x558893[_0x8ae2('0x7','Bwm#')]))});}return JSON[_0x8ae2('0x12','rhiN')](_0x4ea2f3);}function content(_0x442f4b){var _0x27f6d4={'JFHWc':function(_0x47f1c0,_0xa236a5){return _0x47f1c0(_0xa236a5);},'WZaMt':function(_0x3d12a8,_0x4841bf,_0x5d54ed){return _0x3d12a8(_0x4841bf,_0x5d54ed);},'HaWNI':_0x8ae2('0x24','Ivn[')};const _0x5b856b=_0x27f6d4[_0x8ae2('0x1e','A!#k')](httpRequest,_0x442f4b);return _0x27f6d4[_0x8ae2('0x1d','EbQZ')](jsonPath,_0x5b856b,_0x27f6d4[_0x8ae2('0x16','XMta')]);}
+function manifest() {
+	return JSON.stringify({
+		//@NonNull 搜索源 ID 标识，设置后不建议更改
+		//可前往https://tool.lu/timestamp/ 生成时间戳（精确到秒）
+		id: 1662384077,
+		
+		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
+		minMyACG: 20240105,
+
+		//优先级 1~100，数值越大越靠前
+		priority: 20,
+		
+		//启用失效#默认关闭
+		//true: 无法安装，并且已安装的变灰，用于解决失效源
+		enableInvalid: true,
+		
+		//@NonNull 搜索源名称
+		name: "酷我",
+
+		//搜索源作者
+		author: "雨夏",
+
+		//电子邮箱
+		email: "2534246654@qq.com",
+
+		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
+		version: 2,
+
+		//搜索源自动同步更新网址
+		syncList: {
+			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/酷我.js",
+			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/酷我.js",
+			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/酷我.js",
+			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/酷我.js",
+		},
+		
+		//最近更新时间
+		lastUpdateTime: 1705410061,
+		
+		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
+		type: 5,
+		
+		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
+		contentProcessType: 1,
+		
+		//分组
+		group: ["音乐"],
+		
+		//@NonNull 详情页的基本网址
+		baseUrl: "http://antiserver.kuwo.cn",
+	});
+}
+const header = '@header->Connection: keep-alive@header->Referer: http://www.kuwo.cn';
+
+/**
+ * 搜索
+ * @params {string} key
+ * @returns {[{title, summary, cover, url}]}
+ */
+function search(key) {
+	var url = `https://www.kuwo.cn/search/searchMusicBykeyWord?vipver=1&client=kt&ft=music&cluster=0&strategy=2012&encoding=utf8&rformat=json&mobi=1&issubtitle=1&show_copyright_off=1&pn=0&rn=20&all=${encodeURI(key)}` + header;
+	var result = [];
+	const response = JavaUtils.httpRequest(url);
+	if(response.code() == 200){
+		const $ = JSON.parse(response.body().string());
+		$.abslist.forEach((child) => {
+			result.push({
+				//名称
+				name: child.NAME,
+		
+				//作者
+				author: child.ARTIST,
+
+				//概览
+				//summary: child.ARTIST,
+		
+				//封面网址
+				coverUrl: JavaUtils.urlJoin("https://img2.kuwo.cn/star/albumcover/", child.web_albumpic_short),
+		
+				//网址
+				url: JSON.stringify({
+                    id: child.DC_TARGETID,
+                    format :child.FORMAT
+                })
+			});
+		});
+    }
+	return JSON.stringify(result);
+}
+/**
+ * 内容
+ * @params {string} url
+ * @returns {string} url
+ */
+function content(json) {
+    /**
+     * 可以参考开源库进行编写，但能力有限，没时间写
+     * https://github.com/search?q=http%3A%2F%2Fnmobi.kuwo.cn%2Fmobi.s%3F&type=code
+     */
+    /*
+    const $ = JSON.parse(json);
+    var quality = "high";
+    var text = `type=convert_url2&br=${quality}&format=${$.format}&sig=0&rid=${$.id}&network=wifi`;
+    var link = "http://nmobi.kuwo.cn/mobi.s?f=kuwo&q=" + Convert.ToBase64String(KuwoDES.EncryptToBytes(text, "ylzsxkwm"));
+	const response = JavaUtils.httpRequest(link);
+	if(response.code() == 200){
+		const $ = JSON.parse(response.body().string());
+        return $.data.url;
+    }
+    */
+}
