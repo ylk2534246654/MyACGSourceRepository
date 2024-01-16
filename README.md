@@ -16,6 +16,10 @@ https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/repository.j
 极狐代码托管平台
 https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/repository.json
 
+### 导入方式：
+
+**进入搜索源管理页** -> 右上角选项 -> 存储库 -> **进入存储库页面** -> 点击右上角“+” -> **弹出网址输入对话框** -> 输入存储库网址 -> 点击确定
+
 # 客户端下载地址
 ### [123网盘](https://www.123pan.com/s/NS2UVv-hfC53.html)
 
