@@ -51,7 +51,7 @@ https://www.kancloud.cn/ylk2534246654/myacg/3014260
 
 <img src="https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/assets/mm_reward_qrcode.png" width="250">
 
-
+![从网络搜索订阅](https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/assets/mm_reward_qrcode.png)
 
 #### [2.点击爱发电赞助](https://afdian.net/a/myacg_app) 
 
