@@ -1,5 +1,21 @@
-# 存储库
+# <div align="center">存储库</div>
 
+<p align="center">
+    <a href="https://api.github.com/repos/ylk2534246654/MyACGSourceRepository">
+        <img alt="license" src="https://img.shields.io/github/license/ylk2534246654/MyACGSourceRepository" />
+    </a>
+    <a href="https://api.github.com/repos/ylk2534246654/MyACGSourceRepository">
+        <img alt="stars" src="https://img.shields.io/badge/dynamic/json?color=blue&label=stars&query=stargazers_count&url=https://api.github.com/repos/ylk2534246654/MyACGSourceRepository"/>
+    </a>
+    <a href="https://api.github.com/repos/ylk2534246654/MyACGSourceRepository">
+        <img alt="forks" src="https://img.shields.io/badge/dynamic/json?color=blue&label=forks&query=forks_count&url=https://api.github.com/repos/ylk2534246654/MyACGSourceRepository" />
+    </a>
+    <a href="https://api.github.com/repos/ylk2534246654/MyACGSourceRepository">
+        <img alt="Chinese doc" src="https://img.shields.io/badge/文档-简体中文-blue" />
+    </a>
+</p>
+
+# 导入
 *导入推荐按先后排序，不能正常导入的换下一个。*
 
 *选择一个导入即可，不要全部导入，会造成每次加载缓慢，各平台同步更新，只是会由于平台原因少一两个*
