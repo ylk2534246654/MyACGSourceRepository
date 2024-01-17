@@ -47,14 +47,11 @@ https://www.kancloud.cn/ylk2534246654/myacg/3014260
 
 #### 无偿赞助渠道
 
-#### [1.扫码微信赞助（推荐）](https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/assets/mm_reward_qrcode.png) 
+#### [1.扫码微信赞助（推荐）](https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/assets/mm_reward_qrcode.png) 
 
-<img src="https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/assets/mm_reward_qrcode.png" width="250">
-
-
-![从网络搜索订阅](https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/assets/mm_reward_qrcode.png)
-
-![从网络搜索订阅](https://p.sda1.dev/8/6e86773f5331ca79ee7a27a331e1fe62/%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97.png)
+<a href="https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/assets/mm_reward_qrcode.png">
+    <img src="https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/assets/mm_reward_qrcode.png" width="250">
+</a>
 
 #### [2.点击爱发电赞助](https://afdian.net/a/myacg_app) 
 
