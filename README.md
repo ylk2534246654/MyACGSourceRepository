@@ -50,8 +50,10 @@ https://www.kancloud.cn/ylk2534246654/myacg/3014260
 #### [1.扫码微信赞助（推荐）](https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/assets/mm_reward_qrcode.png) 
 
 <a href="https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/assets/mm_reward_qrcode.png">
-    <img src="https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/assets/mm_reward_qrcode.png" width="250">
+    <img src="https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/assets/mm_reward_qrcode.png">
 </a>
+
+
 
 #### [2.点击爱发电赞助](https://afdian.net/a/myacg_app) 
 
