@@ -49,9 +49,7 @@ https://www.kancloud.cn/ylk2534246654/myacg/3014260
 
 #### [1.扫码微信赞助（推荐）](https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/assets/mm_reward_qrcode.png) 
 
-<a href="https://api.github.com/repos/ylk2534246654/MyACGSourceRepository">
-    <img src="https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/assets/mm_reward_qrcode.png" width="250">
-</a>
+<img src="https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/assets/mm_reward_qrcode.png" width="250">
 
 #### [2.点击爱发电赞助](https://afdian.net/a/myacg_app) 
 
