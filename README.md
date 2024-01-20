@@ -18,16 +18,16 @@
 *选择一个导入即可，不要全部导入，会造成每次加载缓慢，各平台同步更新，可能会由于平台原因少一两个*
 
 GitCode 代码托管平台
-https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/repository.json
+[https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/repository.json](myacg://source_repository?url=https%3A%2F%2Fgitcode.net%2FCynric_Yx%2FMyACGSourceRepository%2F-%2Fraw%2Fmaster%2Frepository.json)
 
 Github 代码托管平台（有墙）
-https://raw.githubusercontent.com/ylk2534246654/MyACGSourceRepository/master/repository.json
+[https://github.com/ylk2534246654/MyACGSourceRepository/master/repository.json](myacg://source_repository?url=https%3A%2F%2Fgithub.com%2Fylk2534246654%2FMyACGSourceRepository)
 
 Gitlab 代码托管平台
-https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/repository.json
+[https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/repository.json](myacg://source_repository?url=https%3A%2F%2Fgitlab.com%2Fylk2534246654%2FMyACGSourceRepository%2F-%2Fraw%2Fmaster%2Frepository.json)
 
 极狐代码托管平台
-https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/repository.json
+[https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/repository.json](myacg://source_repository?url=https%3A%2F%2Fjihulab.com%2Fylk2534246654%2FMyACGSourceRepository%2F-%2Fraw%2Fmaster%2Frepository.json)
 
 #### 导入方式：
 
