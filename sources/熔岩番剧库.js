@@ -145,7 +145,7 @@ function getHeader() {
 function search(key) {
 	var result = [];
 	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(apiBaseUrl, `/v2/search?value=${encodeURI(key)}` + getHeader()));
-	if(response.code() == 401){
+	if(response.code() == 401 || response.code() == 403){
 		JavaUtils.setUserLoginStatus(false);
 	}
 	if(response.code() == 200){
@@ -188,10 +188,11 @@ function find(type, year) {
 	}
 	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(apiBaseUrl, `/v2/index/query@post->{"year":"${year}","type":"${type}"}${getHeader()}@header->content-type:application/json`));
 	var result = [];
-	if(response.code() == 401){
+	if(response.code() == 401 || response.code() == 403){
 		JavaUtils.setUserLoginStatus(false);
 	}
 	if(response.code() == 200){
+		JavaUtils.setUserLoginStatus(true);
 		const $ = JSON.parse(response.body().string());
 		$.data.forEach((child) => {
 			result.push({
@@ -221,10 +222,11 @@ function find(type, year) {
  */
 function detail(id) {
 	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(apiBaseUrl, `/v2/anime/get?id=${id}&full=true${getHeader()}`));
-	if(response.code() == 401){
+	if(response.code() == 401 || response.code() == 403){
 		JavaUtils.setUserLoginStatus(false);
 	}
 	if(response.code() == 200){
+		JavaUtils.setUserLoginStatus(true);
 		const $ = JSON.parse(response.body().string()).data;
 
 		return JSON.stringify({
@@ -297,7 +299,7 @@ function tocs(id, date) {
 		url = url + '&drive=' + drive + getHeader();
 
 		const tocResponse = JavaUtils.httpRequest(url);
-		if(tocResponse.code() == 401){
+		if(tocResponse.code() == 401 || tocResponse.code() == 403){
 			JavaUtils.setUserLoginStatus(false);
 		}
 		if(tocResponse.code() == 200){
