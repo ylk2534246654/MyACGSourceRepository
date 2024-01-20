@@ -45,45 +45,13 @@ https://www.kancloud.cn/ylk2534246654/myacg/3014260
 
 ### 请我喝杯奶茶
 
-#### 无偿赞赏渠道
-
 ### [1.扫码微信赞赏（推荐）](https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/assets/mm_reward_qrcode.png) 
 
 <a href="https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/assets/mm_reward_qrcode.png">
     <img src="https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/assets/mm_reward_qrcode.png" width="400">
 </a>
 
-
-
 ### [2.点击爱发电赞赏](https://afdian.net/a/myacg_app) 
-
-### 无偿赞赏介绍
-
-感谢支持，你的支持是我不断更新下去的动力！
-
-> 无偿赞赏数额大于等于 30￥ 
-
-· 加入雨夏的搜索源描述文件底部无偿赞赏名单
-
-· 加入 MyACG 无偿赞赏名单
-
----
-
-留言大概格式请填写为
-
-~~~
-昵称：
-留言：
-~~~
-
-#### ⚠请注意
-
-*如未填写信息，则表示默认放弃加入无偿赞赏名单*
-
-*赞赏一经完成即不可撤销或退款。*
-### 有偿赞赏渠道
-
-> 进入 MyACG 内进行高级功能捐赠，但不会上无偿赞赏名单。
 
 ### 无偿赞赏致谢
 
