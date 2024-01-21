@@ -26,6 +26,14 @@ function manifest() {
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
 		version: 3,
 
+		//自述文件网址
+		readmeUrlList: [
+			"https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/README.md",
+			"https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/README.md",
+			"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/README.md",
+			"https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/README.md"
+		],
+		
 		//搜索源自动同步更新网址
 		syncList: {
 			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/Fantuan.js",

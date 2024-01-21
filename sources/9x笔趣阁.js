@@ -24,7 +24,15 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 6,
+		version: 7,
+
+		//自述文件网址
+		readmeUrlList: [
+			"https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/README.md",
+			"https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/README.md",
+			"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/README.md",
+			"https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/README.md"
+		],
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -43,12 +51,14 @@ function manifest() {
 		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
 		contentProcessType: 1,
 		
-		//首选项配置 type：（1:文本框，2:开关，3:单选框，4:编辑框，5:跳转链接）
+		//首选项配置 type：（1:按钮，2:开关，3:单选框，4:编辑框，5:跳转链接）
 		preferenceOptionList: [
 			{
 				type: 3,
 				key: "baseUrl",
-				name: "不能加载尝试切换线路",
+				name: "切换线路",
+				summary: "不能加载的时候可以切换",
+				locationList: ["sourceDetail","detail"],
 				entries: {
 					"elklk": "https://novel-api.elklk.cn",
 					"xiaoppkk": "https://novel-api.xiaoppkk.com",
@@ -57,7 +67,16 @@ function manifest() {
 					"qwezxc4": "https://novelapi.qwezxc4.cn",
 				},
 				defaultValue: 2
-			}
+			},
+			// {
+			// 	type: 3,
+			// 	key: "source_id",
+			// 	name: "选择子源",
+			// 	summary: "当点击，执行函数",
+			// 	bindDetail: true,	//绑定详情页，在 detail,content,ImageDecoder
+			// 	locationList: ["detail", "content"],//菜单位置 main, sourceDetail, search, detail, content, find, settings
+			// 	functionName: "getSourceSub"
+			// }
 		],
 		
 		//分组
@@ -95,6 +114,39 @@ function manifest() {
 		}
 	});
 }
+
+/**
+ * @param {string} param 详情页参数
+ */
+function getSourceSub(id) {
+	var items = [];
+	if(id != null){
+		var url = JavaUtils.urlJoin(baseUrl, `/cdn/book/source/${id}.html`);
+		const response = JavaUtils.httpRequest(url);
+		if(response.code() == 200){
+			JSON.parse(_toString(response.body().string())).result.list.forEach((child) => {
+				items.push({
+					//名称
+					name: JavaUtils.cleanHtml(child.name),
+	
+					//概览
+					summary: JavaUtils.cleanHtml(child.new_title),
+	
+					//值
+					value: child.source_id
+				})
+			});
+		}
+	}
+	return JSON.stringify({
+		//默认值
+		defaultValue: "1",
+		
+		//项目列表
+		itemList: items
+	});
+}
+
 
 const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://novel-api.xiaoxiaommkk.com");
 /**
