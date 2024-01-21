@@ -25,6 +25,14 @@ function manifest() {
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
 		version: 12,
+		
+		//自述文件网址
+		readmeUrlList: [
+			"https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/README.md",
+			"https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/README.md",
+			"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/README.md",
+			"https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/README.md"
+		],
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -35,7 +43,7 @@ function manifest() {
 		},
 
 		//最近更新时间
-		lastUpdateTime: 1704649534,
+		lastUpdateTime: 1705815693,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
