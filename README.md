@@ -50,10 +50,6 @@ https://www.kancloud.cn/ylk2534246654/myacg/3014260
 
 <img src="https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/assets/mm_reward_qrcode.png" width="400">
 
-### [2.点击爱发电赞赏](https://afdian.net/a/myacg_app) 
+### [2.爱发电赞赏](https://afdian.net/a/myacg_app) 
 
-### 无偿赞赏致谢
-
-| 昵称  | 累计数额 | 留言  |
-|  ----  | ----  | ----  |
-|  咸鱼  |  100￥ |      |
+### [3.哔哩哔哩充电](https://space.bilibili.com/65987144) 
