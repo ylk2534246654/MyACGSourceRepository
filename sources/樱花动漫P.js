@@ -43,7 +43,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1705284208,
+		lastUpdateTime: 1705907572,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -77,7 +77,7 @@ function manifest() {
 		}
 	});
 }
-const baseUrl = "https://www.iyhdmm.com";
+const baseUrl = "https://www.iyhdmz.com";
 /**
  * 已关闭网址
  * yhdmp.live
@@ -86,6 +86,7 @@ const baseUrl = "https://www.iyhdmm.com";
  * yhdmz.org
  * m.iyhdmm.com
  * www.iyhdmm.com
+ * m.iyhdmz.com
  * 
  * 和风车动漫P是同源同模板不同名的网站
  */
