@@ -42,7 +42,10 @@ Gitlab 代码托管平台
 ### 搜索源开发手册
 
 MyACG 搜索源开发手册(2024年01月25日更新)：
-https://www.kancloud.cn/ylk2534246654/myacg/3014260
+
+[看云](https://www.kancloud.cn/ylk2534246654/myacg/3014260)
+
+[Wiki](https://github.com/ylk2534246654/MyACGSourceRepository/wiki/%E6%90%9C%E7%B4%A2%E6%BA%90%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C)
 
 ### 请我喝杯奶茶
 
