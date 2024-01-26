@@ -5,7 +5,7 @@ function manifest() {
 		id: 1656743080,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230911,
+		minMyACG: 20240122,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 80,
@@ -49,7 +49,7 @@ function manifest() {
 				type: 3,
 				key: "drive",
 				name: "选择节点",
-				entries: {
+				itemList: {
 					"节点1": "pigqq.com",
 					"节点2": "pysmei.com",
 				},

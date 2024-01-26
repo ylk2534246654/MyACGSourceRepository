@@ -5,7 +5,7 @@ function manifest() {
 		id: 1648714588,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20231215,
+		minMyACG: 20240122,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 50,
@@ -57,7 +57,7 @@ function manifest() {
 				type: 3,
 				key: "baseUrl",
 				name: "选择网络类型",
-				entries: {
+				itemList: {
 					"非移动网络":	"https://www.wenku8.net",
 					"移动网络":	"https://www.wenku8.cc",
 				},

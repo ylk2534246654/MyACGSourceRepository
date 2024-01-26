@@ -5,7 +5,7 @@ function manifest() {
 		id: 1652949783,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230911,
+		minMyACG: 20240122,
 		
 		//优先级 1~100，数值越大越靠前
 		priority: 50,
@@ -64,7 +64,7 @@ function manifest() {
 				type: 3,
 				key: "baseUrl",
 				name: "使用镜像网址",
-				entries: {
+				itemList: {
 					"cn.baozimh.com": "https://cn.baozimh.com",
 					"cn.webmota.com": "https://cn.webmota.com",
 					"tw.baozimh.com": "https://tw.baozimh.com",

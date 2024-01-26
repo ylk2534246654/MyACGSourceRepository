@@ -5,7 +5,7 @@ function manifest() {
 		id: 1660927525,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20240105,
+		minMyACG: 20240122,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 80,
@@ -57,7 +57,7 @@ function manifest() {
 				type: 3,
 				key: "drive",
 				name: "选择节点",
-				entries: {
+				itemList: {
 					"OneDrive 新加坡":	"2AG",
 					"Cloudflare":		"2AG_CF",
 					"CF 环大陆自选": 	"2AG_CF2",

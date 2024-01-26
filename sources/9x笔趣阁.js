@@ -5,7 +5,7 @@ function manifest() {
 		id: 1660118962,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20240105,
+		minMyACG: 20240122,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 40,
@@ -59,7 +59,7 @@ function manifest() {
 				name: "切换线路",
 				summary: "不能加载的时候可以切换",
 				locationList: ["sourceDetail","detail"],
-				entries: {
+				itemList: {
 					"elklk": "https://novel-api.elklk.cn",
 					"xiaoppkk": "https://novel-api.xiaoppkk.com",
 					"xiaoxiaommkk": "https://novel-api.xiaoxiaommkk.com",
