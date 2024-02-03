@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 5,
+		version: 6,
 
 		//自述文件网址
 		readmeUrlList: [
@@ -43,7 +43,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1705284208,
+		lastUpdateTime: 1706922479,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -73,8 +73,8 @@ const baseUrl = "http://bumimi12.com";
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	//http://119.91.129.193:7899
-	var url = `http://119.29.15.48:12334/sssv.php?top=10&q=${encodeURI(key)}@header->referer:${baseUrl}@header->Origin:${baseUrl}`;
+	//119.91.129.193:7899，119.29.15.48:12334
+	var url = `http://43.136.41.123:21768/sssv.php?top=10&q=${encodeURI(key)}@header->referer:${baseUrl}@header->Origin:${baseUrl}`;
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
