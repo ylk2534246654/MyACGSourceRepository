@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 10,
+		version: 11,
 
 		//自述文件网址
 		readmeUrlList: [
@@ -43,7 +43,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1705907572,
+		lastUpdateTime: 1706965843,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -77,7 +77,7 @@ function manifest() {
 		}
 	});
 }
-const baseUrl = "https://www.iyhdmz.com";
+const baseUrl = "https://www.iyhdmw.com";
 /**
  * 已关闭网址
  * yhdmp.live
@@ -87,6 +87,7 @@ const baseUrl = "https://www.iyhdmz.com";
  * m.iyhdmm.com
  * www.iyhdmm.com
  * m.iyhdmz.com
+ * www.iyhdmz.com
  * 
  * 和风车动漫P是同源同模板不同名的网站
  */
