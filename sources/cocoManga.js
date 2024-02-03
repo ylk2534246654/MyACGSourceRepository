@@ -135,7 +135,7 @@ function manifest() {
 
 		//全局 HTTP 请求头列表
 		httpRequestHeaderList: {
-			"user-agent": `Mozilla/5.0 (Linux; Android;) AppleWebKit (KHTML, like Gecko) Mobile Safari TimeStamp/${JavaUtils.getPreference().getLong("headerTimeStamp")}`,
+			"user-agent": `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0 TimeStamp/${JavaUtils.getPreference().getLong("headerTimeStamp")}`,
 			"Referer": baseUrl
 		},
 	})
