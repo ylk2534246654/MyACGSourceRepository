@@ -37,7 +37,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1704020184,
+		lastUpdateTime: 1709976509,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -214,6 +214,10 @@ function tocs(item_list) {
 				newChapters.push({
 					//章节名称
 					name: child.title,
+
+					//最近更新时间
+					lastUpdateTime: child.first_pass_time,
+					
 					//章节网址
 					url: JavaUtils.urlJoin(baseUrl, `/api/novel/book/reader/full/v1/?device_platform=android&parent_enterfrom=novel_channel_search.tab.&aid=2329&platform_id=1&group_id=${child.group_id}&item_id=${child.item_id}`)
 				});
