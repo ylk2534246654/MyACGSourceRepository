@@ -59,7 +59,7 @@ function manifest() {
 		*/
 
 		//首选项配置 type：（1:文本框，2:开关，3:单选框，4:编辑框，5:跳转链接）
-		preferenceOptionList: [
+		preferenceList: [
 			{
 				type: 3,
 				key: "baseUrl",

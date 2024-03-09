@@ -5,7 +5,7 @@ function manifest() {
 		id: 1682766107,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20231215,
+		minMyACG: 20240122,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 30,
@@ -44,7 +44,7 @@ function manifest() {
 		contentProcessType: 2,
 		
 		//首选项配置 type：（1:文本框，2:开关，3:单选框，4:编辑框，5:跳转链接）
-		preferenceOptionList: [
+		preferenceList: [
 			{
 				type: 2,
 				key: "isPcUserAgent",

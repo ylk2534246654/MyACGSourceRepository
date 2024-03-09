@@ -5,7 +5,7 @@ function manifest() {
 		id: 1654838580,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230911,
+		minMyACG: 20240122,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 0,
@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//自述文件网址
 		readmeUrlList: [
@@ -43,13 +43,27 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1694318014,
+		lastUpdateTime: 1709974234,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
 		
 		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
 		contentProcessType: 1,
+		
+		//首选项配置 type：（1:文本框，2:开关，3:单选框，4:编辑框，5:跳转链接）
+		preferenceList: [
+			{
+				type: 3,
+				key: "baseUrl",
+				name: "使用镜像网址",
+				itemList: {
+					"api.vomicmh.com": "http://api.vomicmh.com",
+					"119.23.243.52": "http://119.23.243.52",
+				},
+				defaultValue: 1
+			}
+		],
 		
 		//分组
 		group: ["漫画"],
@@ -91,7 +105,11 @@ function manifest() {
 }
 
 const baseUrl = "https://www.iewoai.com";
-const apiBaseUrl = "http://api.vomicmh.com";
+const apiBaseUrl = JavaUtils.getPreference().getString("baseUrl", "http://119.23.243.52");
+/**
+ * 备份：
+ * http://api.vomicmh.com
+ */
 
 /**
  * 搜索

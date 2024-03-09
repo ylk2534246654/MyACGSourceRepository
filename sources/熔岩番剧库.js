@@ -5,7 +5,7 @@ function manifest() {
 		id: 1660927525,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20240122,
+		minMyACG: 20240204,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 80,
@@ -51,8 +51,8 @@ function manifest() {
 		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
 		contentProcessType: 1,
 		
-		//首选项配置 type：（1:文本框，2:开关，3:单选框，4:编辑框，5:跳转链接）
-		preferenceOptionList: [
+		//首选项列表 type：（1:文本框，2:开关，3:单选框，4:编辑框，5:跳转链接）
+		preferenceList: [
 			{
 				type: 3,
 				key: "drive",
