@@ -234,6 +234,10 @@ function tocs(mid) {
             newChapters.push({
                 //章节名称
                 name: child.title,
+				
+				//最近更新时间
+				lastUpdateTime: child.update_time,
+
                 //章节网址
                 url: JSON.stringify({
                     mid: mid,
