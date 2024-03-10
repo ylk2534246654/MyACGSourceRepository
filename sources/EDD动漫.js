@@ -43,7 +43,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1703913935,
+		lastUpdateTime: 1710060433,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -214,7 +214,7 @@ function detail(url) {
 			coverUrl: cssDocument.selectFirst('div.details-pic > img').attr('src'),
 			
 			//启用章节反向顺序
-			enableChapterReverseOrder: true,
+			enableChapterReverseOrder: false,
 			
 			//目录网址/非外链无需使用
 			tocs: tocs(cssDocument, url)

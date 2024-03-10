@@ -43,7 +43,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1705284208,
+		lastUpdateTime: 1710060433,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -90,13 +90,13 @@ function UpdateBaseUrl() {
 		if(response.code() == 200){
 			var _baseUrl = JavaUtils.substring(response.body().string(),"www.","\"");
 			if(_baseUrl != null){
-				_baseUrl = "http://www." + String(_baseUrl).replace(/a@b/g, '.');
+				_baseUrl = "https://www." + String(_baseUrl).replace(/a@b/g, '.');
 				edit.putString("baseUrl", _baseUrl);//更新基础网址
 			}
 		}
 		edit.putLong("baseUrlTime", time).apply();//更新时间
 	}
-	JavaUtils.getManifest().setBaseUrl(preference.getString("baseUrl",defaultBaseUrl));
+	JavaUtils.getManifest().setBaseUrl(preference.getString("baseUrl", defaultBaseUrl));
 }
 
 //网页浏览时不需要，所以未使用 httpRequestHeaderList
@@ -244,7 +244,7 @@ function tocs(document) {
 
 /**
  * 内容（部分搜索源通用过滤规则）
- * @version 2024/1/15
+ * @version 2024/3/15
  * 布米米、嘻嘻动漫、12wo动漫、路漫漫、风车动漫P、樱花动漫P、COCO漫画、Nike、cocoManga
  * @return {string} content
  */
@@ -259,11 +259,15 @@ function content(url) {
 		//https://xx.xxx.xx/xxx/xxx/0000	#[a-z]{3}\/[a-z]{3}\/\d
 		'|([a-z]{3}/[a-z]{3}/\\d)' +
 
+		//https://xxxx.xxxxx.xxx:8004/d/0000?c=1&n=xxxx
 		//https://tg.xxx.com/sc/0000?n=xxxx #[a-z]{2}\/\d{4}\?
-		'|([a-z]{2}/\\d{4}\\?)' +
+		'|([a-z]{1,2}/\\d{4}\\?)' +
 
-		//https://xx.xxx.xyz/vh1/158051 	#[\w]{3}\/\d{6}$
-		'|([\\w]{3}/\\d{6}$)' +
+		//https://xx.xxx.xyz/vh1/158051				#[\w]{3}\/\d{6}$
+		//https://br.xxxx.com:8891/vh3/3342			#[\w]{3}/[\d]+$
+		//https://xxx.xxxxxx.xxx/v1jik8t6k/14395	#v[\\w]+/[\\d]+$
+		//https://xxxx.xxxxx.xxx/vjkit2/14395		#v[\\w]+/[\\d]+$
+		'|(v[\\w]+/[\\d]{2,6}$)' +
 
 		//https://xx.xx.com/0000/00/23030926631.txt 	#[\d]{4}\/\d{2}\/\d{11}\.txt
 		'|([\\d]{4}/\\d{2}/\\d{11}\\.txt)' +
@@ -287,14 +291,17 @@ function content(url) {
 		//https://xxxx.xxxx.xx:00000/kmopef/3.woff # [\w/]+[/km][\w/]+\.woff
 		'|([\\w/]+[/km][\\w/]+\\.woff)' +
 
-		//https://aba.xxxxxxx.cn/slot?2377029035902478992-27158		#slot\?[\d-]+$
+		//https://xxx.xxxxxxx.cn/slot?2377029035902478992-27158		#slot\?[\d-]+$
 		'|(slot\\?[\\d-]+$)' +
+
+		//https://xxxx.xxx/co/8656d6f784ebbaa5e141eb142a8ce579?t=0.06966902110642081&d=1&m=1&h=B**8
+		'|([a-zA-z]{2}/[\\w]{32}\\?t=)' +
+
+		//https://xxxxx.xxxx.xxx/uploads/m3u8/clnu9xc1t0002jxas9wfic5jq.ts
+		'|(uploads/m3u8/[\\w]{25}\\.ts)' +
 
 		//https://xxxx.xxxx.com/o.js # o\.js
 		//'|o\\.js' + //无法正常加载
-
-		//https://br.xxxx.com:8891/vh3/3342
-		'|([\\w]{3}/[\\d]+$)' +
 
 		//（!易误拦截） 例子过长，无法展示		#[\\w]{3}\?[\\S]{400,}
 		'|([\\w]{3}\?[\\S]{400,})' +
