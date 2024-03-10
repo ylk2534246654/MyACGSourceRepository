@@ -43,7 +43,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1705284208,
+		lastUpdateTime: 1710060906,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -81,7 +81,7 @@ function manifest() {
 	})
 }
 
-const baseUrl = "http://www.mxdm.tv";
+const baseUrl = "https://www.mxdm9.com";
 /**
  * 备用：
  * http://www.mxdm.tv
@@ -131,7 +131,7 @@ function find(region, label, year, sort) {
 	if(label == "全部")label = "";
 	if(year == "全部")year = "";
 
-	var url = JavaUtils.urlJoin(baseUrl, `https://www.mxdm9.com/show/${region}--${sort}-${label}--------${year}.html`);
+	var url = JavaUtils.urlJoin(baseUrl, `/show/${region}--${sort}-${label}--------${year}.html`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
