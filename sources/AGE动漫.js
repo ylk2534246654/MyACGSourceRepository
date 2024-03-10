@@ -43,7 +43,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1704443247,
+		lastUpdateTime: 1710055011,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -306,8 +306,9 @@ function tocs(document) {
 			newChapters.push({
 				//章节名称
 				name: chapterElement.selectFirst('a').text(),
+
 				//章节网址
-				url: chapterElement.selectFirst('a').absUrl('href')
+				url: chapterElement.selectFirst('a').absUrl('href').replace("http://","https://")
 			});
 		}
 		newTocs.push({
