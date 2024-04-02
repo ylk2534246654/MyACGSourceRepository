@@ -167,7 +167,7 @@ function isEnableAuthenticator(url, responseHtml) {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl,`/search?searchString=${encodeURI(key)}`);
+	var url = JavaUtils.urlJoin(baseUrl,`/search?searchString=${encodeURI(key)}@enableFrameSource->true`);
 	const response = JavaUtils.httpRequest(url);
 	var result= [];
 	if(response.code() == 200){
@@ -204,7 +204,7 @@ function search(key) {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(state, type, orderBy) {
-	var url = JavaUtils.urlJoin(baseUrl, `/show?status=${state}&mainCategoryId=${type}&orderBy=${orderBy}`);
+	var url = JavaUtils.urlJoin(baseUrl, `/show?status=${state}&mainCategoryId=${type}&orderBy=${orderBy}@enableFrameSource->true`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -238,7 +238,7 @@ function find(state, type, orderBy) {
  * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
-	const response = JavaUtils.httpRequest(url);
+	const response = JavaUtils.httpRequest(url + "@enableFrameSource->true");
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
 		return JSON.stringify({
