@@ -26,9 +26,6 @@ Github 代码托管平台（有墙）
 Gitlab 代码托管平台
 [https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/repository.json](myacg://source_repository?url=https%3A%2F%2Fgitlab.com%2Fylk2534246654%2FMyACGSourceRepository%2F-%2Fraw%2Fmaster%2Frepository.json)
 
-极狐代码托管平台
-[https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/repository.json](myacg://source_repository?url=https%3A%2F%2Fjihulab.com%2Fylk2534246654%2FMyACGSourceRepository%2F-%2Fraw%2Fmaster%2Frepository.json)
-
 #### 导入方式：
 
  1. 复制网址 -> **进入搜索源管理页** -> 右上角选项 -> 存储库 -> **进入存储库页面** -> 点击右上角“+” -> **弹出网址输入对话框** -> 输入存储库网址 -> 点击确定
