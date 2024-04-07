@@ -46,8 +46,8 @@ MyACG 搜索源开发手册(2024年01月25日更新)：
 
 ### 请我喝杯奶茶
 
-### [1.扫码微信赞赏（推荐）](https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/assets/mm_reward_qrcode.png) 
+### [1.扫码微信赞赏（推荐）](https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/assets/mm_reward_qrcode.png) 
 
-<img src="https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/assets/mm_reward_qrcode.png" width="400">
+<img src="https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/assets/mm_reward_qrcode.png" width="400">
 
 ### [2.哔哩哔哩充电](https://space.bilibili.com/65987144) 
