@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1704249735,
+		lastUpdateTime: 1713173585,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -53,7 +53,7 @@ function manifest() {
 		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: baseUrl,
+		baseUrl: JavaUtils.getPreference().getString("baseUrl", defaultBaseUrl),
 		
 		//发现
 		findList: {
@@ -192,10 +192,31 @@ function manifest() {
 		}
 	});
 }
-const baseUrl = "http://www.dmand5.com";
+const defaultBaseUrl = "http://www.dmd77.com";
 /**
- * rentry.org/dmd8
+ * 发布页
+ * https://rentry.org/dmd8
+ * http://www.dmand5.com
  */
+
+function UpdateBaseUrl() {
+	var preference = JavaUtils.getPreference();
+	var baseUrlTime = preference.getLong("baseUrlTime");
+	var oneDay = 1000*60*60*24;
+	var time = new Date().getTime();
+	if(baseUrlTime < time - oneDay){//超过一天
+		const response = JavaUtils.httpRequest("https://rentry.org/dmd8");
+		var edit = preference.edit();
+		if(response.code() == 200){
+			var _baseUrl = JavaUtils.substring(response.body().string(),"网址：","\n");
+			if(!JavaUtils.isEmpty(_baseUrl)){
+				edit.putString("baseUrl", "http://" + _baseUrl);//更新基础网址
+			}
+		}
+		edit.putLong("baseUrlTime", time).apply();//更新时间
+	}
+	JavaUtils.getManifest().setBaseUrl(preference.getString("baseUrl", defaultBaseUrl));
+}
 
 /**
  * 搜索
@@ -203,7 +224,8 @@ const baseUrl = "http://www.dmand5.com";
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl, '/index.php?m=vod-search@post->wd=' + encodeURI(key));
+	UpdateBaseUrl()
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), '/index.php?m=vod-search@post->wd=' + encodeURI(key));
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -234,9 +256,10 @@ function search(key) {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(region, label, year, order) {
+	UpdateBaseUrl()
 	if(year == "全部")year = "0";
 	var result = [];
-	var url = JavaUtils.urlJoin(baseUrl, `/vod-list-id-${region}-pg-1-order--by-${order}-class-${label}-year-${year}-letter--area--lang-.html`);
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), `/vod-list-id-${region}-pg-1-order--by-${order}-class-${label}-year-${year}-letter--area--lang-.html`);
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
@@ -265,6 +288,7 @@ function find(region, label, year, order) {
  * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
+	UpdateBaseUrl()
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();

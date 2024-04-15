@@ -5,7 +5,7 @@ function manifest() {
 		id: 1654927709,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230911,
+		minMyACG: 20240122,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 20,
@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 3,
+		version: 4,
 
 		//自述文件网址
 		readmeUrlList: [
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1704248827,
+		lastUpdateTime: 1713173530,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -49,11 +49,25 @@ function manifest() {
 		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
 		contentProcessType: 2,
 		
+		//首选项配置 type：（1:按钮，2:开关，3:单选框，4:编辑框，5:跳转链接）
+		preferenceList: [
+			{
+				type: 3,
+				key: "baseUrl",
+				name: "切换线路",
+				summary: "不能加载的时候可以切换",
+				bindDetail: false,
+				locationList: ["sourceDetail","detail"],
+				functionName: "getSourceSub",
+				defaultValue: defaultBaseUrl
+			}
+		],
+		
 		//分组
 		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: baseUrl,
+		baseUrl: JavaUtils.getPreference().getString("baseUrl", defaultBaseUrl),
 		
 		//发现
 		findList: {
@@ -77,7 +91,32 @@ function manifest() {
 	});
 }
 
-const baseUrl = "http://www.nicotv.wtf";
+/**
+ * @param {string} param 详情页参数
+ */
+function getSourceSub(_) {
+	var items = [];
+	const response = JavaUtils.httpRequest("http://www.v1.nicotv.bet/");
+	if(response.code() == 200){
+		const document = response.body().cssDocument();
+		var elements = document.select("p > a[href]");
+		for (var i = 0;i < elements.size();i++) {
+			var element = elements.get(i);
+			items.push({
+				//名称
+				name: element.selectFirst('a').absUrl('href'),
+
+				//值
+				value: element.selectFirst('a').absUrl('href'),
+			})
+		}
+	}
+	return JSON.stringify({
+		//项目列表
+		itemList: items
+	});
+}
+const defaultBaseUrl = "http://www.nico-tv.me";
 /**
  * 备份：
  * 导航：http://help.nicotv.info/
@@ -94,7 +133,7 @@ const baseUrl = "http://www.nicotv.wtf";
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl, '/video/search/' + encodeURI(key));
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), '/video/search/' + encodeURI(key));
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -129,7 +168,7 @@ function find(region, label, year, order) {
 	if(label == "全部")label = "";
 	if(year == "全部")year = "";
 	
-	var url = JavaUtils.urlJoin(baseUrl, `/video/type3/${label}-${region}-${year}----${order}.html`);
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), `/video/type3/${label}-${region}-${year}----${order}.html`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
