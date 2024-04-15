@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 4,
+		version: 5,
 
 		//自述文件网址
 		readmeUrlList: [
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1710060906,
+		lastUpdateTime: 1713162048,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -79,12 +79,13 @@ function manifest() {
 	})
 }
 
-const baseUrl = "https://www.mxdm9.com";
+const baseUrl = "https://www.mxdm6.com";
 /**
  * 备用：
  * http://www.mxdm.tv
  * http://www.mxdm.cc
  * http://www.mxdmx.com
+ * https://www.mxdm6.com
  * http://www.mxdm8.com
  * http://www.mxdm9.com
  */
