@@ -28,7 +28,6 @@ function manifest() {
 
 		//自述文件网址
 		readmeUrlList: [
-			"https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/README.md",
 			"https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/README.md",
 			"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/README.md",
 			"https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/README.md"
@@ -36,7 +35,6 @@ function manifest() {
 		
 		//搜索源自动同步更新链接
 		syncList: {
-			"极狐":   "https://jihulab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/嘻嘻动漫.js",
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/嘻嘻动漫.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/嘻嘻动漫.js",
 			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/嘻嘻动漫.js",
