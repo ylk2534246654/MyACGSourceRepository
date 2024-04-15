@@ -74,7 +74,9 @@ function manifest() {
 const baseUrl = "https://www.45zw.cc";
 /**
  * 网站记录
+ * https://www.45zw.cc
  * https://www.45zw.org
+ * https://www.45zhongwen.com
  */
 
 /**
