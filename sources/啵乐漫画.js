@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1695361695,
+		lastUpdateTime: 1713245520,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -70,7 +70,7 @@ function manifest() {
 	});
 }
 
-const baseUrl = "http://www.6k6.cc";
+const baseUrl = "http://www.bolebl.com";
 /**
  * http://www.6k6.cc
  * http://www.bolebl.com
