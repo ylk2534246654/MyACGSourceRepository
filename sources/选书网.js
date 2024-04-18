@@ -80,7 +80,7 @@ function manifest() {
 }
 
 const baseUrl = "http://www.xuanshu.org";
-//失效：www.ixuanshu.org,www.xuanshu.com,www.xuanshu.org
+//失效：www.ixuanshu.org,www.xuanshu.com,www.xuanshu.org,wap.xuanshu.org
 
 /**
  * 搜索
