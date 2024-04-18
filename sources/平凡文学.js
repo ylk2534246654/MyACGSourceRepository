@@ -74,7 +74,7 @@ function manifest() {
 }
 
 const baseUrl = "http://www.pfwx.com";
-//备份：http://www.pksge.info
+//备份：http://www.pksge.info,http://www.pksge.org
 
 /**
  * 搜索
