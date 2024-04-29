@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 9,
+		version: 10,
 
 		//自述文件网址
 		readmeUrlList: [
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1704530913,
+		lastUpdateTime: 1714378836,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -58,9 +58,22 @@ function manifest() {
 		//发现
 		findList: {
 			category: {
-				"label": ["恋爱","后宫","百合","校园","穿越","龙傲天","欢乐向","女性视角","人外","奇幻","冒险","青春","异世界","妹妹","病娇","性转","NTR","青梅竹马","战斗","魔法","黑暗","伪娘","悬疑","转生","大小姐","战争","科幻","复仇","斗智","纯爱","猎奇","经营","异能","JK","职场","惊悚","机战","轻文学","末日","女儿","旅行","纯爱?","美食","耽美","大逃杀","推理","治愈","萝莉","游记","游戏","犯罪","男性向","音乐","末世","爱情","群像","恐怖","JC","宅文化","间谍","日本文学","脑洞","温馨","救赎","竞技","哲学","灵异","爱情悬疑","神怪","热血","浪漫","心理","神话","格斗","越","策略","伤痛","都市","短篇集","社团"]
+				"order": {
+					"月点击榜":"monthvisit",
+					"周点击榜":"weekvisit",
+					"月推荐榜":"monthvote",
+					"周推荐榜":"weekvote",
+					"月鲜花榜":"monthflower",
+					"周鲜花榜":"weekflower",
+					"月鸡蛋榜":"monthegg",
+					"周鸡蛋榜":"weekegg",
+					"最近更新":"lastupdate",
+					"最新入库":"postdate",
+					"收藏榜":"goodnum",
+					"新书榜":"newhot",
+				}
 			},
-			"轻小说": ["label"]
+			"轻小说": ["order"]
 		},
 		
 		//网络限流 - 如果{regexUrl}匹配网址，则限制其{period}毫秒内仅允许{maxRequests}个请求
@@ -94,7 +107,7 @@ const baseUrl = "https://www.bilinovel.com";
  */
 function isEnableAuthenticator(url, responseHtml) {
 	//对框架进行拦截，检索关键字，
-	if(responseHtml.length > 1 && responseHtml.indexOf('检查站点连接是否安全') != -1){
+	if(responseHtml != null && responseHtml.length > 1 && responseHtml.indexOf('检查站点连接是否安全') != -1){
 		return true;
 	}
 	return false;
@@ -106,7 +119,8 @@ function isEnableAuthenticator(url, responseHtml) {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl, `/search.html@post->searchkey=${encodeURI(key)}&searchtype=all`);
+	JavaUtils.webViewEvalJS(JavaUtils.urlJoin(baseUrl, "/login.php"), "")
+	var url = JavaUtils.urlJoin(baseUrl, `/search.html?searchkey=${encodeURI(key)}@enableFrameSource->true`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -156,8 +170,8 @@ function search(key) {
  * 发现
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
-function find(label) {
-	var url = JavaUtils.urlJoin(baseUrl, `/tagarticle/${encodeURI(label)}/1.html`);
+function find(order) {
+	var url = JavaUtils.urlJoin(baseUrl, `/top/${encodeURI(order)}/1.html`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -169,9 +183,12 @@ function find(label) {
 				//名称
 				name: element.selectFirst('.book-title').text(),
 				
-				//概览
-				summary: element.selectFirst('.book-desc').text(),
+				//作者
+				author: element.selectFirst('.book-author').text(),
 				
+				//概览
+				summary: element.selectFirst('.book-intro').text(),
+
 				//封面网址
 				coverUrl: element.selectFirst('img').absUrl('data-src'),
 				
