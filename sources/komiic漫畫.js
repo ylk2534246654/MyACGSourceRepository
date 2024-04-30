@@ -15,7 +15,7 @@ function manifest() {
 		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
-		name: "komiic漫畫",
+		name: "Komiic漫畫",
 
 		//搜索源作者
 		author: "雨夏",
@@ -35,9 +35,9 @@ function manifest() {
 
 		//搜索源自动同步更新网址
 		syncList: {
-			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/komiic漫畫.js",
-			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/komiic漫畫.js",
-			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/komiic漫畫.js",
+			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/Komiic漫畫.js",
+			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/Komiic漫畫.js",
+			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/Komiic漫畫.js",
 		},
 		
 		//最近更新时间
