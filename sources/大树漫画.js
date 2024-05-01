@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1703913935,
+		lastUpdateTime: 1714544186,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -104,7 +104,7 @@ function search(key) {
 				summary: element.selectFirst('.who > a').text(),
 				
 				//封面网址
-				coverUrl: element.selectFirst('div.img > a > img').absUrl('src'),
+				coverUrl: element.selectFirst('div.img > a > img').absUrl('data-original'),
 				
 				//网址
 				url: element.selectFirst('div.img > a').absUrl('href')
@@ -135,7 +135,7 @@ function find(label) {
 				summary: element.selectFirst('.who > a').text(),
 				
 				//封面网址
-				coverUrl: element.selectFirst('div.img > a > img').absUrl('src'),
+				coverUrl: element.selectFirst('div.img > a > img').absUrl('data-original'),
 				
 				//网址
 				url: element.selectFirst('div.img > a').absUrl('href')
@@ -167,7 +167,7 @@ function detail(url) {
 			summary: document.selectFirst('div.bookms > div > div.ms').text(),
 	
 			//封面网址
-			coverUrl: document.selectFirst('div.img > img').absUrl('src'),
+			coverUrl: document.selectFirst('div.img > img').absUrl('data-original'),
 			
 			//启用章节反向顺序
 			enableChapterReverseOrder: true,
