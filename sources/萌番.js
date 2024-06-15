@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 5,
+		version: 6,
 
 		//自述文件网址
 		readmeUrlList: [
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1694957803,
+		lastUpdateTime: 1718439819,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -59,9 +59,9 @@ function manifest() {
 		findList: {
 			category: {
 				"region": {
-					"新番": "122A",
-					"番剧": "T22A",
-					"剧场": "l22A",
+					"新番": "20",
+					"番剧": "21",
+					"剧场": "22",
 				},
 				"order": {
 					"时间排序": "time",
@@ -90,8 +90,9 @@ function manifest() {
 
 /**
  * https://mengfan.tv
+ * https://www.mitang.tv
  */
-const baseUrl = "https://www.mitang.tv/";
+const baseUrl = "https://mengfan.tv";
 
 /**
  * 搜索
@@ -99,32 +100,32 @@ const baseUrl = "https://www.mitang.tv/";
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl, '/mitang-s/?wd=' + encodeURI(key));
+	var url = JavaUtils.urlJoin(baseUrl, '/search/?wd=' + encodeURI(key));
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
-		var elements = document.select(".module-items > div");
+		var elements = document.select(".hl-list-item");
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			result.push({
 				//名称
-				name: element.selectFirst('.module-card-item-title').text(),
+				name: element.selectFirst('.hl-item-title').text(),
 				
 				//最后章节名称
-				lastChapterName: element.selectFirst('.module-item-note').text(),
+				lastChapterName: element.selectFirst('.remarks').text(),
 
 				//最近更新时间
-				//lastUpdateTime: element.selectFirst('').text(),
+				//lastUpdateTime: element.selectFirst('.video_play_status').text(),
 
 				//概览
-				//summary: element.selectFirst('').text(),
+				summary: element.selectFirst('.hl-item-sub').text(),
 				
 				//封面网址
-				coverUrl: element.selectFirst('.lazy').absUrl('data-original'),
+				coverUrl: element.selectFirst('.hl-item-thumb').absUrl('data-original'),
 				
 				//网址
-				url: element.selectFirst('.module-card-item-poster').absUrl('href')
+				url: element.selectFirst('.hl-item-thumb').absUrl('href')
 			});
 		}
 	}
@@ -136,32 +137,32 @@ function search(key) {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(region, order) {
-	var url = JavaUtils.urlJoin(baseUrl, `/vodshow/by/${order}/id/${region}/`);
+	var url = JavaUtils.urlJoin(baseUrl, `/show/${region}/by/${order}/`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
-		var elements = document.select(".module-item");
+		const elements = document.select(".hl-list-item");
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			result.push({
 				//名称
-				name: element.selectFirst('.module-poster-item-title').text(),
+				name: element.selectFirst('.hl-item-title').text(),
 				
 				//最后章节名称
-				lastChapterName: element.selectFirst('.module-item-note').text(),
+				lastChapterName: element.selectFirst('.remarks').text(),
 
 				//最近更新时间
-				//lastUpdateTime: element.selectFirst('').text(),
+				//lastUpdateTime: element.selectFirst('.video_play_status').text(),
 
 				//概览
-				//summary: element.selectFirst('').text(),
+				summary: element.selectFirst('.hl-item-sub').text(),
 				
 				//封面网址
-				coverUrl: element.selectFirst('.lazy').absUrl('data-original'),
+				coverUrl: element.selectFirst('.hl-item-thumb').absUrl('data-original'),
 				
 				//网址
-				url: element.selectFirst('.module-poster-item').absUrl('href')
+				url: element.selectFirst('.hl-item-thumb').absUrl('href')
 			});
 		}
 	}
@@ -178,19 +179,19 @@ function detail(url) {
 		const document = response.body().cssDocument();
 		return JSON.stringify({
 			//标题
-			name: document.selectFirst('.module-info-heading > h1').text(),
+			name: document.selectFirst('.hl-dc-title').text(),
 			
 			//作者
 			//author: ,
 			
 			//最近更新时间
-			lastUpdateTime: document.selectFirst('.module-info-item:nth-child(7) > p').text(),
+			lastUpdateTime: document.selectFirst('div.hl-full-box > ul > li:nth-child(11) > em').nextSibling().text(),
 			
 			//概览
-			summary: document.selectFirst('.show-desc').text(),
+			summary: document.selectFirst('div.hl-full-box > ul > li:nth-child(12) > em').nextSibling().text(),
 	
 			//封面网址
-			coverUrl: document.selectFirst('.module-item-pic > img').absUrl('data-original'),
+			coverUrl: document.selectFirst('.hl-dc-pic > .hl-item-thumb').absUrl('data-original'),
 			
 			//启用章节反向顺序
 			enableChapterReverseOrder: false,
@@ -208,10 +209,10 @@ function detail(url) {
  */
 function tocs(document) {
 	//目录标签元素选择器
-	const tagElements = document.select('.module-tab-items-box > div');
+	const tagElements = document.select('.hl-tabs-btn');
 	
 	//目录元素选择器
-	const tocElements = document.select('.module-play-list-content');
+	const tocElements = document.select('.hl-tabs-box');
 	
 	//创建目录数组
 	var newTocs = [];
@@ -221,7 +222,7 @@ function tocs(document) {
 		var newChapters = [];
 		
 		//章节元素选择器
-		var chapterElements = tocElements.get(i).select('a');
+		var chapterElements = tocElements.get(i).select('ul > li');
 		
 		for (var i2 = 0;i2 < chapterElements.size();i2++) {
 			var chapterElement = chapterElements.get(i2);
@@ -242,4 +243,3 @@ function tocs(document) {
 	}
 	return newTocs;
 }
-

@@ -73,7 +73,7 @@ function manifest() {
 		},
 	});
 }
-const baseUrl = "https://buding3.com";
+const baseUrl = "https://buding20.com";
 /**
  * buding2.com
  * buding3.com
