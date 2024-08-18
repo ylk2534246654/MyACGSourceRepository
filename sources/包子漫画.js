@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 14,
+		version: 15,
 
 		//自述文件网址
 		readmeUrlList: [
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1723965720,
+		lastUpdateTime: 1723968311,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -68,6 +68,18 @@ function manifest() {
 					"tw.baozimh.com": "https://tw.baozimh.com",
 					"www.baozimh.com": "https://www.baozimh.com",
 					"www.webmota.com": "https://www.webmota.com",
+				},
+				defaultValue: 0
+			},
+			{
+				type: 3,
+				key: "imgBaseUrl",
+				name: "切换图源线路",
+				itemList: {
+					"自动": "default",
+					"线路1": "s1.baozicdn.com",
+					"线路2": "s2.baozicdn.com",
+					"线路3": "s2.baozimh.com",
 				},
 				defaultValue: 0
 			}
@@ -321,7 +333,12 @@ function content(url) {
 				imageElement = contentElement.selectFirst('[src]');
 				srcUrl = imageElement.absUrl('src');
 			}
-			//srcUrl = srcUrl.replace("baozicdn.com","baozimh.com");
+
+			var imgBaseUrl = JavaUtils.getPreference().getString("imgBaseUrl", "default");
+			if(imgBaseUrl != "default"){
+				srcUrl = String(srcUrl).replace(/[\w]+\.(baozicdn|baozimh)\.com/g, imgBaseUrl); 
+			}
+
 			result.push(srcUrl + '@imageWidth->' + imageWidth + '@imageHeight->' + imageHeight);
 		}
 		return JSON.stringify(result);
