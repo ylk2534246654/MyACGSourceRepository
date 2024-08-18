@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 13,
+		version: 14,
 
 		//自述文件网址
 		readmeUrlList: [
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1694531401,
+		lastUpdateTime: 1723965720,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -321,7 +321,7 @@ function content(url) {
 				imageElement = contentElement.selectFirst('[src]');
 				srcUrl = imageElement.absUrl('src');
 			}
-			srcUrl = srcUrl.replace("baozicdn.com","baozimh.com");
+			//srcUrl = srcUrl.replace("baozicdn.com","baozimh.com");
 			result.push(srcUrl + '@imageWidth->' + imageWidth + '@imageHeight->' + imageHeight);
 		}
 		return JSON.stringify(result);
