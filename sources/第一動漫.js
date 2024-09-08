@@ -5,7 +5,7 @@ function manifest() {
 		id: 1704291571,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20231215,
+		minMyACG: 20240105,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 20,
@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//自述文件网址
 		readmeUrlList: [
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1704291571,
+		lastUpdateTime: 1725806100,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -80,8 +80,41 @@ function manifest() {
 			},
 			"动漫": ["genre","status","label","year","order"]
 		},
+		
+		//启用用户登录
+		enableUserLogin: true,
+		
+		//用户登录网址
+		userLoginUrl: JavaUtils.urlJoin(baseUrl, "/登入頁面/"),
+		
+		//需要用户登录的功能（search，detail，content，find）
+		requiresUserLoginList: ["content"],
 	});
 }
+/*
+ * 是否完成登录
+ * @param {string} url		网址
+ * @param {string} responseHtml	响应源码
+ * @return {boolean}  登录结果
+ */
+function isUserLoggedIn(url, responseHtml) {
+	if(!JavaUtils.isEmpty(responseHtml) && responseHtml.indexOf('個人資料') != -1){
+		return true;
+	}
+	return verifyUserLoggedIn();
+}
+/*
+ * 验证完成登录
+ * @return {boolean} 登录结果
+ */
+function verifyUserLoggedIn() {
+	var d1_lscache_vary = JavaUtils.getCookie(baseUrl, "d1_lscache_vary");
+	if(!JavaUtils.isEmpty(d1_lscache_vary)){
+		return true;
+	}
+	return false;
+}
+
 const baseUrl = "https://d1-dm.online";
 /**
  * contact@d1-dm.online

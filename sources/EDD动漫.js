@@ -12,7 +12,7 @@ function manifest() {
 		
 		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		enableInvalid: false,
+		enableInvalid: true,
 		
 		//@NonNull 搜索源名称
 		name: "EDD动漫",
@@ -122,7 +122,12 @@ function manifest() {
 		},
 	});
 }
-const baseUrl = "https://www.hdddex.com";
+const baseUrl = "https://www.edddh4.com";
+/**
+ * https://www.edddm.com/
+ * www.edddh4.com
+ * www.edddm.net
+ */
 
 /**
  * 搜索

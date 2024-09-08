@@ -15,7 +15,7 @@ function manifest() {
 		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
-		name: "双辞动漫(nyafun)",
+		name: "NyaFun动漫(双辞动漫)",
 
 		//搜索源作者
 		author: "雨夏",

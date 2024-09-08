@@ -5,7 +5,7 @@ function manifest() {
 		id: 1652945404,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20231215,
+		minMyACG: 20240105,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 60,
@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 7,
+		version: 8,
 
 		//自述文件网址
 		readmeUrlList: [
@@ -41,19 +41,33 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1705061258,
+		lastUpdateTime: 1725784865,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
 		
 		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
 		contentProcessType: 2,
-		
+
+		//首选项配置 type：（1:按钮，2:开关，3:单选框，4:编辑框，5:跳转链接）
+		preferenceList: [
+			{
+				type: 3,
+				key: "baseUrl",
+				name: "切换线路",
+				summary: "不能加载的时候可以切换",
+				bindDetail: false,
+				locationList: ["sourceDetail","detail"],
+				functionName: "getSourceSub",
+				defaultValue: JavaUtils.getPreference().getString("defaultBaseUrl", defaultBaseUrl)
+			}
+		],
+
 		//分组
 		group: ["影视", "动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: baseUrl,
+		baseUrl: JavaUtils.getPreference().getString("baseUrl", defaultBaseUrl),
 
 		//网络限流 - 如果{regexUrl}匹配网址，则限制其{period}毫秒内仅允许{maxRequests}个请求
 		networkRateLimitList: [
@@ -89,12 +103,60 @@ function manifest() {
 		}
 	});
 }
+const defaultBaseUrl = "https://www.dmxq.fun";
 
-const baseUrl = "https://www.dmxq.fun";
 /**
  * www.dmxq.me
  * 发布页：www.damiq.cc
  */
+function getDomainInfo() {
+	const response = JavaUtils.httpRequest("https://www.dmxqscreen.com");
+	if(response.code() == 200){
+		var encodedData = response.body().cssDocument().selectFirst("#domainData").attr("data-info");
+		if(!JavaUtils.isEmpty(encodedData)){
+			return JSON.parse(JavaUtils.base64DecodeToString(encodedData));
+		}
+	}
+}
+function UpdateBaseUrl() {
+	var preference = JavaUtils.getPreference();
+	var baseUrlTime = preference.getLong("baseUrlTime");
+	var oneDay = 1000*60*60*24;
+	var time = new Date().getTime();
+	if(baseUrlTime < time - oneDay){//超过一天
+		var domainInfo = getDomainInfo();
+		var edit = preference.edit();
+		if(domainInfo != null && domainInfo.length > 0){
+			edit.putString("defaultBaseUrl", `https://${domainInfo[0]}`);//更新基础网址
+		}
+		edit.putLong("baseUrlTime", time).apply();//更新时间
+	}
+	if(JavaUtils.getManifest().getBaseUrl() == defaultBaseUrl){
+		JavaUtils.getManifest().setBaseUrl(preference.getString("defaultBaseUrl", defaultBaseUrl));
+	}
+}
+/**
+ * @param {string} param 详情页参数
+ */
+function getSourceSub(_) {
+	var items = [];
+	var domainInfo = getDomainInfo();
+	if(domainInfo != null && domainInfo.length > 0){
+		domainInfo.forEach(element => {
+			items.push({
+				//名称
+				name: `https://${element}`,
+	
+				//值
+				value: `https://${element}`,
+			})
+		});
+	}
+	return JSON.stringify({
+		//项目列表
+		itemList: items
+	});
+}
 
 /**
  * 是否启用人机身份验证
@@ -114,7 +176,8 @@ function isEnableAuthenticator(url, responseHtml) {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl, '/vodsearch/-------------.html?wd=' + encodeURI(key));
+	UpdateBaseUrl()
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), '/vodsearch/-------------.html?wd=' + encodeURI(key));
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -146,11 +209,12 @@ function search(key) {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(type, region, label, year, order) {
+	UpdateBaseUrl()
 	if(region == "全部")region = "";
 	if(label == "全部")label = "";
 	if(year == "全部")year = "";
 	
-	var url = JavaUtils.urlJoin(baseUrl, `/vodshow/${type}-${region}-${order}-${label}--------${year}.html`);
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), `/vodshow/${type}-${region}-${order}-${label}--------${year}.html`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -181,6 +245,7 @@ function find(type, region, label, year, order) {
  * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
+	UpdateBaseUrl()
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();

@@ -110,7 +110,7 @@ function UpdateBaseUrl() {
 		const response = JavaUtils.httpRequest("https://rentry.org/agefans");
 		var edit = preference.edit();
 		if(response.code() == 200){
-			var _baseUrl = JavaUtils.substring(response.body().string(),"域名：","\n");
+			var _baseUrl = response.body().cssDocument().selectFirst("blockquote > p > a").absUrl('href');
 			if(JavaUtils.isNetworkUrl(_baseUrl)){
 				edit.putString("baseUrl", _baseUrl);//更新基础网址
 			}

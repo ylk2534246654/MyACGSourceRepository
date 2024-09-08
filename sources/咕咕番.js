@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1705284208,
+		lastUpdateTime: 1725795045,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -53,7 +53,7 @@ function manifest() {
 		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: baseUrl,
+		baseUrl: JavaUtils.getPreference().getString("baseUrl", defaultBaseUrl),
 
 		//发现
 		findList: {
@@ -76,15 +76,35 @@ function manifest() {
 
 		//全局 HTTP 请求头列表
 		httpRequestHeaderList: {
-			"Referer": baseUrl
+			"Referer": JavaUtils.getManifest().getBaseUrl()
 		}
 	});
 }
 
-const baseUrl = "https://www.gugufan.com"
+const defaultBaseUrl = "https://www.gugufan.com"
 /**
  * Qqun:832557128 
+ * https://www.jjdal.com
+ * https://www.gugu01.cc
  */
+function UpdateBaseUrl() {
+	var preference = JavaUtils.getPreference();
+	var baseUrlTime = preference.getLong("baseUrlTime");
+	var oneDay = 1000*60*60*24;
+	var time = new Date().getTime();
+	if(baseUrlTime < time - oneDay){//超过一天
+		const response = JavaUtils.httpRequest("https://www.gugu01.cc");
+		var edit = preference.edit();
+		if(response.code() == 200){
+			var _baseUrl = response.body().cssDocument().selectFirst(".go > a").absUrl('href');
+			if(JavaUtils.isNetworkUrl(_baseUrl)){
+				edit.putString("baseUrl", _baseUrl);//更新基础网址
+			}
+		}
+		edit.putLong("baseUrlTime", time).apply();//更新时间
+	}
+	JavaUtils.getManifest().setBaseUrl(preference.getString("baseUrl", defaultBaseUrl));
+}
 
 /**
  * 搜索
@@ -92,7 +112,8 @@ const baseUrl = "https://www.gugufan.com"
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl, '/index.php/vod/search.html?wd=' + encodeURI(key));
+	UpdateBaseUrl()
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), '/index.php/vod/search.html?wd=' + encodeURI(key));
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -126,6 +147,7 @@ function search(key) {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(genre, year, label, order) {
+	UpdateBaseUrl()
 	if(genre == "全部")genre = "";
 	if(label == "全部")label = "";
 	if(year == "全部")year = "";
@@ -133,7 +155,7 @@ function find(genre, year, label, order) {
 	var result = [];
 	const timestamp = Math.round(new Date().getTime() / 1000).toString();
 	//DCC147D11943AF75 = EC['Pop']['Uid']
-	var url = JavaUtils.urlJoin(baseUrl, `/index.php/api/vod@post->type=${genre}&class=${label}&area=&lang=&version=&state=&letter=&page=1&time=${timestamp}&by=${order}&year=${year}&key=${JavaUtils.bytesToHexString(JavaUtils.encryptMD5(`DS${timestamp}DCC147D11943AF75`), false)}`);
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), `/index.php/api/vod@post->type=${genre}&class=${label}&area=&lang=&version=&state=&letter=&page=1&time=${timestamp}&by=${order}&year=${year}&key=${JavaUtils.bytesToHexString(JavaUtils.encryptMD5(`DS${timestamp}DCC147D11943AF75`), false)}`);
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const $ = JSON.parse(response.body().string());
@@ -156,7 +178,7 @@ function find(genre, year, label, order) {
 					coverUrl: child.vod_pic,
 			
 					//网址
-					url: JavaUtils.urlJoin(baseUrl, `/index.php/vod/detail/id/${child.vod_id}.html`)
+					url: JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), `/index.php/vod/detail/id/${child.vod_id}.html`)
 				});
 			}
 		});
@@ -170,6 +192,7 @@ function find(genre, year, label, order) {
  * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
+	UpdateBaseUrl()
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();

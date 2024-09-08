@@ -5,7 +5,7 @@ function manifest() {
 		id: 1660759710,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230911,
+		minMyACG: 20240105,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 60,
@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 4,
+		version: 5,
 
 		//自述文件网址
 		readmeUrlList: [
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1713422073,
+		lastUpdateTime: 1725783292,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -53,7 +53,7 @@ function manifest() {
 		group: ["动漫"],
 		
 		//@NonNull 详细界面的基本网址
-		baseUrl: baseUrl,
+		baseUrl: JavaUtils.getPreference().getString("baseUrl", defaultBaseUrl),
 
 		//发现
 		findList: {
@@ -157,8 +157,28 @@ function manifest() {
 	});
 }
 
-const baseUrl = "http://www.dmd86.com";
+const defaultBaseUrl = "http://www.995dm.com";
+
+function UpdateBaseUrl() {
+	var preference = JavaUtils.getPreference();
+	var baseUrlTime = preference.getLong("baseUrlTime");
+	var oneDay = 1000*60*60*24;
+	var time = new Date().getTime();
+	if(baseUrlTime < time - oneDay){//超过一天
+		const response = JavaUtils.httpRequest("https://rentry.org/995dm");
+		var edit = preference.edit();
+		if(response.code() == 200){
+			var _baseUrl = response.body().cssDocument().selectFirst("blockquote > p > a").absUrl('href');
+			if(JavaUtils.isNetworkUrl(_baseUrl)){
+				edit.putString("baseUrl", _baseUrl);//更新基础网址
+			}
+		}
+		edit.putLong("baseUrlTime", time).apply();//更新时间
+	}
+	JavaUtils.getManifest().setBaseUrl(preference.getString("baseUrl", defaultBaseUrl));
+}
 /**
+ * https://my.cbox.ws/dm99
  * www.995dm.com,rentry.org/995dm
  */
 
@@ -168,7 +188,8 @@ const baseUrl = "http://www.dmd86.com";
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl, '/index.php?m=vod-search@post->wd=' + encodeURI(key));
+	UpdateBaseUrl()
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), '/index.php?m=vod-search@post->wd=' + encodeURI(key));
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -202,9 +223,10 @@ function search(key) {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(region, label, year, order) {
+	UpdateBaseUrl()
 	if(year == "全部")year = "0";
 	
-	var url = JavaUtils.urlJoin(baseUrl, `/vod-list-id-${region}-pg-1-order--by-${order}-class-${label}-year-${year}-letter--area--lang-.html`);
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), `/vod-list-id-${region}-pg-1-order--by-${order}-class-${label}-year-${year}-letter--area--lang-.html`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -235,6 +257,7 @@ function find(region, label, year, order) {
  * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
+	UpdateBaseUrl()
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();

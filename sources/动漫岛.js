@@ -5,7 +5,7 @@ function manifest() {
 		id: 1704249735,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20231215,
+		minMyACG: 20240105,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 80,
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1713173585,
+		lastUpdateTime: 1725783801,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -208,9 +208,9 @@ function UpdateBaseUrl() {
 		const response = JavaUtils.httpRequest("https://rentry.org/dmd8");
 		var edit = preference.edit();
 		if(response.code() == 200){
-			var _baseUrl = JavaUtils.substring(response.body().string(),"网址：","\n");
-			if(!JavaUtils.isEmpty(_baseUrl)){
-				edit.putString("baseUrl", "http://" + _baseUrl);//更新基础网址
+			var _baseUrl = response.body().cssDocument().selectFirst("blockquote > p > a").absUrl('href');
+			if(JavaUtils.isNetworkUrl(_baseUrl)){
+				edit.putString("baseUrl", _baseUrl);//更新基础网址
 			}
 		}
 		edit.putLong("baseUrlTime", time).apply();//更新时间

@@ -50,7 +50,7 @@ function manifest() {
 		contentProcessType: 2,
 		
 		//分组
-		group: ["动漫","影视"],
+		group: ["影视"],
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,//和动漫星球结构相似

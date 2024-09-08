@@ -15,7 +15,7 @@ function manifest() {
 		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
-		name: "漫岛动漫",
+		name: "萌道动漫(漫岛动漫)",
 
 		//搜索源作者
 		author: "雨夏",
@@ -79,6 +79,7 @@ const baseUrl = "https://www.mddm.tv";
  * https://www.mandao.tv
  * https://www.mddm.tv
  * https://www.cosdao.com
+ * https://www.mengdaow.com
  * 站长 mddmlianxi@hotmail.com, dmlianxi#hotmail.com
  */
 

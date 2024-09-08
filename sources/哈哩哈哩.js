@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1702564794,
+		lastUpdateTime: 1725809740,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -64,7 +64,7 @@ function manifest() {
 		},
 	});
 }
-const baseUrl = 'https://m.feijisu36.com';
+const baseUrl = 'https://3838dyy.com/';
 /**
  * buidng2.com
  * 
@@ -77,7 +77,11 @@ const baseUrl = 'https://m.feijisu36.com';
  * halihali5.com
  * halihali.icu
  * halihali.li
- * 站长联系方式：rosamondcurtis6028@gmail.com
+ * 3838dyy.com
+ * m.feijisu36.com
+ * 站长联系方式：
+ * rosamondcurtis6028@gmail.com
+ * aldimhtu@gmail.com
  * 
  * 重定向-飞极速
  * http://m.feijisu21.com

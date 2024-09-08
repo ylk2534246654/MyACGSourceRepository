@@ -5,7 +5,7 @@ function manifest() {
 		id: 1670493068,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20231215,
+		minMyACG: 20240105,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 30,
@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 3,
 
 		//自述文件网址
 		readmeUrlList: [
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1705284208,
+		lastUpdateTime: 1725809233,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -53,7 +53,7 @@ function manifest() {
 		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: baseUrl,
+		baseUrl: JavaUtils.getPreference().getString("baseUrl", defaultBaseUrl),
 		
 		//发现
 		findList: {
@@ -74,13 +74,34 @@ function manifest() {
 		},
 	});
 }
-const baseUrl = "https://www.ntdm9.com";
+const defaultBaseUrl = "https://www.ntdm.tv";
 /**
  * www.ntdm.tv
  * www.ntyou.cc
  * www.ntyou.com
+ * www.ntdm9.com
+ * https://rentry.org/ntdm
+ * http://app.nt996.com/app/
  * http://app.liuge215.com/app/
  */
+function UpdateBaseUrl() {
+	var preference = JavaUtils.getPreference();
+	var baseUrlTime = preference.getLong("baseUrlTime");
+	var oneDay = 1000*60*60*24;
+	var time = new Date().getTime();
+	if(baseUrlTime < time - oneDay){//超过一天
+		const response = JavaUtils.httpRequest("https://rentry.org/ntdm");
+		var edit = preference.edit();
+		if(response.code() == 200){
+			var _baseUrl = response.body().cssDocument().selectFirst("article > div > p > a,blockquote > p > a").absUrl('href');
+			if(JavaUtils.isNetworkUrl(_baseUrl)){
+				edit.putString("baseUrl", _baseUrl);//更新基础网址
+			}
+		}
+		edit.putLong("baseUrlTime", time).apply();//更新时间
+	}
+	JavaUtils.getManifest().setBaseUrl(preference.getString("baseUrl", defaultBaseUrl));
+}
 
 /**
  * 搜索
@@ -88,7 +109,8 @@ const baseUrl = "https://www.ntdm9.com";
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl, `/search/-------------.html?wd=${encodeURI(key)}`);
+	UpdateBaseUrl()
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), `/search/-------------.html?wd=${encodeURI(key)}`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -122,10 +144,11 @@ function search(key) {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(year, label, order, region) {
+	UpdateBaseUrl()
 	if(year == "全部")year = "";
 	if(year == "更早")year = "2000以前";
 	if(label == "全部")label = "";
-	var url = JavaUtils.urlJoin(baseUrl, `/show/${region}--${order}-${label}--------${year}.html`);
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), `/show/${region}--${order}-${label}--------${year}.html`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -162,6 +185,7 @@ function find(year, label, order, region) {
  * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
+	UpdateBaseUrl()
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();

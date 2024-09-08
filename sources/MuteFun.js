@@ -5,7 +5,7 @@ function manifest() {
 		id: 1704380600,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230911,
+		minMyACG: 20240105,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 50,
@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//自述文件网址
 		readmeUrlList: [
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1704380600,
+		lastUpdateTime: 1725793905,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -53,7 +53,7 @@ function manifest() {
 		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: baseUrl,
+		baseUrl: JavaUtils.getPreference().getString("baseUrl", defaultBaseUrl),
 		
 		//发现
 		findList: {
@@ -70,14 +70,43 @@ function manifest() {
 		}
 	});
 }
+/**
+ * 是否启用人机身份验证
+ * @param {string} url 网址
+ * @param {string} responseHtml 响应源码
+ */
+function isEnableAuthenticator(url, responseHtml) {
+	if(responseHtml.indexOf('系统安全验证') != -1){
+		return true;
+	}
+	return false;
+}
 
-const baseUrl = "https://www.2kdm.com"
+const defaultBaseUrl = "https://www.2kdm.com"
 /**
  * 发布页：https://www.mutefun.cn
  * 邮箱：mutefun@outlook.com
  * qq频道：pd.qq.com/s/97isp2qty
  * www.mutefun.tv
  */
+function UpdateBaseUrl() {
+	var preference = JavaUtils.getPreference();
+	var baseUrlTime = preference.getLong("baseUrlTime");
+	var oneDay = 1000*60*60*24;
+	var time = new Date().getTime();
+	if(baseUrlTime < time - oneDay){//超过一天
+		const response = JavaUtils.httpRequest("https://www.mutefun.cn");
+		var edit = preference.edit();
+		if(response.code() == 200){
+			var _baseUrl = response.body().cssDocument().selectFirst("nav > ul > li > a").absUrl('href');
+			if(JavaUtils.isNetworkUrl(_baseUrl)){
+				edit.putString("baseUrl", _baseUrl);//更新基础网址
+			}
+		}
+		edit.putLong("baseUrlTime", time).apply();//更新时间
+	}
+	JavaUtils.getManifest().setBaseUrl(preference.getString("baseUrl", defaultBaseUrl));
+}
 
 /**
  * 搜索
@@ -85,7 +114,8 @@ const baseUrl = "https://www.2kdm.com"
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl, '/vodsearch/-------------.html?wd=' + encodeURI(key));
+	UpdateBaseUrl()
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), '/vodsearch/-------------.html?wd=' + encodeURI(key));
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -116,10 +146,11 @@ function search(key) {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(type, label, year, order) {
+	UpdateBaseUrl()
 	if(label == "全部")label = "";
 	if(year == "全部")year = "";
 	
-	var url = JavaUtils.urlJoin(baseUrl, `/vodshow/${type}--${order}-${label}--------${year}.html`);
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), `/vodshow/${type}--${order}-${label}--------${year}.html`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -150,6 +181,7 @@ function find(type, label, year, order) {
  * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
+	UpdateBaseUrl()
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();

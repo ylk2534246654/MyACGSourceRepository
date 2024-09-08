@@ -64,9 +64,13 @@ function manifest() {
 		},
 	});
 }
-const defaultBaseUrl = "https://acgfta2.com";
+const defaultBaseUrl = "https://acgfta.com";
 /**
  * https://acgfantuan.com
+ * https://acgfta.com
+ * https://ftyoo.com
+ * https://fantuan01.com
+ * mechaailab#gmail.com
  * 
  * 导航：https://fantuantv.com
  */

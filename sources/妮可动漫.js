@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1713173530,
+		lastUpdateTime: 1725784385,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -96,10 +96,10 @@ function manifest() {
  */
 function getSourceSub(_) {
 	var items = [];
-	const response = JavaUtils.httpRequest("http://www.v1.nicotv.bet/");
+	const response = JavaUtils.httpRequest("https://rentry.org/nicotv");
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
-		var elements = document.select("p > a[href]");
+		var elements = document.select("blockquote > p > a");
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			items.push({
@@ -120,6 +120,8 @@ const defaultBaseUrl = "http://www.nico-tv.me";
 /**
  * 备份：
  * 导航：http://help.nicotv.info/
+ * https://rentry.org/nicotv
+ * http://www.v1.nicotv.bet/
  * www.nicotv.info
  * www.nicotv.work
  * www.nicotv.fun

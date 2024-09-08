@@ -5,7 +5,7 @@ function manifest() {
 		id: 1654760124,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20230911,
+		minMyACG: 20240105,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 40,
@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 4,
+		version: 5,
 
 		//自述文件网址
 		readmeUrlList: [
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1705284208,
+		lastUpdateTime: 1725806825,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -53,7 +53,7 @@ function manifest() {
 		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: baseUrl,
+		baseUrl: JavaUtils.getPreference().getString("baseUrl", defaultBaseUrl),
 
 		//发现
 		findList: {
@@ -78,7 +78,7 @@ function manifest() {
 	});
 }
 
-const baseUrl = "http://www.sbdm.net";
+const defaultBaseUrl = "https://www.sbdm.net";
 /**
  * 导航页：http://www.kudm.vip/
  * 同布局备份：http://tv.kudm.net/
@@ -88,6 +88,24 @@ const baseUrl = "http://www.sbdm.net";
  * www.mikudm.com
  * www.sbdm.net
  */
+function UpdateBaseUrl() {
+	var preference = JavaUtils.getPreference();
+	var baseUrlTime = preference.getLong("baseUrlTime");
+	var oneDay = 1000*60*60*24;
+	var time = new Date().getTime();
+	if(baseUrlTime < time - oneDay){//超过一天
+		const response = JavaUtils.httpRequest("http://www.kudm.vip");
+		var edit = preference.edit();
+		if(response.code() == 200){
+			var _baseUrl = response.body().cssDocument().selectFirst("body > a").absUrl('href');
+			if(JavaUtils.isNetworkUrl(_baseUrl)){
+				edit.putString("baseUrl", _baseUrl);//更新基础网址
+			}
+		}
+		edit.putLong("baseUrlTime", time).apply();//更新时间
+	}
+	JavaUtils.getManifest().setBaseUrl(preference.getString("baseUrl", defaultBaseUrl));
+}
 
 /**
  * 搜索
@@ -95,7 +113,8 @@ const baseUrl = "http://www.sbdm.net";
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl, `/index.php/vod/search.html?wd=${encodeURI(key)}`);
+	UpdateBaseUrl()
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), `/index.php/vod/search.html?wd=${encodeURI(key)}`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -132,6 +151,7 @@ function search(key) {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(label, year, order) {
+	UpdateBaseUrl()
 	if(label == "全部"){
 		label = "";
 	}else{
@@ -143,7 +163,7 @@ function find(label, year, order) {
 		year = "year/" + year;
 	}
 	
-	var url = JavaUtils.urlJoin(baseUrl, `/index.php/vod/show/by/${order}/${label}/id/20/${year}.html`);
+	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), `/index.php/vod/show/by/${order}/${label}/id/20/${year}.html`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -180,6 +200,7 @@ function find(label, year, order) {
  * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
+	UpdateBaseUrl()
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
