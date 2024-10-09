@@ -87,6 +87,7 @@ const defaultBaseUrl = "https://www.sbdm.net";
  * ysjdm.net
  * www.mikudm.com
  * www.sbdm.net
+ * kami9996@ysjdm.net
  */
 function UpdateBaseUrl() {
 	var preference = JavaUtils.getPreference();
