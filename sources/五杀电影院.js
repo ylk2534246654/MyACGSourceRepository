@@ -29,7 +29,7 @@ function manifest() {
 		//搜索源自动同步更新链接
 		syncList: {
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/五杀电影院.js",
-			"KKGithub": "https://kkgithub.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/五杀电影院.js",
+			"GitLink": "https://www.gitlink.org.cn/api/ylk2534246654/MyACGSourceRepository/raw/sources%2F五杀电影院.js?ref=master",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/五杀电影院.js",
 		},
 		

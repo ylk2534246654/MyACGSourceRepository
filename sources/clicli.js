@@ -29,14 +29,14 @@ function manifest() {
 		//自述文件网址
 		readmeUrlList: [
 			"https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/README.md",
-			"https://kkgithub.com/ylk2534246654/MyACGSourceRepository/raw/master/README.md",
+			"https://www.gitlink.org.cn/api/ylk2534246654/MyACGSourceRepository/raw/README.md?ref=master",
 			"https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/README.md",
 		],
 		
 		//搜索源自动同步更新链接
 		syncList: {
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/clicli.js",
-			"KKGithub": "https://kkgithub.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/clicli.js",
+			"GitLink": "https://www.gitlink.org.cn/api/ylk2534246654/MyACGSourceRepository/raw/sources%2Fclicli.js?ref=master",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/clicli.js",
 		},
 		
