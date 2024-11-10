@@ -29,8 +29,8 @@ function manifest() {
 		//搜索源自动同步更新网址
 		syncList: {
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/39漫画.js",
+			"KKGithub": "https://kkgithub.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/39漫画.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/39漫画.js",
-			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/39漫画.js",
 		},
 		
 		//最近更新时间

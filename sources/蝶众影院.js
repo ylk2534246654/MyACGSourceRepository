@@ -17,7 +17,7 @@ function manifest() {
 		//@NonNull 搜索源名称
 		name: "蝶众影院",
 
-		//搜索源制作人
+		//搜索源作者
 		author: "雨夏",
 
 		//电子邮箱
@@ -29,15 +29,15 @@ function manifest() {
 		//自述文件网址
 		readmeUrlList: [
 			"https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/README.md",
-			"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/README.md",
-			"https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/README.md"
+			"https://kkgithub.com/ylk2534246654/MyACGSourceRepository/raw/master/README.md",
+			"https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/README.md",
 		],
 		
-		//搜索源自动同步更新链接
+		//搜索源自动同步更新网址
 		syncList: {
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/蝶众影院.js",
+			"KKGithub": "https://kkgithub.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/蝶众影院.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/蝶众影院.js",
-			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/蝶众影院.js",
 		},
 		
 		//最近更新时间
@@ -49,7 +49,7 @@ function manifest() {
 		//内容处理方式： -1: 搜索相似，0：对网址处理并调用外部APP访问，1：对网址处理，2：对内部浏览器拦截
 		contentProcessType: 2,
 		
-		//分组
+		//自定义标签，第一个标签作为发现分类
 		group: ["影视"],
 		
 		//@NonNull 详情页的基本网址

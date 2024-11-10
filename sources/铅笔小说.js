@@ -29,15 +29,15 @@ function manifest() {
 		//自述文件网址
 		readmeUrlList: [
 			"https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/README.md",
-			"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/README.md",
-			"https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/README.md"
+			"https://kkgithub.com/ylk2534246654/MyACGSourceRepository/raw/master/README.md",
+			"https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/README.md",
 		],
 		
 		//搜索源自动同步更新网址
 		syncList: {
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/铅笔小说.js",
+			"KKGithub": "https://kkgithub.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/铅笔小说.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/铅笔小说.js",
-			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/铅笔小说.js",
 		},
 		
 		//最近更新时间

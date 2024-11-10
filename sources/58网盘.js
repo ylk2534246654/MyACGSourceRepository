@@ -29,8 +29,8 @@ function manifest() {
 		//搜索源自动同步更新网址
 		syncList: {
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/58网盘.js",
+			"KKGithub": "https://kkgithub.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/58网盘.js",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/58网盘.js",
-			"Gitcode":"https://gitcode.net/Cynric_Yx/MyACGSourceRepository/-/raw/master/sources/58网盘.js",
 		},
 		
 		//最近更新时间
