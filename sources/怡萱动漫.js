@@ -8,7 +8,7 @@ function manifest() {
 		minMyACG: 20240105,
 
 		//优先级 1~100，数值越大越靠前
-		priority: 30,
+		priority: 60,
 		
 		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
