@@ -8,14 +8,14 @@ function manifest() {
 		minMyACG: 20230911,
 
 		//优先级 1~100，数值越大越靠前
-		priority: 30,
+		priority: 80,
 		
 		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
 		enableInvalid: false,
 		
 		//@NonNull 搜索源名称
-		name: "GoDa漫畫",
+		name: "GoDa漫畫(包子漫画)",
 
 		//搜索源作者
 		author: "雨夏",
@@ -60,6 +60,8 @@ function manifest() {
 					"m.g-mh.org": baseUrl1,
 					"godamh.com": "https://godamh.com",
 					"manhuafree.com": "https://manhuafree.com",
+					"baozimh.org": "https://baozimh.org",
+					"bzmh.org": "https://bzmh.org/",
 				},
 				defaultValue: 0
 			},
