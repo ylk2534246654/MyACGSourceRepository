@@ -18,7 +18,7 @@
 *选择一个导入即可，不要全部导入，会造成每次加载缓慢，各平台同步更新，可能会由于平台原因少一两个*
 
 Github 代码托管平台（有墙）
-[https://github.com/ylk2534246654/MyACGSourceRepository/master/repository.json](myacg://source_repository?url=https%3A%2F%2Fgithub.com%2Fylk2534246654%2FMyACGSourceRepository)
+[https://github.com/ylk2534246654/MyACGSourceRepository/master/repository.json](myacg://source_repository?url=https%3A%2F%2Fgithub.com%2Fylk2534246654%2FMyACGSourceRepository%2F-%2Fraw%2Fmaster%2Frepository.json)
 
 Gitlab 代码托管平台
 [https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/repository.json](myacg://source_repository?url=https%3A%2F%2Fgitlab.com%2Fylk2534246654%2FMyACGSourceRepository%2F-%2Fraw%2Fmaster%2Frepository.json)
@@ -31,7 +31,8 @@ Gitlab 代码托管平台
 
 ### 客户端下载地址
 
-### [123网盘](https://www.123pan.com/s/NS2UVv-nEs53)
+### [123网盘](https://www.123pan.com/s/NS2UVv-8DD53)
+### [百度网盘](https://pan.baidu.com/s/1m-ZlcI11oMKZr1V7jBHlFQ?pwd=1234)
 
 ### 搜索源开发手册
 
