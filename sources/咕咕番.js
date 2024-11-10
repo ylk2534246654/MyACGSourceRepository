@@ -8,7 +8,7 @@ function manifest() {
 		minMyACG: 20240104,
 
 		//优先级 1~100，数值越大越靠前
-		priority: 80,
+		priority: 70,
 		
 		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1725795045,
+		lastUpdateTime: 1731256101,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -93,10 +93,10 @@ function UpdateBaseUrl() {
 	var oneDay = 1000*60*60*24;
 	var time = new Date().getTime();
 	if(baseUrlTime < time - oneDay){//超过一天
-		const response = JavaUtils.httpRequest("https://www.gugu01.cc");
+		const response = JavaUtils.httpRequest("https://www.gugufan.xyz@enableFrameSource->true");
 		var edit = preference.edit();
 		if(response.code() == 200){
-			var _baseUrl = response.body().cssDocument().selectFirst(".go > a").absUrl('href');
+			var _baseUrl = response.body().cssDocument().selectFirst("div > [href]").absUrl('href');
 			if(JavaUtils.isNetworkUrl(_baseUrl)){
 				edit.putString("baseUrl", _baseUrl);//更新基础网址
 			}
