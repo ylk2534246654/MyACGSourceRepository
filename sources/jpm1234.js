@@ -36,7 +36,7 @@ function manifest() {
 		//搜索源自动同步更新网址
 		syncList: {
 			"Gitlab": "https://gitlab.com/ylk2534246654/MyACGSourceRepository/-/raw/master/sources/jpm1234.js",
-			"GitLink": "https://www.gitlink.org.cn/api/ylk2534246654/MyACGSourceRepository/raw/sources%2Fjpm1234.js?ref=master",
+			"GitLink": "https://www.gitlink.org.cn/api/ylk2534246654/MyACGSourceRepository/raw/sources/jpm1234.js?ref=master",
 			"Github": "https://github.com/ylk2534246654/MyACGSourceRepository/raw/master/sources/jpm1234.js",
 		},
 		
