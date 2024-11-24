@@ -214,7 +214,7 @@ function tocs(document) {
 		}
 		newCatalogs.push({
 			//目录名称
-			name: tagElements.get(i).selectFirst('a > :matchText').text(),
+			name: tagElements.get(i).selectFirst('a:matchText').text(),
 			//章节
 			chapters: newChapters
 		});
