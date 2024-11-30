@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 15,
+		version: 16,
 
 		//自述文件网址
 		readmeUrlList: [
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1723968311,
+		lastUpdateTime: 1732975202,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -68,8 +68,14 @@ function manifest() {
 					"tw.baozimh.com": "https://tw.baozimh.com",
 					"www.baozimh.com": "https://www.baozimh.com",
 					"www.webmota.com": "https://www.webmota.com",
+					"cn.czmanga.com": "https://cn.czmanga.com",
+					"tw.czmanga.com": "https://tw.czmanga.com",
+					"www.czmanga.com": "https://www.czmanga.com",
+					"cn.kukuc.co": "https://cn.kukuc.co",
+					"tw.kukuc.co": "https://tw.kukuc.co",
+					"www.kukuc.co": "https://www.kukuc.co",
 				},
-				defaultValue: 0
+				defaultValue: 5
 			},
 			{
 				type: 3,
@@ -155,12 +161,13 @@ function manifest() {
 		},
 	});
 }
-const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://cn.baozimh.com");
+const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://cn.czmanga.com");
 /**
  * 备用
  * https://cn.baozimh.com
  * https://cn.webmota.com
  * https://cn.kukuc.co
+ * https://cn.czmanga.com
  */
 
 /**
