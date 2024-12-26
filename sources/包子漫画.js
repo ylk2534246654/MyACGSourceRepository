@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1732975202,
+		lastUpdateTime: 1735225467,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -75,7 +75,7 @@ function manifest() {
 					"tw.kukuc.co": "https://tw.kukuc.co",
 					"www.kukuc.co": "https://www.kukuc.co",
 				},
-				defaultValue: 5
+				defaultValue: 0
 			},
 			{
 				type: 3,
@@ -161,7 +161,7 @@ function manifest() {
 		},
 	});
 }
-const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://cn.czmanga.com");
+const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://cn.baozimh.com");
 /**
  * 备用
  * https://cn.baozimh.com
