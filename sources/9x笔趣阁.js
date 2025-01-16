@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 7,
+		version: 8,
 
 		//自述文件网址
 		readmeUrlList: [
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1704619369,
+		lastUpdateTime: 1737030154,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -63,6 +63,7 @@ function manifest() {
 					"xiaoxiaommkk": "https://novel-api.xiaoxiaommkk.com",
 					"xiaoshuottaa": "https://novel-api.xiaoshuottaa.com",
 					"qwezxc4": "https://novelapi.qwezxc4.cn",
+					"bayliline": "https://novelapi.bayliline.com",
 				},
 				defaultValue: 2
 			},
@@ -146,7 +147,7 @@ function getSourceSub(id) {
 }
 
 
-const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://novel-api.xiaoxiaommkk.com");
+const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://novelapi.bayliline.com");
 /**
  * 备份：
  * 200669.com
@@ -155,6 +156,7 @@ const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://novel-ap
  * novel-api.xiaoppkk.com
  * novel-api.elklk.cn
  * novel-api.xiaoshuottaa.com
+ * novelapi.bayliline.com
  */
 
 /**
