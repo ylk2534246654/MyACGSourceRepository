@@ -64,7 +64,7 @@ function manifest() {
 					"qwezxc4": "https://novelapi.qwezxc4.cn",
 					"bayliline": "https://novelapi.bayliline.com",
 				},
-				defaultValue: 2
+				defaultValue: 5
 			}
 		],
 		
