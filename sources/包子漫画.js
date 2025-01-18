@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1735225467,
+		lastUpdateTime: 1737176000,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -62,6 +62,7 @@ function manifest() {
 				type: 3,
 				key: "baseUrl",
 				name: "使用镜像网址",
+				summary: "不能加载的时候可以尝试切换",
 				itemList: {
 					"cn.baozimh.com": "https://cn.baozimh.com",
 					"cn.webmota.com": "https://cn.webmota.com",
@@ -74,18 +75,21 @@ function manifest() {
 					"cn.kukuc.co": "https://cn.kukuc.co",
 					"tw.kukuc.co": "https://tw.kukuc.co",
 					"www.kukuc.co": "https://www.kukuc.co",
+					"cn.baozimhcn.com": "https://cn.baozimhcn.com",
 				},
-				defaultValue: 0
+				defaultValue: 11
 			},
 			{
 				type: 3,
 				key: "imgBaseUrl",
 				name: "切换图源线路",
+				summary: "图片不能加载的时候可以尝试切换",
 				itemList: {
 					"自动": "default",
 					"线路1": "s1.baozicdn.com",
 					"线路2": "s2.baozicdn.com",
-					"线路3": "s2.baozimh.com",
+					"线路3": "s1.baozimh.com",
+					"线路4": "s2.baozimh.com",
 				},
 				defaultValue: 0
 			}
@@ -161,7 +165,7 @@ function manifest() {
 		},
 	});
 }
-const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://cn.baozimh.com");
+const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://cn.baozimhcn.com");
 /**
  * 备用
  * https://cn.baozimh.com
