@@ -56,6 +56,7 @@ function manifest() {
 				type: 3,
 				key: "baseUrl",
 				name: "使用镜像网址",
+				summary: "不能加载的时候可以尝试切换",
 				itemList: {
 					"m.g-mh.org": baseUrl1,
 					"godamh.com": "https://godamh.com",
@@ -69,6 +70,7 @@ function manifest() {
 				type: 3,
 				key: "imgBaseUrl",
 				name: "切换图源线路",
+				summary: "图片不能加载的时候可以尝试切换",
 				itemList: {
 					"线路1": imgBaseUrl1,
 					"线路2": "https://t40-1-4.g-mh.online",
