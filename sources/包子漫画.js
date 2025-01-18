@@ -64,6 +64,7 @@ function manifest() {
 				name: "使用镜像网址",
 				summary: "不能加载的时候可以尝试切换",
 				itemList: {
+					"cn.baozimhcn.com": "https://cn.baozimhcn.com",
 					"cn.baozimh.com": "https://cn.baozimh.com",
 					"cn.webmota.com": "https://cn.webmota.com",
 					"tw.baozimh.com": "https://tw.baozimh.com",
@@ -75,9 +76,8 @@ function manifest() {
 					"cn.kukuc.co": "https://cn.kukuc.co",
 					"tw.kukuc.co": "https://tw.kukuc.co",
 					"www.kukuc.co": "https://www.kukuc.co",
-					"cn.baozimhcn.com": "https://cn.baozimhcn.com",
 				},
-				defaultValue: 11
+				defaultValue: 0
 			},
 			{
 				type: 3,

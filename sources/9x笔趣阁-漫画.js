@@ -57,14 +57,14 @@ function manifest() {
 				name: "切换线路",
 				summary: "不能加载的时候可以切换",
 				itemList: {
-					"elklk": "https://novel-api.elklk.cn",
+					"bayliline": "https://novelapi.bayliline.com",
 					"xiaoppkk": "https://novel-api.xiaoppkk.com",
 					"xiaoxiaommkk": "https://novel-api.xiaoxiaommkk.com",
 					"xiaoshuottaa": "https://novel-api.xiaoshuottaa.com",
-					"qwezxc4": "https://novelapi.qwezxc4.cn",
-					"bayliline": "https://novelapi.bayliline.com",
+					//"qwezxc4": "https://novelapi.qwezxc4.cn",
+					//"elklk": "https://novel-api.elklk.cn",
 				},
-				defaultValue: 5
+				defaultValue: 0
 			}
 		],
 		
