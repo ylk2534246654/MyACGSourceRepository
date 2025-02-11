@@ -57,12 +57,7 @@ function manifest() {
 				name: "切换线路",
 				summary: "不能加载的时候可以切换",
 				itemList: {
-					"bayliline": "https://novelapi.bayliline.com",
-					"xiaoppkk": "https://novel-api.xiaoppkk.com",
-					"xiaoxiaommkk": "https://novel-api.xiaoxiaommkk.com",
-					"xiaoshuottaa": "https://novel-api.xiaoshuottaa.com",
-					//"qwezxc4": "https://novelapi.qwezxc4.cn",
-					//"elklk": "https://novel-api.elklk.cn",
+					"kpkpo": "https://novelapi.kpkpo.com",
 				},
 				defaultValue: 0
 			}
@@ -108,7 +103,7 @@ function manifest() {
 	});
 }
 
-const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://novelapi.bayliline.com");
+const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://novelapi.kpkpo.com");
 const imgPath = "/api/ComicBook-DecodeImage?path=";
 /**
  * 备份：

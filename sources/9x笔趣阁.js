@@ -58,12 +58,7 @@ function manifest() {
 				summary: "不能加载的时候可以切换",
 				locationList: ["sourceDetail","detail"],
 				itemList: {
-					"bayliline": "https://novelapi.bayliline.com",
-					"xiaoppkk": "https://novel-api.xiaoppkk.com",
-					"xiaoxiaommkk": "https://novel-api.xiaoxiaommkk.com",
-					"xiaoshuottaa": "https://novel-api.xiaoshuottaa.com",
-					//"qwezxc4": "https://novelapi.qwezxc4.cn",
-					//"elklk": "https://novel-api.elklk.cn",
+					"kpkpo": "https://novelapi.kpkpo.com",
 				},
 				defaultValue: 0
 			},
@@ -147,7 +142,7 @@ function getSourceSub(id) {
 }
 
 
-const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://novelapi.bayliline.com");
+const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://novelapi.kpkpo.com");
 /**
  * 备份：
  * 200669.com
