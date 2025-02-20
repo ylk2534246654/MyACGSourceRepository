@@ -276,7 +276,7 @@ function tocs(url) {
 
 /**
  * @return {string} content
- */
+ 
 function content(url) {
 	var re = /google/i;
 	if(!re.test(url)){
@@ -284,3 +284,4 @@ function content(url) {
 	}
 	return null;
 }
+*/
