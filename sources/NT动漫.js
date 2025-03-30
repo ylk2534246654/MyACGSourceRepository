@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1725809233,
+		lastUpdateTime: 1743328387,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -81,8 +81,7 @@ const defaultBaseUrl = "https://www.ntdm.tv";
  * www.ntyou.com
  * www.ntdm9.com
  * https://rentry.org/ntdm
- * http://app.nt996.com/app/
- * http://app.liuge215.com/app/
+ * https://ntdm.fans/
  */
 function UpdateBaseUrl() {
 	var preference = JavaUtils.getPreference();
@@ -90,10 +89,10 @@ function UpdateBaseUrl() {
 	var oneDay = 1000*60*60*24;
 	var time = new Date().getTime();
 	if(baseUrlTime < time - oneDay){//超过一天
-		const response = JavaUtils.httpRequest("https://rentry.org/ntdm");
+		const response = JavaUtils.httpRequest("https://ntdm.fans");
 		var edit = preference.edit();
 		if(response.code() == 200){
-			var _baseUrl = response.body().cssDocument().selectFirst("article > div > p > a,blockquote > p > a").absUrl('href');
+			var _baseUrl = response.body().cssDocument().selectFirst("article > div > p > a,blockquote > p > a,ul > li  > a").absUrl('href');
 			if(JavaUtils.isNetworkUrl(_baseUrl)){
 				edit.putString("baseUrl", _baseUrl);//更新基础网址
 			}
