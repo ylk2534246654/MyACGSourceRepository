@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1737030154,
+		lastUpdateTime: 1743325230,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -56,8 +56,10 @@ function manifest() {
 				key: "baseUrl",
 				name: "切换线路",
 				summary: "不能加载的时候可以切换",
+				locationList: ["sourceDetail","detail"],
 				itemList: {
-					"kpkpo": "https://novelapi.kpkpo.com",
+					"xayao4": "https://novelapi.xayao4.com",
+					"xiaoxiaommkk": "https://novel-api.xiaoxiaommkk.com",
 				},
 				defaultValue: 0
 			}
@@ -103,7 +105,7 @@ function manifest() {
 	});
 }
 
-const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://novelapi.kpkpo.com");
+const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://novelapi.xayao4.com");
 const imgPath = "/api/ComicBook-DecodeImage?path=";
 /**
  * 备份：
@@ -114,6 +116,7 @@ const imgPath = "/api/ComicBook-DecodeImage?path=";
  * novel-api.elklk.cn
  * novel-api.xiaoshuottaa.com
  * novelapi.bayliline.com
+ * novelapi.kpkpo.com
  */
 
 /**
