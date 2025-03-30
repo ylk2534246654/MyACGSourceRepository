@@ -12,7 +12,7 @@ function manifest() {
 		
 		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		enableInvalid: false,
+		enableInvalid: true,
 		
 		//@NonNull 搜索源名称
 		name: "怡萱动漫",
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1725783627,
+		lastUpdateTime: 1743328942,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
