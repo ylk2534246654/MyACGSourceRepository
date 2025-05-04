@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 12,
+		version: 13,
 		
 		//自述文件网址
 		readmeUrlList: [
@@ -56,15 +56,13 @@ function manifest() {
 				key: "drive",
 				name: "选择节点",
 				itemList: {
-					"OneDrive 新加坡":	"2AG",
-					"Cloudflare":		"2AG_CF",
-					"CF 环大陆自选": 	"2AG_CF2",
-					"CF 环大陆自选 2": 	"2AG_CF3",
-					"大陆加速": 		"2AG_CHUN_CDN",
-					"番剧库本地节点": 	"3A_Xinxiang",
-					"谷歌云端硬盘每日镜像": "4AG",
+					"OneDrive (直连)":	"sg-onedrive",
+					"OneDrive (Cloudflare)":	"sg-onedrive-cloudflare",
+					"番剧库海外统一线路(Beta)":	"lb-global",
+					"Google Drive (纽约 VPS 转发)":	"global-googledrive-ny1",
+					"R2 对象存储测试":	"r2-test",
 				},
-				defaultValue: 1
+				defaultValue: 0
 			}
 		],
 		
@@ -275,22 +273,18 @@ function tocs(id, date) {
 	//目录标签请求
 	//const tagResponse = JavaUtils.httpRequest(JavaUtils.urlJoin(apiBaseUrl, '/v2/drive/all' + getHeader()));
 	//if(tagResponse.code() == 200){
-		const drive = JavaUtils.getPreference().getString("drive", "2AG_CF")
+		const drive = JavaUtils.getPreference().getString("drive", "sg-onedrive")
 		var driveName = drive;
-		if(drive == "3A_Xinxiang"){
-			driveName = "番剧库本地节点"
-		}else if(drive == "2AG_CF"){
-			driveName = "Cloudflare"
-		}else if(drive == "2AG_CF2"){
-			driveName = "CF 环大陆自选"
-		}else if(drive == "2AG_CF3"){
-			driveName = "CF 环大陆自选 2"
-		}else if(drive == "2AG"){
-			driveName = "OneDrive 新加坡"
-		}else if(drive == "2AG_CHUN_CDN"){
-			driveName = "大陆加速"
-		}else if(drive == "4AG"){
-			driveName = "谷歌云端硬盘每日镜像"
+		if(drive == "sg-onedrive"){
+			driveName = "OneDrive (直连)"
+		}else if(drive == "sg-onedrive-cloudflare"){
+			driveName = "OneDrive (Cloudflare)"
+		}else if(drive == "lb-global"){
+			driveName = "番剧库海外统一线路(Beta)"
+		}else if(drive == "global-googledrive-ny1"){
+			driveName = "Google Drive (纽约 VPS 转发)"
+		}else if(drive == "r2-test"){
+			driveName = "R2 对象存储测试"
 		}
 		//const defaultDrive = JSON.parse(tagResponse.body().string()).data.default;
 		//创建章节数组
