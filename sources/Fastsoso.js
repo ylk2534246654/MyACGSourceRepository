@@ -76,21 +76,21 @@ function search(key) {
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
-		const elements = document.select('[style="padding-top: 10px;"]');
+		const elements = document.select('van-col > div:nth-child(2) > a');
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			result.push({
 				//名称
-				name: element.selectFirst('[name="content-title"]').text(),
+				name: element.selectFirst('[name]').text(),
 				
-				//概览
-				summary: element.selectFirst('[style="color: #105207;"]').text(),
+				//最近更新时间
+				lastUpdateTime: element.selectFirst('template:nth-child(2)').text(),
 				
 				//封面网址
 				//coverUrl: ,
 				
 				//网址
-				url: element.selectFirst('[name="content-title"] > strong > a').absUrl('href'),
+				url: element.selectFirst('a').absUrl('href'),
 			});
 		}
 	}

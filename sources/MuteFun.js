@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1725793905,
+		lastUpdateTime: 1766355160,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -67,7 +67,17 @@ function manifest() {
 				},
 			},
 			"动漫": ["20","dm_label","dm_year","order"]
-		}
+		},
+
+		
+		//网络限流 - 如果{regexUrl}匹配网址，则限制其{period}毫秒内仅允许{maxRequests}个请求
+		networkRateLimitList: [
+			{
+				regexUrl: JavaUtils.getPreference().getString("baseUrl", defaultBaseUrl),//表示需要限流的 Url，使用正则表达式格式（不允许为空）
+				maxRequests: 0,//在指定的时间内允许的请求数量（必须 >= 0 才会生效）
+				period: 5000,//时间周期，毫秒（必须 > 0 才会生效）
+			}
+		],
 	});
 }
 /**
