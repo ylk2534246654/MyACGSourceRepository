@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1705284208,
+		lastUpdateTime: 1766321859,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -76,14 +76,30 @@ function manifest() {
 	});
 }
 
-const baseUrl = "https://www.tcyy360.com";
+const baseUrl = "https://www.lmm50.com";
 /**
- * https://www.92cj.com
- * http://wydy8.com
- * https://www.17skr.com
- * https://www.tcyy360.com/
+ * www.lmmzx.com
+ * www.tcyy360.com
+ * www.92cj.com
+ * wydy8.com
+ * www.17skr.com
  * 站长联系：wydy8.com@gmail.com
  */
+
+
+/**
+ * 是否启用人机身份验证
+ * @param {string} url 网址
+ * @param {string} responseHtml 响应源码
+ * @return {boolean} 返回结果
+ */
+function isEnableAuthenticator(url, responseHtml) {
+	//对框架进行拦截，检索关键字，
+	if(responseHtml != null && responseHtml.indexOf('需要输入验证码') != -1){
+		return true;
+	}
+	return false;
+}
 
 /**
  * 搜索
