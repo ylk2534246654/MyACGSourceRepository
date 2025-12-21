@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1703988234,
+		lastUpdateTime: 1766338018,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -59,15 +59,20 @@ function manifest() {
 		findList: {
 			category: {
 				"label": {
-					"网络小说": "0",
-					"言情女生": "1",
-					"玄幻奇幻": "2",
-					"都市青春": "3",
-					"武侠仙侠": "4",
-					"耽美同人": "5",
-					"科幻灵异": "6",
-					"轻小说の": "7",
-					"历史军事": "8"
+					"全部": "0",
+					"言情小说": "1",
+					"都市小说": "2",
+					"耽美百合": "3",
+					"穿越转生": "4",
+					"青春校园": "5",
+					"玄幻魔法": "6",
+					"修真武侠": "7",
+					"历史军事": "8",
+					"游戏竞技": "9",
+					"科幻空间": "10",
+					"悬疑惊悚": "11",
+					"同人小说": "12",
+					"官场职场": "13"
 				},
 				"order": {
 					"全部": "quanben",
@@ -90,15 +95,16 @@ function manifest() {
 					"30万-50万": "2",
 					"50万-100万": "3",
 					"100万-200万": "4",
-					"200万以上": "5",
+					"200-300万": "5",
+					"400万以上": "6",
 				},
 				"status": {
 					"全部": "0",
 					"连载": "1",
-					"完本": "2",
+					"完本": "5",
 				}
 			},
-			"小说": ["label","order","size","status"]
+			"小说": ["order","label","size","status"]
 		},
 
 		//启用用户登录
@@ -109,6 +115,16 @@ function manifest() {
 		
 		//需要用户登录列表（search，detail，content，find）
 		requiresUserLoginList: ["search"],
+
+		
+		//网络限流 - 如果{regexUrl}匹配网址，则限制其{period}毫秒内仅允许{maxRequests}个请求
+		networkRateLimitList: [
+			{
+				regexUrl: baseUrl,//表示需要限流的 Url，使用正则表达式格式（不允许为空）
+				maxRequests: 0,//在指定的时间内允许的请求数量（必须 >= 0 才会生效）
+				period: 5000,//时间周期，毫秒（必须 > 0 才会生效）
+			}
+		],
 
 		//全局 HTTP 请求头列表
 		httpRequestHeaderList: {
@@ -155,26 +171,26 @@ const baseUrl = "https://www.23qb.com";
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl, `/saerch.php@post->searchkey=${JavaUtils.encodeURI(key,'gbk')}&searchtype=all`);
+	var url = JavaUtils.urlJoin(baseUrl, `/search.html?searchkey=${JavaUtils.encodeURI(key)}`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
-		var elements = document.select("#sitebox > dl");
+		var elements = document.select(".module-search-item");
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			result.push({
 				//名称
-				name: element.selectFirst('dd > h3 > a').text(),
+				name: element.selectFirst('[title]').attr("title"),
 				
 				//概览
-				summary: element.selectFirst('#nr > dd.book_des').text(),
+				summary: element.selectFirst('.novel-info-main > div > div').text(),
 				
 				//封面网址
-				coverUrl: element.selectFirst('dt > a > img').absUrl('_src'),
+				coverUrl: element.selectFirst('.module-item-pic > img').absUrl('data-src'),
 				
 				//网址
-				url: element.selectFirst('dd > h3 > a').absUrl('href')
+				url: element.selectFirst('[title]').absUrl('href')
 			});
 		}
 	}
@@ -185,27 +201,27 @@ function search(key) {
  * 发现
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
-function find(label, order, size, status) {
-	var url = JavaUtils.urlJoin(baseUrl, `/book/${label}-${order}-0-${size}-0-0-${status}-0-1.html`);
+function find(order, label, size, status) {
+	var url = JavaUtils.urlJoin(baseUrl, `/book/${order}_0_${label}_0_${size}_0_0_${status}_1_0.html`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
-		var elements = document.select("#sitebox > dl");
+		var elements = document.select(".module-item");
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			result.push({
 				//名称
-				name: element.selectFirst('dd > h3 > a').text(),
+				name: element.selectFirst('.module-item-title').attr("title"),
 				
-				//概览
-				summary: element.selectFirst('#nr > dd.book_des').text(),
+				//作者
+				author: element.selectFirst('.module-item-text').text(),
 				
 				//封面网址
-				coverUrl: element.selectFirst('dt > a > img').absUrl('_src'),
+				coverUrl: element.selectFirst('.module-item-pic > img').absUrl('data-src'),
 				
 				//网址
-				url: element.selectFirst('dd > h3 > a').absUrl('href')
+				url: element.selectFirst('.module-item-title').absUrl('href')
 			});
 		}
 	}
@@ -222,25 +238,25 @@ function detail(url) {
 		const document = response.body().cssDocument();
 		return JSON.stringify({
 			//标题
-			name: document.selectFirst('div.d_title').text(),
+			name: document.selectFirst('.page-title').text(),
 			
 			//作者
-			author: document.selectFirst('#count > ul > li:nth-child(1) > a').text(),
+			author: document.selectFirst('.novel-tag-icon').text(),
 			
 			//最近更新时间
-			lastUpdateTime: document.selectFirst('#uptime > span').text(),
+			lastUpdateTime: document.selectFirst('.itemtitle').text(),
 			
 			//概览
-			summary: document.selectFirst('#bookintro').text(),
+			summary: document.selectFirst('.novel-info-content').text(),
 	
 			//封面网址
-			coverUrl: document.selectFirst('#bookimg > img').absUrl('src'),
+			coverUrl: document.selectFirst('.module-item-pic > img').absUrl('data-src'),
 			
 			//启用章节反向顺序
 			enableChapterReverseOrder: false,
 			
 			//目录加载
-			tocs: tocs(document)
+			tocs: tocs(document.selectFirst('.catalog-more').absUrl('href'))
 		});
 	}
 	return null;
@@ -250,21 +266,24 @@ function detail(url) {
  * 目录
  * @returns {[{name, chapters:{[{name, url}]}}]}
  */
-function tocs(document) {
+function tocs(url) {
+	const response = JavaUtils.httpRequest(url);
 	//创建章节数组
-	var newChapters= [];
-	
-	//章节元素选择器
-	var chapterElements = document.select('#chapterList > li');
-	
-	for (var i2 = 0;i2 < chapterElements.size();i2++) {
-		var chapterElement = chapterElements.get(i2);
-		newChapters.push({
-            //章节名称
-            name: chapterElement.text(),
-            //章节网址
-            url: chapterElement.selectFirst('a').absUrl('href').replace('.html','_{1}.html')
-        });
+	var newChapters = [];
+	if(response.code() == 200){
+		const document = response.body().cssDocument();
+		//章节元素选择器
+		var chapterElements = document.select('.module-row-info');
+		
+		for (var i2 = 0;i2 < chapterElements.size();i2++) {
+			var chapterElement = chapterElements.get(i2);
+			newChapters.push({
+				//章节名称
+				name: chapterElement.selectFirst('.module-row-title').text(),
+				//章节网址
+				url: chapterElement.selectFirst('.module-row-text').absUrl('href')
+			});
+		}
 	}
 	return [{
 		//目录名称
@@ -282,6 +301,6 @@ function content(url) {
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
-		return document.select('#TextContent > p:not(:matches(铅笔小说|阅读模式|继续下一页))').outerHtml();
+		return document.select('.article-content').outerHtml();
 	}
 }
