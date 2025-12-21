@@ -5,7 +5,7 @@ function manifest() {
 		id: 1660927525,
 		
 		//最低兼容MyACG版本（高版本无法安装在低版本MyACG中）
-		minMyACG: 20240204,
+		minMyACG: 20241124,
 
 		//优先级 1~100，数值越大越靠前
 		priority: 80,
@@ -55,14 +55,11 @@ function manifest() {
 				type: 3,
 				key: "drive",
 				name: "选择节点",
-				itemList: {
-					"OneDrive (直连)":	"sg-onedrive",
-					"OneDrive (Cloudflare)":	"sg-onedrive-cloudflare",
-					"番剧库海外统一线路(Beta)":	"lb-global",
-					"Google Drive (纽约 VPS 转发)":	"global-googledrive-ny1",
-					"R2 对象存储测试":	"r2-test",
-				},
-				defaultValue: 0
+				summary: "不能加载的时候可以切换",
+				bindDetail: false,
+				locationList: ["sourceDetail","detail"],
+				functionName: "getDrive",
+				defaultValue: defaultDrive
 			}
 		],
 		
@@ -93,7 +90,33 @@ function manifest() {
 }
 const baseUrl = "https://lavani.me";
 const apiBaseUrl = "https://anime-api.5t5.top";
+const defaultDrive = "3A_Xinxiang";
+/**
+ * @param {string} param 详情页参数
+ */
+function getDrive(_) {
+	var items = [];
+	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(apiBaseUrl, "/v2/drive/all" + getHeader()));
+	if(response.code() == 200){
+		const $ = JSON.parse(response.body().string());
+		$.data.list.forEach((child) => {
+			items.push({
+				//名称
+				name: child.name,
 
+				//概览
+				summary: child.description,
+
+				//值
+				value: child.id,
+			})
+		});
+	}
+	return JSON.stringify({
+		//项目列表
+		itemList: items
+	});
+}
 /*
  * 是否完成登录
  * @param {string} url		网址
@@ -270,115 +293,104 @@ function tocs(id, date) {
 	//创建目录数组
 	var newTocs = [];
 
-	//目录标签请求
-	//const tagResponse = JavaUtils.httpRequest(JavaUtils.urlJoin(apiBaseUrl, '/v2/drive/all' + getHeader()));
-	//if(tagResponse.code() == 200){
-		const drive = JavaUtils.getPreference().getString("drive", "sg-onedrive")
-		var driveName = drive;
-		if(drive == "sg-onedrive"){
-			driveName = "OneDrive (直连)"
-		}else if(drive == "sg-onedrive-cloudflare"){
-			driveName = "OneDrive (Cloudflare)"
-		}else if(drive == "lb-global"){
-			driveName = "番剧库海外统一线路(Beta)"
-		}else if(drive == "global-googledrive-ny1"){
-			driveName = "Google Drive (纽约 VPS 转发)"
-		}else if(drive == "r2-test"){
-			driveName = "R2 对象存储测试"
-		}
-		//const defaultDrive = JSON.parse(tagResponse.body().string()).data.default;
-		//创建章节数组
-		var newChapters = [];
-		//目录请求
-		var url;
-		if(JavaUtils.isNetworkUrl(id)){
-			url = id.replace(baseUrl, apiBaseUrl);
-		}else{
-			url = JavaUtils.urlJoin(apiBaseUrl, '/v2/anime/file?id=' + id);
-		}
-		url = url + '&drive=' + drive + getHeader();
+	var preferenceItem = JavaUtils.getPreference().getItem("drive");
+	var driveName = "OneDrive"
+	var drive = "2AG_CF"
+	if(preferenceItem != null){
+		driveName = preferenceItem.getName()
+		drive = preferenceItem.getString();
+	}
+	//创建章节数组
+	var newChapters = [];
+	//目录请求
+	var url;
+	if(JavaUtils.isNetworkUrl(id)){
+		url = id.replace(baseUrl, apiBaseUrl);
+	}else{
+		url = JavaUtils.urlJoin(apiBaseUrl, '/v2/anime/file?id=' + id);
+	}
+	url = url + '&drive=' + drive + getHeader();
 
-		const tocResponse = JavaUtils.httpRequest(url);
-		if(tocResponse.code() == 401 || tocResponse.code() == 403){
-			JavaUtils.setUserLoginStatus(false);
-		}
-		if(tocResponse.code() == 200){
-			JavaUtils.setUserLoginStatus(true);
-			var mapChapters = new Map();
+	const tocResponse = JavaUtils.httpRequest(url);
+	if(tocResponse.code() == 401 || tocResponse.code() == 403){
+		JavaUtils.setUserLoginStatus(false);
+	}
+	if(tocResponse.code() == 200){
+		JavaUtils.setUserLoginStatus(true);
+		var mapChapters = new Map();
 
-			const data = JSON.parse(tocResponse.body().string()).data
-			if(data.length > 0){
-				data.forEach((child2) => {
-					if(child2.parseResult.extensionName.type == 'video'){
-						var name = child2.parseResult.episode;
-						if(name != null){
-							name = "第" + name + "集"
-						}else {
-							name = child2.parseResult.animeTitle;
-						}
-						if(name == null){
-							name = child2.parseResult.extensionName.trueName;
-						}
-						var tagedNames = [];
-						child2.parseResult.tagedName.forEach((child3) => {
-							if(typeof child3 === 'string'){
-								tagedNames.push(child3)
-							}
-						})
-						if(mapChapters.get(name) != null){
-							mapChapters.get(name).urls.push({
-								//章节名称
-								name: tagedNames.join(" "),
-				
-								//章节网址
-								url: child2.url,
-							});
-						}else{
-							mapChapters.set(name, {
-								//章节名称
-								name: name,
-		
-								//最近更新时间 仅兼容 1.4.9
-								lastUpdateTime: JavaUtils.stringToTime(child2.updated, "yyyy-MM-dd'T'HH:mm:ss'Z'", "yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSZ"),
-					
-								//概览
-								//summary: child2.updated,
-	
-								//章节网址
-								urls: [
-									{
-										//章节名称
-										name: tagedNames.join(" "),
-						
-										//章节网址
-										url: child2.url,
-									}
-								],
-							})
-						}
+		const data = JSON.parse(tocResponse.body().string()).data
+		if(data.length > 0){
+			data.forEach((child2) => {
+				if(child2.parseResult.extensionName.type == 'video'){
+					var name = child2.parseResult.episode;
+					if(name != null){
+						name = "第" + name + "集"
+					}else {
+						name = child2.parseResult.animeTitle;
 					}
-				});
-				for (let [key, value] of mapChapters) { 
-					newChapters.push(value);
-				}
-			}else{
-				newChapters.push({
-					//章节名称
-					name: "暂无资源 敬请期待",
-					
-					//概览
-					summary: `来自 Bangumi 的放送时间 ${date}`,
-				})
-			}
-			//添加目录
-			newTocs.push({
-				//目录名称
-				name: driveName,
+					if(name == null){
+						name = child2.parseResult.extensionName.trueName;
+					}
+					var tagedNames = [];
+					child2.parseResult.tagedName.forEach((child3) => {
+						if(typeof child3 === 'string'){
+							tagedNames.push(child3)
+						}
+					})
+					if(mapChapters.get(name) != null){
+						mapChapters.get(name).urls.push({
+							//章节名称
+							name: tagedNames.join(" "),
+			
+							//章节网址
+							url: child2.url,
+						});
+					}else{
+						mapChapters.set(name, {
+							//章节名称
+							name: name,
+	
+							//最近更新时间 仅兼容 1.4.9
+							lastUpdateTime: JavaUtils.stringToTime(child2.updated, "yyyy-MM-dd'T'HH:mm:ss'Z'", "yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSZ"),
 				
-				//章节
-				chapters : newChapters
+							//概览
+							//summary: child2.updated,
+
+							//章节网址
+							urls: [
+								{
+									//章节名称
+									name: tagedNames.join(" "),
+					
+									//章节网址
+									url: child2.url,
+								}
+							],
+						})
+					}
+				}
 			});
+			for (let [key, value] of mapChapters) { 
+				newChapters.push(value);
+			}
+		}else{
+			newChapters.push({
+				//章节名称
+				name: "暂无资源 敬请期待",
+				
+				//概览
+				summary: `来自 Bangumi 的放送时间 ${date}`,
+			})
 		}
-	//}
+		//添加目录
+		newTocs.push({
+			//目录名称
+			name: driveName,
+			
+			//章节
+			chapters : newChapters
+		});
+	}
 	return newTocs;
 }
