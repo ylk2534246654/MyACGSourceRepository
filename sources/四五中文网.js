@@ -12,7 +12,7 @@ function manifest() {
 		
 		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		enableInvalid: false,
+		enableInvalid: true,	// 目录太繁琐，放弃
 		
 		//@NonNull 搜索源名称
 		name: "四五中文网",
@@ -85,32 +85,32 @@ const baseUrl = "https://www.45zw.cc";
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl, `/modules/article/search.php?searchkey=${JavaUtils.encodeURI(key,'gbk')}&submit=%CB%D1%CB%F7`);
+	var url = JavaUtils.urlJoin(baseUrl, `/search.html@post->s=${JavaUtils.encodeURI(key)}`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
-		var elements = document.select("tbody > tr");
+		var elements = document.select(".txt-list");
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			result.push({
 				//名称
-				name: element.selectFirst('td:nth-child(1) > a').text(),
+				name: element.selectFirst('span.s2').text(),
 				
 				//作者
-				author: document.selectFirst('tr:nth-child(2) > td:nth-child(3)').text(),
+				author: document.selectFirst('span.s3').text(),
 				
 				//最后章节名称
-				lastChapterName: element.selectFirst('td:nth-child(2) > a').text(),
+				lastChapterName: element.selectFirst('span.s4').text(),
 
 				//最近更新时间
-				lastUpdateTime: element.selectFirst('tr:nth-child(2) > td:nth-child(5)').text(),
+				lastUpdateTime: element.selectFirst('span.s5').text(),
 				
 				//封面网址
-				//coverUrl: element.selectFirst('').absUrl('data-original'),
+				//coverUrl: element.selectFirst('.img > img').absUrl('data-original'),
 				
 				//网址
-				url: element.selectFirst('td:nth-child(1) > a').absUrl('href')
+				url: element.selectFirst('span.s2 > a').absUrl('href')
 			});
 		}
 	}
@@ -127,25 +127,25 @@ function detail(url) {
 		const document = response.body().cssDocument();
 		return JSON.stringify({
 			//标题
-			name: document.selectFirst('#info > h1 > :matchText').text(),
+			name: document.selectFirst('.details > h2').text(),
 			
 			//作者
-			author: document.selectFirst('#info > h1 > small > a').text(),
+			author: document.selectFirst('.p > i:nth-child(1) > a').text(),
 			
 			//最近更新时间
-			lastUpdateTime: document.selectFirst('#info > div.update  > :matchText:nth-child(3)').text(),
+			lastUpdateTime: document.selectFirst('.p > i:nth-child(2)').text(),
 			
 			//概览
-			summary: document.selectFirst('#intro').text(),
+			summary: document.selectFirst('.details.z > .p2').text(),
 	
 			//封面网址
-			coverUrl: document.selectFirst('#picbox > div > img').absUrl('src'),
+			coverUrl: document.selectFirst('.img > img').absUrl('src'),
 			
 			//启用章节反向顺序
 			enableChapterReverseOrder: false,
 			
 			//目录加载
-			tocs: tocs(url, document)
+			tocs: tocs(document.selectFirst('.btn-mulu').absUrl('href'))
 		});
 	}
 	return null;
@@ -153,38 +153,32 @@ function detail(url) {
 
 /**
  * 目录
- * @return {[{name, chapters:{[{name, url}]}}]}
+ * @returns {[{name, chapters:{[{name, url}]}}]}
  */
-function tocs(url, document) {
-	const zjboxSize = document.select('.zjbox > div > select > option').size();
-	
+function tocs(url) {
+	const response = JavaUtils.httpRequest(url);
 	//创建章节数组
-	var newChapters= [];
-	for(var i = 1;i <= zjboxSize;i++){
-		var _url = JavaUtils.urlJoin(url, `index_${i}.html`);
-		const response = JavaUtils.httpRequest(_url);
-		if(response.code() == 200){
-			const _document = response.body().cssDocument();
-				
-			//章节元素选择器
-			var chapterElements = _document.select('div > dl > dd > a');
-				
-			for (var ci = 0;ci < chapterElements.size(); ci++) {
-				var chapterElement = chapterElements.get(ci);
-				newChapters.push({
-					//章节名称
-					name: chapterElement.selectFirst('a').text(),
-					//章节链接
-					url: chapterElement.selectFirst('a').absUrl('href')
-				});
-			}
+	var newChapters = [];
+	if(response.code() == 200){
+		const document = response.body().cssDocument();
+		//章节元素选择器
+		var chapterElements = document.select('.module-row-info');
+		
+		for (var i2 = 0;i2 < chapterElements.size();i2++) {
+			var chapterElement = chapterElements.get(i2);
+			newChapters.push({
+				//章节名称
+				name: chapterElement.selectFirst('.module-row-title').text(),
+				//章节网址
+				url: chapterElement.selectFirst('.module-row-text').absUrl('href')
+			});
 		}
 	}
 	return [{
 		//目录名称
-		name: '目录',
+		name: "目录",
 		//章节
-		chapter : newChapters
+		chapters: newChapters
 	}];
 }
 
