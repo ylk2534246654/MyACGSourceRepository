@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1704080044,
+		lastUpdateTime: 1766348949,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -92,24 +92,24 @@ function search(key) {
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
-		var elements = document.select(".search-box");
+		var elements = document.select(".search-list");
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			result.push({
 				//名称
-				name: element.selectFirst('.thumb-txt').text(),
+				name: element.selectFirst('.slide-info-title').text(),
 				
 				//最后章节名称
-				lastChapterName: element.selectFirst('.public-list-prb').text(),
+				//lastChapterName: element.selectFirst('.public-list-prb').text(),
 				
 				//概览
-				summary: element.selectFirst('.thumb-blurb').text(),
+				//summary: element.selectFirst('.thumb-blurb').text(),
 
 				//封面网址
-				coverUrl: element.selectFirst('img').absUrl('data-src'),
+				coverUrl: element.selectFirst('.detail-pic > img').absUrl('data-src'),
 				
 				//网址
-				url: element.selectFirst('.public-list-exp').absUrl('href')
+				url: element.selectFirst('.button').absUrl('href')
 			});
 		}
 	}
@@ -224,7 +224,7 @@ function tocs(document) {
 		}
 		newCatalogs.push({
 			//目录名称
-			name: tagElements.get(i).selectFirst('a > :matchText').text(),
+			name: tagElements.get(i).selectFirst(':matchText').text(),
 			//章节
 			chapters: newChapters
 		});

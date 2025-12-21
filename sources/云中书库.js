@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1703912727,
+		lastUpdateTime: 1766349317,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -56,10 +56,11 @@ function manifest() {
 		baseUrl: baseUrl,
 	});
 }
-const baseUrl = "http://www.yunxs.cc";
+const baseUrl = "http://www.yunxs.la";
 /**
  * http://www.yunxs.com
  * http://www.yunxs.cc
+ * http://www.yunxs.la/
  */
 
 /**
@@ -68,7 +69,7 @@ const baseUrl = "http://www.yunxs.cc";
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	var url = JavaUtils.urlJoin(baseUrl, '/plus/search.php?q=' + encodeURI(key));
+	var url = JavaUtils.urlJoin(baseUrl, '/plus/search.php?kwtype=0&searchtype=&q=' + encodeURI(key));
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
