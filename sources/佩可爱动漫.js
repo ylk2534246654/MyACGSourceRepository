@@ -114,21 +114,18 @@ function search(key) {
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
-		var elements = document.select(".wp-block-post");
+		var elements = document.select("#ag-main-container > div");
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			result.push({
 				//名称
-				name: element.selectFirst('.wp-block-post-title').text(),
-				
-				//最近更新时间
-				lastUpdateTime: element.selectFirst('.wp-block-post-date').text(),
-				
+				name: element.selectFirst('.ag-title').text(),
+
 				//封面网址
-				coverUrl: element.selectFirst('.wp-post-image').absUrl('src'),
+				coverUrl: element.selectFirst('img').absUrl('data-src'),
 				
 				//网址
-				url: element.selectFirst('.wp-block-post-title > a').absUrl('href')
+				url: element.selectFirst('.ag-title').absUrl('href')
 			});
 		}
 	}
@@ -145,21 +142,18 @@ function find(label) {
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
-		var elements = document.select(".grid-items > .item");
+		var elements = document.select("#ag-main-container > div");
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			result.push({
 				//名称
-				name: element.selectFirst('.title_link').text(),
-				
-				//最近更新时间
-				lastUpdateTime: element.selectFirst('.post_date').text(),
-				
+				name: element.selectFirst('.ag-title').text(),
+
 				//封面网址
-				coverUrl: element.selectFirst('.thumb_link > a > img').absUrl('src'),
+				coverUrl: element.selectFirst('img').absUrl('data-src'),
 				
 				//网址
-				url: element.selectFirst('.title_link > a').absUrl('href')
+				url: element.selectFirst('.ag-title').absUrl('href')
 			});
 		}
 	}
