@@ -76,6 +76,7 @@ function manifest() {
 }
 const defaultBaseUrl = "https://www.ntdm.tv";
 /**
+ * www.ntdm8.com
  * www.ntdm.tv
  * www.ntyou.cc
  * www.ntyou.com
