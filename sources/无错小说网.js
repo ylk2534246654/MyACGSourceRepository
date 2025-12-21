@@ -128,6 +128,65 @@ function search(key) {
 	}
 	return JSON.stringify(result);
 }
+/**
+function search(key) {
+	JavaUtils.webViewEvalJS('https://www.wucuoxs.com/', "")
+    const init_url = JavaUtils.urlJoin(baseUrl,'/user/search.html?q=' + encodeURI(key))
+	const init_response = JavaUtils.httpRequest(init_url);
+	var result = [];
+	if(init_response.code() == 200){
+		const document = init_response.body().cssDocument();
+        var js = document.select("script[type]:not([src]):not([id]):lt(18)").html()
+        JavaUtils.log("执行代码:" + js)
+		eval(String(js))
+		var paramsObj = {'q':key,'vw':vw,'abw':abw,'ru':ru,'jrt':jrt,'van':van,'fw':fw,'cwl':cwl,'gpr':gpr,'uyoo':uyoo,'tz':tz,'euu':euu,'tsn':tsn,'eju':eju,'um':um,'fp':fp,'dvm':dvm,'jpk':jpk,'deblkx':deblkx,'ht':ht,'azy':azy,'sna':sna,'wqx':wqx,'fpp':fpp,'rup':rup,'jwj':jwj,'bgt':bgt,'qp':qp,'yf':yf,'cw':cw,'wq':wq,'sign':sign};
+		
+        function objectToUrlEncoded(obj) {
+            return Object.keys(obj)
+                .map(key => key + '=' + obj[key])
+                .join('&');
+        }
+
+		// 转换为编码字符串
+		var encodedString = objectToUrlEncoded(paramsObj)
+
+        var data = encodedString
+        JavaUtils.log("发送数据:" + data)
+        JavaUtils.log("referer:" + init_url)
+
+		var cookie = JavaUtils.getCookie(baseUrl)
+        JavaUtils.log("cookie:" + cookie)
+		var url = JavaUtils.urlJoin(baseUrl,`/api/search@header->referer:${init_url}@header->cookie:${cookie}@post->${data}`);
+		const response = JavaUtils.httpRequest(url);
+		if(response.code() == 200){
+            JavaUtils.log("结果：" + response.body().string())
+			const $ = JSON.parse(response.body().string());
+			$.data.search.forEach((child) => {
+				result.push({
+					//标题
+					name: child.book_name,
+			
+					//作者
+					author: child.author,
+			
+					//最后章节名称
+					lastChapterName: child.latest_chapter_name,
+
+					//最近更新时间
+					lastUpdateTime: child.uptime,
+
+					//封面网址
+					coverUrl: JavaUtils.urlJoin(url, child.cover),
+			
+					//网址
+					url: JavaUtils.urlJoin(url, child.book_detail_url),
+				});
+			});
+		}
+	}
+	return JSON.stringify(result);
+}
+ */
 
 /**
  * 发现
