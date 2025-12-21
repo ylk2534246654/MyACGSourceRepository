@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1714390264,
+		lastUpdateTime: 1766309484,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -64,8 +64,40 @@ function manifest() {
 				}
 			},
 			"漫画": ["order"]
-		}
+		},
+		//启用用户登录
+		enableUserLogin: true,
+		
+		//用户登录网址
+		userLoginUrl: JavaUtils.urlJoin(baseUrl, "login"),
+		
+		//需要用户登录列表（search，detail，content，find）
+		requiresUserLoginList: [],
 	});
+}
+/*
+ * 是否完成登录
+ * @param {string} url		网址
+ * @param {string} responseHtml	响应源码
+ * @return {boolean}  登录结果
+ */
+function isUserLoggedIn(url, responseHtml) {
+    const token = JavaUtils.webViewEvalJS(baseUrl, `(function() {return document.cookie.includes('access-token')})();`, true);
+	if(token == true){
+		return true;
+	}
+	return false;
+}
+/*
+ * 验证完成登录
+ * @return {boolean} 登录结果
+ */
+function verifyUserLoggedIn() {
+    const token = JavaUtils.webViewEvalJS(baseUrl, `(function() {return document.cookie.includes('access-token')})();`, true);
+	if(token == true){
+		return true;
+	}
+	return false;
 }
 
 const baseUrl = "https://komiic.com";
