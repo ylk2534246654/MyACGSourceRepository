@@ -78,6 +78,7 @@ function manifest() {
 const baseUrl = "https://www.qkan9.com";
 /**
  * 备用网址：
+ * 11kt.net
  * eacg.net
  * eacg1.com
  * k9dm.com
