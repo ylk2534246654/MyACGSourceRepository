@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1724911356,
+		lastUpdateTime: 1766332649,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -132,6 +132,21 @@ function manifest() {
 /**
  * mhuab_znqfonjz0s@aka.yeah.net
  */
+
+
+/**
+ * 是否启用人机身份验证
+ * @param {string} url 网址
+ * @param {string} responseHtml 响应源码
+ * @return {boolean} 返回结果
+ */
+function isEnableAuthenticator(url, responseHtml) {
+	//对框架进行拦截，检索关键字，
+	if(responseHtml != null && responseHtml.indexOf('安全验证') != -1){
+		return true;
+	}
+	return false;
+}
 
 /**
  * 搜索
@@ -282,16 +297,68 @@ function tocs(document) {
 function content(url) {
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
-        var DATA = JavaUtils.substring(response.body().string(), "DATA='","'");
-        var hexData = JavaUtils.bytesToHexString(JavaUtils.base64Decode(DATA));
+        var DATA = "var params" + JavaUtils.substring(response.body().string(), "params","</script>");
+		eval(DATA)
+        var hexData = JavaUtils.bytesToHexString(JavaUtils.base64Decode(params));
         var iv = hexData.substring(0,32);
         var decrypted = hexData.substring(32);
 	    var json = JavaUtils.bytesToStr(JavaUtils.decryptAES(JavaUtils.hexStringToBytes(decrypted), "9S8$vJnU2ANeSRoF","AES/CBC/PKCS5Padding", JavaUtils.hexStringToBytes(iv)))
-        var newImgs = []
-        JSON.parse(json).images.forEach((child) => {
-			newImgs.push(child.url)
-		});
+        var newImgs = JSON.parse(json).images
 		return JSON.stringify(newImgs);
 	}
 	return null;
 }
+/*
+ * 解密方法：
+ * 0.找到加密脚本
+ * 1.去除外层函数
+ * 2.将 decryptParams方法内找到样式为 CryptoJS[_0x392f(0x15c, 'a#uL')] 其中的 _0x392f(0x15c, 'a#uL') 放入控制台执行替换成对应结果
+ * 3.找到代码中 ('|') 部分，像上面一样执行替换，会获得一串数组
+ * 4.根据数组内数字顺序，将代码排列出来
+ */
+/**
+ *     function decryptParams(params) {
+        var _0x2618e9 = {
+            'WOwEh': function(_0xe64f12, _0x550b0e) {
+                return _0xe64f12 === _0x550b0e;
+            }
+        }
+        var _0x4939d7 = CryptoJS['enc']['Base64']['parse'](params);
+        var _0x447383 = CryptoJS['lib']['WordArray']['create'](_0x4939d7['words']['slice'](0, 16));
+        var _0x18032e = _0x4939d7['words']['slice'](4);
+        var _0x2481cd = CryptoJS['enc']['Hex']['stringify'](CryptoJS['lib']['WordArray']['create'](_0x18032e));
+        var _0x493e85 = CryptoJS['enc']['Utf8']['parse']('9S8$vJnU2ANeSRoF');
+        var _0x2b1265 = CryptoJS['AES']['decrypt']({
+                    'ciphertext': CryptoJS['enc']['Hex']['parse'](_0x2481cd)
+                }, _0x493e85, {
+                    'iv': _0x447383
+                });
+        var _0x33908c = _0x2b1265['toString'](CryptoJS['enc']['Utf8']);
+        var _0x5d9735 = JSON['parse'](_0x33908c);
+        return _0x2618e9['WOwEh'](_0x5d9735['host'], window['location']['host']) ? _0x5d9735 : [];
+    }
+
+	function decryptParams(encryptedData) {
+        // 使用CryptoJS进行AES解密
+        var encrypted = CryptoJS.enc.Base64.parse(encryptedData);
+        var iv = CryptoJS.lib.WordArray.create(encrypted.words.slice(0, 16));
+        var ciphertext = CryptoJS.lib.WordArray.create(encrypted.words.slice(4));
+        var key = CryptoJS.enc.Utf8.parse("9S8$vJnU2ANeSRoF");
+        
+        var decrypted = CryptoJS.AES.decrypt(
+            {ciphertext: ciphertext},
+            key,
+            {iv: iv}
+        );
+        
+        var decryptedString = decrypted.toString(CryptoJS.enc.Utf8);
+        var decryptedParams = JSON.parse(decryptedString);
+        
+        // 检查host是否匹配
+        if (decryptedParams.host === window.location.host) {
+            return decryptedParams;
+        } else {
+            return [];
+        }
+    }
+ */
