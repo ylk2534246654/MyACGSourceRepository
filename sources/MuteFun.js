@@ -94,6 +94,9 @@ function isEnableAuthenticator(url, responseHtml) {
 
 const defaultBaseUrl = "https://www.2kdm.com"
 /**
+ * 备份
+ * www.91mute.com
+ * 
  * 发布页：https://www.mutefun.cn
  * 邮箱：mutefun@outlook.com
  * qq频道：pd.qq.com/s/97isp2qty

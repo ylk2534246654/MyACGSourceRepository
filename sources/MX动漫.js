@@ -82,6 +82,7 @@ function manifest() {
 const baseUrl = "https://www.mxdm6.cc";
 /**
  * 备用：
+ * http://mxdm.fans
  * http://www.mxdm.tv
  * http://www.mxdm.cc
  * http://www.mxdmx.com
