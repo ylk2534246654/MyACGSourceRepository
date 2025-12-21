@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1725784865,
+		lastUpdateTime: 1766318662,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -107,10 +107,11 @@ const defaultBaseUrl = "https://www.dmxq.fun";
 
 /**
  * www.dmxq.me
- * 发布页：www.damiq.cc
+ * https://www.dmxq.fun
+ * https://dmw5c9.com/
  */
 function getDomainInfo() {
-	const response = JavaUtils.httpRequest("https://www.dmxqscreen.com");
+	const response = JavaUtils.httpRequest("https://dmw5c9.com");
 	if(response.code() == 200){
 		var encodedData = response.body().cssDocument().selectFirst("#domainData").attr("data-info");
 		if(!JavaUtils.isEmpty(encodedData)){
@@ -176,8 +177,9 @@ function isEnableAuthenticator(url, responseHtml) {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function search(key) {
-	UpdateBaseUrl()
-	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), '/vodsearch/-------------.html?wd=' + encodeURI(key));
+	//UpdateBaseUrl()
+	//var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), '/vodsearch/-------------.html?wd=' + encodeURI(key));
+	var url = JavaUtils.urlJoin(defaultBaseUrl, '/vodsearch/-------------.html?wd=' + encodeURI(key));
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -209,12 +211,13 @@ function search(key) {
  * @return {[{name, author, lastChapterName, lastUpdateTime, summary, coverUrl, url}]}
  */
 function find(type, region, label, year, order) {
-	UpdateBaseUrl()
 	if(region == "全部")region = "";
 	if(label == "全部")label = "";
 	if(year == "全部")year = "";
 	
-	var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), `/vodshow/${type}-${region}-${order}-${label}--------${year}.html`);
+	//UpdateBaseUrl()
+	//var url = JavaUtils.urlJoin(JavaUtils.getManifest().getBaseUrl(), `/vodshow/${type}-${region}-${order}-${label}--------${year}.html`);
+	var url = JavaUtils.urlJoin(defaultBaseUrl, `/vodshow/${type}-${region}-${order}-${label}--------${year}.html`);
 	var result = [];
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
@@ -245,7 +248,7 @@ function find(type, region, label, year, order) {
  * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
-	UpdateBaseUrl()
+	//UpdateBaseUrl()
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
