@@ -107,15 +107,6 @@ function manifest() {
 			"小说": ["order","label","size","status"]
 		},
 
-		//启用用户登录
-		enableUserLogin: true,
-		
-		//用户登录网址
-		userLoginUrl: JavaUtils.urlJoin(baseUrl, "/login.php"),
-		
-		//需要用户登录列表（search，detail，content，find）
-		requiresUserLoginList: ["search"],
-
 		
 		//网络限流 - 如果{regexUrl}匹配网址，则限制其{period}毫秒内仅允许{maxRequests}个请求
 		networkRateLimitList: [
@@ -131,33 +122,6 @@ function manifest() {
 			"user-agent-system": "Windows NT 10.0; Win64; x64"
 		}
 	});
-}
-
-/*
- * 是否完成登录
- * @param {string} url		网址
- * @param {string} responseHtml	响应源码
- * @return {boolean}  登录结果
- */
-function isUserLoggedIn(url, responseHtml) {
-	if(responseHtml != null && responseHtml.length > 1 && responseHtml.indexOf('登录成功') != -1){
-		return true;
-	}
-	return false;
-}
-
-/*
- * 验证完成登录
- * @return {boolean} 登录结果
- */
-function verifyUserLoggedIn() {
-	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, JavaUtils.urlJoin(baseUrl, "/saerch.php")));
-	if(response.code() == 200){
-		if(response.body().string().indexOf('个人中心') != -1){
-			return true;
-		}
-	}
-	return false;
 }
 
 /**
