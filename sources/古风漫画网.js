@@ -12,7 +12,7 @@ function manifest() {
 		
 		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		enableInvalid: false,
+		enableInvalid: true,// 由于搜索无法正常使用，还是决定列为失效处理
 		
 		//@NonNull 搜索源名称
 		name: "古风漫画网",
@@ -69,7 +69,8 @@ function manifest() {
 	});
 }
 
-const baseUrl = "https://m.gufengmh9.com";
+const baseUrl = "https://gfmh.app";
+//m.gufengmh9.com
 //备用：www.gf618.com
 
 /**
