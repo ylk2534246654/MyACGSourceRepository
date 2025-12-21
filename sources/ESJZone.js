@@ -56,10 +56,11 @@ function manifest() {
 		baseUrl: baseUrl,//如果失效建议贴吧搜索最新网址
 	});
 }
-const baseUrl = "https://www.esjzone.me";
+const baseUrl = "https://www.esjzone.one";
 /**
  * 网站记录
  * www.esjzone.net
+ * https://www.esjzone.one
  */
 
 /**
