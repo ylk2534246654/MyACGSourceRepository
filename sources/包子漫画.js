@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1737176000,
+		lastUpdateTime: 1769792517,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -86,10 +86,12 @@ function manifest() {
 				summary: "图片不能加载的时候可以尝试切换",
 				itemList: {
 					"自动": "default",
-					"线路1": "s1.baozicdn.com",
-					"线路2": "s2.baozicdn.com",
-					"线路3": "s1.baozimh.com",
-					"线路4": "s2.baozimh.com",
+					"线路1": "https://s1.baozicdn.com",
+					"线路2": "https://s2.baozicdn.com",
+					"线路3": "https://s1.baozimh.com",
+					"线路4": "https://s2.baozimh.com",
+					"线路5": "https://s1.bzcdn.net",
+					"线路6": "https://s2.bzcdn.net",
 				},
 				defaultValue: 0
 			}
@@ -347,7 +349,8 @@ function content(url) {
 
 			var imgBaseUrl = JavaUtils.getPreference().getString("imgBaseUrl", "default");
 			if(imgBaseUrl != "default"){
-				srcUrl = String(srcUrl).replace(/[\w]+\.(baozicdn|baozimh)\.com/g, imgBaseUrl); 
+				var baseUrl = JavaUtils.getBaseUrl(String(srcUrl))
+				srcUrl = String(srcUrl).replace(baseUrl, imgBaseUrl); 
 			}
 
 			result.push(srcUrl + '@imageWidth->' + imageWidth + '@imageHeight->' + imageHeight);
