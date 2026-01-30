@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1769792517,
+		lastUpdateTime: 1769794648,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -58,6 +58,13 @@ function manifest() {
 
 		//首选项配置 type：（1:文本框，2:开关，3:单选框，4:编辑框，5:跳转链接）
 		preferenceList: [
+			{
+				type: 2,
+				key: "isAppMode",
+				name: "APP 模式",
+				summary: "开启后不支持切换镜像网址",
+				defaultValue: true
+			},
 			{
 				type: 3,
 				key: "baseUrl",
@@ -325,6 +332,11 @@ function tocs(document) {
  * @return {string} content
  */
 function content(url) {
+	var isAppMode = JavaUtils.getPreference().getBoolean("isAppMode", false);
+	if(isAppMode){
+		var baseUrl = JavaUtils.getBaseUrl(String(url))
+		url = url.replace(baseUrl, "https://appcn1.baozimh.com/baozimhapp");
+	}
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		//创建漫画数组
@@ -352,7 +364,6 @@ function content(url) {
 				var baseUrl = JavaUtils.getBaseUrl(String(srcUrl))
 				srcUrl = String(srcUrl).replace(baseUrl, imgBaseUrl); 
 			}
-
 			result.push(srcUrl + '@imageWidth->' + imageWidth + '@imageHeight->' + imageHeight);
 		}
 		return JSON.stringify(result);
