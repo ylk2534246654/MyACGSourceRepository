@@ -31,6 +31,7 @@ Gitlab 代码托管平台
 
 ### 客户端下载地址
 
+### [蓝奏云](https://lanzoup.com/b07xqlbxc)
 ### [123网盘](https://www.123pan.com/s/NS2UVv-8DD53)
 ### [百度网盘](https://pan.baidu.com/s/1m-ZlcI11oMKZr1V7jBHlFQ?pwd=1234)
 
