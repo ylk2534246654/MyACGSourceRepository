@@ -83,6 +83,7 @@ function manifest() {
 					"cn.kukuc.co": "https://cn.kukuc.co",
 					"tw.kukuc.co": "https://tw.kukuc.co",
 					"www.kukuc.co": "https://www.kukuc.co",
+					"cn.dzmanga.com": "https://cn.dzmanga.com",
 				},
 				defaultValue: 0
 			},
