@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1710060433,
+		lastUpdateTime: 1779954958,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -55,6 +55,15 @@ function manifest() {
 		//@NonNull 详情页的基本网址
 		baseUrl: JavaUtils.getPreference().getString("baseUrl", defaultBaseUrl),
 		
+		//网络限流 - 如果{regexUrl}匹配网址，则限制其{period}毫秒内仅允许{maxRequests}个请求
+		networkRateLimitList: [
+			{
+				"regexUrl": "\/search\/",//表示需要限流的 Url，使用正则表达式格式（不允许为空）
+				"maxRequests": 0,//在指定的时间内允许的请求数量（必须 >= 0 才会生效）
+				"period": 10000,//时间周期，毫秒（必须 > 0 才会生效）
+			}
+		],
+
 		//发现
 		findList: {
 			"动漫": {
@@ -68,7 +77,20 @@ function manifest() {
 		},
 	});
 }
-const defaultBaseUrl = "https://www.bimiacg10.net";
+
+/**
+ * 是否启用人机身份验证
+ * @param {string} url 网址
+ * @param {string} responseHtml 响应源码
+ */
+function isEnableAuthenticator(url, responseHtml) {
+	if(responseHtml.indexOf('安全验证') != -1){
+		return true;
+	}
+	return false;
+}
+
+const defaultBaseUrl = "https://www.bimiacg14.net";
 /**
  * http://bimiacg4.net
  * http://bimiacg5.net

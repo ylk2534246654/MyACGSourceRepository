@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1766309484,
+		lastUpdateTime: 1779957550,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -83,7 +83,7 @@ function manifest() {
  */
 function isUserLoggedIn(url, responseHtml) {
     const token = JavaUtils.webViewEvalJS(baseUrl, `(function() {return document.cookie.includes('access-token')})();`, true);
-	if(token == true){
+	if(token == "true"){
 		return true;
 	}
 	return false;
@@ -94,7 +94,7 @@ function isUserLoggedIn(url, responseHtml) {
  */
 function verifyUserLoggedIn() {
     const token = JavaUtils.webViewEvalJS(baseUrl, `(function() {return document.cookie.includes('access-token')})();`, true);
-	if(token == true){
+	if(token == "true"){
 		return true;
 	}
 	return false;

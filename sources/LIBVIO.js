@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1713668559,
+		lastUpdateTime: 1779954283,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -57,8 +57,19 @@ function manifest() {
 	});
 }
 
-const baseUrl = "https://www.libvio.pw";
+const baseUrl = "https://www.libvio.run";
 //备用：www.libvio.app,www.libvio.fun,www.libvio.me,www.libvio.pw
+/**
+ * 发布页：
+ * https://www.libvio.pw/
+ * https://www.libvio.app/
+ * 备用线路：
+ * libvio.run
+ * www.libvio.mov
+ * www.libvios.com
+ * www.libhd.com
+ * www.libvio.life
+ */
 
 /**
  * 搜索

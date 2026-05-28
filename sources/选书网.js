@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1695218158,
+		lastUpdateTime: 1779956652,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -79,8 +79,8 @@ function manifest() {
 	});
 }
 
-const baseUrl = "http://www.xuanshu.org";
-//失效：www.ixuanshu.org,www.xuanshu.com,www.xuanshu.org,wap.xuanshu.org
+const baseUrl = "https://www.xuanhuange.info";
+//失效：www.ixuanshu.org,www.xuanshu.com,www.xuanshu.org,wap.xuanshu.org、www.xuanshu.org
 
 /**
  * 搜索

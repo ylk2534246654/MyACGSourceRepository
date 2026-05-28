@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 3,
 
 		//自述文件网址
 		readmeUrlList: [
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1766348949,
+		lastUpdateTime: 1779955561,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -75,7 +75,7 @@ function manifest() {
 		},
 	});
 }
-const baseUrl = "https://dick.xfani.com";
+const baseUrl = "https://dm1.xfdm.pro";
 /**
  * 稀饭动漫.com
  * Q群：534319157
@@ -92,12 +92,12 @@ function search(key) {
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
-		var elements = document.select(".search-list");
+		var elements = document.select(".search-list,.search-box");
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
 			result.push({
 				//名称
-				name: element.selectFirst('.slide-info-title').text(),
+				name: element.selectFirst('.slide-info-title,.thumb-txt').text(),
 				
 				//最后章节名称
 				//lastChapterName: element.selectFirst('.public-list-prb').text(),
@@ -106,7 +106,7 @@ function search(key) {
 				//summary: element.selectFirst('.thumb-blurb').text(),
 
 				//封面网址
-				coverUrl: element.selectFirst('.detail-pic > img').absUrl('data-src'),
+				coverUrl: element.selectFirst('img.data-src').absUrl('data-src'),
 				
 				//网址
 				url: element.selectFirst('.button').absUrl('href')

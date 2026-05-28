@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1704519781,
+		lastUpdateTime: 1779957270,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -113,8 +113,10 @@ const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://www.wenk
  * @return {boolean}  登录结果
  */
 function isUserLoggedIn(url, responseHtml) {
-	if(responseHtml != null && responseHtml.length > 1 && responseHtml.indexOf('登录成功') != -1){
-		return true;
+	if(responseHtml != null && responseHtml.length > 1){
+		if(responseHtml.indexOf('登录成功') != -1 || responseHtml.indexOf('我的书架') != -1){
+			return true;
+		}
 	}
 	return false;
 }
@@ -126,7 +128,7 @@ function verifyUserLoggedIn() {
 	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, "/index.php"));
 	if(response.code() == 200){
 		var responseHtml = response.body().string();
-		if(responseHtml.length > 1 && responseHtml.indexOf('轻小说文库欢迎您') != -1){
+		if(responseHtml.length > 1 && responseHtml.indexOf('我的书架') != -1){
 			return true;
 		}
 	}

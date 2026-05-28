@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1766321859,
+		lastUpdateTime: 1779957550,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -76,7 +76,7 @@ function manifest() {
 	});
 }
 
-const baseUrl = "https://www.lmm50.com";
+const baseUrl = "https://www.lmm85.com";
 /**
  * www.lmmzx.com
  * www.tcyy360.com
@@ -95,8 +95,10 @@ const baseUrl = "https://www.lmm50.com";
  */
 function isEnableAuthenticator(url, responseHtml) {
 	//对框架进行拦截，检索关键字，
-	if(responseHtml != null && responseHtml.indexOf('需要输入验证码') != -1){
-		return true;
+	if(responseHtml != null){
+		if(responseHtml.indexOf("请输入验证码") != -1 || responseHtml.indexOf("身份验证") != -1){
+			return true;
+		}
 	}
 	return false;
 }
