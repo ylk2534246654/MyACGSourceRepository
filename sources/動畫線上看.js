@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1704269710,
+		lastUpdateTime: 1779951657,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -180,21 +180,4 @@ function tocs(document) {
 		//章节
 		chapters: newChapters
 	}]
-}
-/**
- * 内容(InterceptRequest)
- * @params {string} url
- * @returns {string} content
- */
-function content(url) {
-	//浏览器请求结果处理
-	//hpttnp2dj2t8\.xyz|kdjb\.xyz|afwefdsa\.xyz
-	var re = new RegExp(
-		//https://
-		'^[a-zA-z]+://[^\\s/]+\.xyz|\.gif$','i'
-	);
-	if(!re.test(url)){
-		return url;
-	}
-	return null;
 }

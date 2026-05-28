@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1766334106,
+		lastUpdateTime: 1779952630,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 3,
@@ -67,7 +67,7 @@ function manifest() {
 		group: ["动漫"],
 		
 		//@NonNull 详情页的基本网址
-		baseUrl: "https://pekolove.com",
+		baseUrl: "https://ani.pekolove.net",
 		
 		//发现
 		findList: {
@@ -93,7 +93,7 @@ function manifest() {
 
 		//全局 HTTP 请求头列表
 		httpRequestHeaderList: {
-			//"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
+			"user-agent-system": "Windows NT 10.0; Win64; x64"
 		}
 	});
 }
@@ -119,13 +119,13 @@ function search(key) {
 			var element = elements.get(i);
 			result.push({
 				//名称
-				name: element.selectFirst('.ag-title').text(),
+				name: element.selectFirst('[itemprop=name]').text(),
 
 				//封面网址
 				coverUrl: element.selectFirst('img').absUrl('data-src'),
 				
 				//网址
-				url: element.selectFirst('.ag-title').absUrl('href')
+				url: element.selectFirst('[itemprop=name]').absUrl('href')
 			});
 		}
 	}
@@ -147,13 +147,13 @@ function find(label) {
 			var element = elements.get(i);
 			result.push({
 				//名称
-				name: element.selectFirst('.ag-title').text(),
+				name: element.selectFirst('[itemprop=name]').text(),
 
 				//封面网址
 				coverUrl: element.selectFirst('img').absUrl('data-src'),
 				
 				//网址
-				url: element.selectFirst('.ag-title').absUrl('href')
+				url: element.selectFirst('[itemprop=name]').absUrl('href')
 			});
 		}
 	}
