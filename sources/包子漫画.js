@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1769794648,
+		lastUpdateTime: 1780024540,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -93,7 +93,7 @@ function manifest() {
 				name: "切换图源线路",
 				summary: "图片不能加载的时候可以尝试切换",
 				itemList: {
-					"自动": "default",
+					"默认": "default",
 					"线路1": "https://s1.baozicdn.com",
 					"线路2": "https://s2.baozicdn.com",
 					"线路3": "https://s1.baozimh.com",
