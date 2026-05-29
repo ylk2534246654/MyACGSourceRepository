@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1731260539,
+		lastUpdateTime: 1780027007,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -105,7 +105,8 @@ const imgBaseUrl1 = "https://f40-1-4.g-mh.online";
 /**
  * https://nav.telltome.net
  * https://cocolamanhua.com
- * 
+ * 不一样格式的英文漫画网站：
+ * https://manhuascans.org
  */
 
 /**
@@ -122,12 +123,16 @@ function search(key) {
 		var elements = document.select(".cardlist > div");
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
+			var coverUrl = element.selectFirst('img').absUrl('src');
+			if(coverUrl.contains("url=")){
+				coverUrl = JavaUtils.decodeURI(coverUrl.match(/url=([^&]+)/)[1]);
+			}
 			result.push({
 				//名称
 				name: element.selectFirst('.cardtitle').text(),
 
 				//封面网址
-				coverUrl: JavaUtils.decodeURI(element.selectFirst('img').absUrl('src').match(/url=([^&]+)/)[1]),
+				coverUrl: coverUrl,
 				
 				//网址
 				url: element.selectFirst('a').absUrl('href')
@@ -150,12 +155,16 @@ function find(order) {
 		var elements = document.select(".cardlist > div");
 		for (var i = 0;i < elements.size();i++) {
 			var element = elements.get(i);
+			var coverUrl = element.selectFirst('img').absUrl('src');
+			if(coverUrl.contains("url=")){
+				coverUrl = JavaUtils.decodeURI(coverUrl.match(/url=([^&]+)/)[1]);
+			}
 			result.push({
 				//名称
 				name: element.selectFirst('.cardtitle').text(),
 
 				//封面网址
-				coverUrl: JavaUtils.decodeURI(element.selectFirst('img').absUrl('src').match(/url=([^&]+)/)[1]),
+				coverUrl: coverUrl,
 				
 				//网址
 				url: element.selectFirst('a').absUrl('href')
@@ -173,6 +182,11 @@ function detail(url) {
 	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		const document = response.body().cssDocument();
+		var apiHost = document.selectFirst('#chapterDrawerConfig').attr("data-api-host");
+		if(apiHost == null || apiHost == ""){
+			apiHost = "https://api-get-v2.mgsearcher.com";
+		}
+		
 		return JSON.stringify({
 			//标题
 			name: document.selectFirst('.gap-unit-xs').text(),
@@ -187,7 +201,7 @@ function detail(url) {
 			enableChapterReverseOrder: false,
 			
 			//目录加载
-			tocs: tocs(url, JavaUtils.urlJoin("https://api-get-v2.mgsearcher.com", `/api/manga/get?mid=${document.selectFirst('#firstchap').attr("data-mid")}&mode=all@header->referer:https://m.g-mh.org/`))
+			tocs: tocs(apiHost, JavaUtils.urlJoin(apiHost, `/api/manga/get?mid=${document.selectFirst('#firstchap').attr("data-mid")}&mode=all@header->referer:https://m.g-mh.org/`))
 			//tocs: tocs(JavaUtils.urlJoin(baseUrl, `/manga/get?mid=${document.selectFirst('#firstchap').attr("data-mid")}&mode=all`))
 		});
 	}
@@ -198,7 +212,7 @@ function detail(url) {
  * 目录
  * @return {[{name, chapters:{[{name, url}]}}]}
  */
-function tocs(detailUrl, url) {
+function tocs(apiHost, url) {
 	//创建章节数组
 	var newChapters= [];
 	
@@ -214,7 +228,7 @@ function tocs(detailUrl, url) {
 				lastUpdateTime: JavaUtils.stringToTime(chapter.attributes.updatedAt, "yyyy-MM-dd'T'HH:mm:sss.SSS'Z'"),
 
 				//章节网址
-				url: JavaUtils.urlJoin("https://api-get-v2.mgsearcher.com",`/api/chapter/getinfo?m=${data.id}&c=${chapter.id}@header->referer:https://m.g-mh.org/`)
+				url: JavaUtils.urlJoin(apiHost,`/api/chapter/getinfo?m=${data.id}&c=${chapter.id}@header->referer:https://m.g-mh.org/`)
 			})
 		});
         return [{
