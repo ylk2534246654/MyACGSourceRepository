@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 1,
+		version: 2,
 
 		//自述文件网址
 		readmeUrlList: [
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1779942532,
+		lastUpdateTime: 1784712181,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -321,7 +321,13 @@ function content(id) {
 			var contentElement = elements.get(i);
 			var imageWidth = contentElement.selectFirst('[width]').attr('width');
 			var imageHeight = contentElement.selectFirst('[height]').attr('height');
-            urls.push(contentElement.absUrl('src') + '@header->referer:' + baseUrl + '@imageWidth->' + imageWidth + '@imageHeight->' + imageHeight);
+			
+			var imgUrl = contentElement.absUrl('data-src')
+			if(imgUrl == null || imgUrl == ""){
+				imgUrl = contentElement.absUrl('src')
+			}
+
+            urls.push(imgUrl + '@header->referer:' + baseUrl + '@imageWidth->' + imageWidth + '@imageHeight->' + imageHeight);
         }
         return JSON.stringify(urls);
     }
