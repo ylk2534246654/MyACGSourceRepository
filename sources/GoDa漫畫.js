@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1784711649,
+		lastUpdateTime: 1785537706,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -293,8 +293,8 @@ function tocs(apiHost, url) {
 				//章节名称
 				name: chapter.attributes.title,
 
-				//最近更新时间 仅兼容 1.4.9
-				lastUpdateTime: JavaUtils.stringToTime(chapter.attributes.updatedAt, "yyyy-MM-dd'T'HH:mm:sss.SSS'Z'"),
+				//最近更新时间
+				lastUpdateTime: JavaUtils.stringToTime(chapter.attributes.updatedAt, "yyyy-MM-dd'T'HH:mm:sss.SSS'Z'", "yyyy-MM-dd'T'HH:mm:ssX"),
 
 				//章节网址
 				url: JavaUtils.urlJoin(apiHost,`/api/v2/chapter/getinfo?m=${data.id}&c=${chapter.id}@header->referer:https://m.g-mh.org/`)
