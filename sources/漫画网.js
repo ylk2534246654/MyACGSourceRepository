@@ -126,6 +126,10 @@ function manifest() {
 			},
 			default: ["region","label","order"]
 		},
+		//全局 HTTP 请求头列表
+		httpRequestHeaderList: {
+			"referer": "https://cdn.876832.xyz/"
+		}
 	});
 }
 
@@ -305,9 +309,6 @@ function content(url) {
         var decrypted = hexData.substring(32);
 	    var json = JavaUtils.bytesToStr(JavaUtils.decryptAES(JavaUtils.hexStringToBytes(decrypted), "9S8$vJnU2ANeSRoF","AES/CBC/PKCS5Padding", JavaUtils.hexStringToBytes(iv)))
         var newImgs = JSON.parse(json).images
-		newImgs = newImgs.map(function(item) {
-			return item + "@header->referer:https://cdn.876832.xyz/";
-		});
 		return JSON.stringify(newImgs);
 	}
 	return null;
