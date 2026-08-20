@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1785537706,
+		lastUpdateTime: 1787256750,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -73,8 +73,7 @@ function manifest() {
 				summary: "图片不能加载的时候可以尝试切换",
 				itemList: {
 					"线路1": imgBaseUrl1,
-					"线路2": "https://t40-1-4.g-mh.online",
-					"线路3": "https://c-nd3-1.6wm.top",
+					"线路2": "https://t-nd3-1.6wm.top"
 				},
 				defaultValue: 0
 			}
@@ -102,7 +101,8 @@ function manifest() {
 
 const baseUrl1 = "https://m.g-mh.org";
 const baseUrl = JavaUtils.getPreference().getString("baseUrl", baseUrl1);
-const imgBaseUrl1 = "https://f40-1-4.g-mh.online";
+const imgBaseUrl1 = "https://c-nd3-1.6wm.top";
+// 过时：https://f40-1-4.g-mh.online，https://t40-1-4.g-mh.online
 
 /**
  * https://nav.telltome.net

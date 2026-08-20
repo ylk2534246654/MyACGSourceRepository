@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1785538402,
+		lastUpdateTime: 1787256750,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -127,9 +127,9 @@ function manifest() {
 			default: ["region","label","order"]
 		},
 		//全局 HTTP 请求头列表
-		httpRequestHeaderList: {
-			"referer": "https://cdn.876832.xyz/"
-		}
+		// httpRequestHeaderList: {
+		// 	"referer": "https://cdn.876832.xyz/"
+		// }
 	});
 }
 
@@ -181,7 +181,7 @@ function search(key) {
 				//summary: element.selectFirst('').text(),
 
 				//封面网址
-				coverUrl: element.selectFirst('.lazy').absUrl('data-original'),
+				coverUrl: element.selectFirst('.lazy').absUrl('data-original') + "@header->referer:https://cdn.876832.xyz/",
 				
 				//网址
 				url: element.selectFirst('a').absUrl('href')
@@ -220,7 +220,7 @@ function find(region, label, order) {
 				//summary: element.selectFirst('').text(),
 
 				//封面网址
-				coverUrl: element.selectFirst('.lazy').absUrl('data-original'),
+				coverUrl: element.selectFirst('.lazy').absUrl('data-original') + "@header->referer:https://cdn.876832.xyz/",
 				
 				//网址
 				url: element.selectFirst('a').absUrl('href')
@@ -309,6 +309,10 @@ function content(url) {
         var decrypted = hexData.substring(32);
 	    var json = JavaUtils.bytesToStr(JavaUtils.decryptAES(JavaUtils.hexStringToBytes(decrypted), "9S8$vJnU2ANeSRoF","AES/CBC/PKCS5Padding", JavaUtils.hexStringToBytes(iv)))
         var newImgs = JSON.parse(json).images
+		//为每个网址添加后缀
+		newImgs.map(function (url, index) {
+			newImgs[index] = url + "@header->referer:https://cdn.876832.xyz/";
+		});
 		return JSON.stringify(newImgs);
 	}
 	return null;
