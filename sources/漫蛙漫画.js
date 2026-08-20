@@ -113,16 +113,12 @@ function manifest() {
 }
 
 //全局变量
-const drive = "manwawang.com";//JavaUtils.getPreference().getString("drive", "pigqq.com")
+const drive = "manwawang.com";
+// 备用网站：https://manwali.cc/、https://manwamh5.com/、http://www.mwrr.cc/
 
 const baseUrl 	= "https://" + drive;
-
 const searchBaseUrl 	= "https://manwawang.com";
 const imgBaseUrl   =  "https://img1.baipiaoguai.org";
-//备用：soumh.pigqq_com ，leeyegy_com , pysmei_com
-
-//const imgBaseUrl 	= "https://imgapixs.pysmei.com";
-//const imgUrl 	= "https://imgapixs.pysmei.com/bookfiles/bookimages/";
 
 //简化
 var Jsoup = org.jsoup.Jsoup;

@@ -76,8 +76,9 @@ function manifest() {
 }
 
 //此源和七夕漫画，六漫画相似
-const defaultBaseUrl = "http://m.qmanwu2.com";
+const defaultBaseUrl = "https://www.qimanwu.app";
 /**
+ * http://m.qmanwu2.com
  * http://www.qmanwu2.com
  * http://qiman5.com
  * http://qiman56.com
