@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1780024540,
+		lastUpdateTime: 1788353851,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -93,15 +93,17 @@ function manifest() {
 				name: "切换图源线路",
 				summary: "图片不能加载的时候可以尝试切换",
 				itemList: {
-					"默认": "default",
-					"线路1": "https://s1.baozicdn.com",
-					"线路2": "https://s2.baozicdn.com",
-					"线路3": "https://s1.baozimh.com",
-					"线路4": "https://s2.baozimh.com",
-					"线路5": "https://s1.bzcdn.net",
-					"线路6": "https://s2.bzcdn.net",
+					"默认": "https://ascn-a1.linkdatas.com/w640",
+					"线路1": "https://ascn-a1.linkdatas.com/w640",
+					"线路2": "https://ascn-a2.linkdatas.com/w640",
+					"线路3": "https://s1.baozicdn.com",
+					"线路4": "https://s2.baozicdn.com",
+					"线路5": "https://s1.baozimh.com",
+					"线路6": "https://s2.baozimh.com",
+					"线路7": "https://s1.bzcdn.net",
+					"线路8": "https://s2.bzcdn.net",
 				},
-				defaultValue: 0
+				defaultValue: 1
 			}
 		],
 		
