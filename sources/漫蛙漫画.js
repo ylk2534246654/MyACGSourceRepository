@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 5,
+		version: 6,
 
 		//搜索源自动同步更新网址
 		syncList: {
@@ -34,7 +34,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1787253299,
+		lastUpdateTime: 1788423045,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -88,7 +88,6 @@ function manifest() {
 						"日常": "885",
 						"热血机战": "886",
 						"魔法/奇幻": "887",
-						
 					}
 				
 			},
@@ -329,10 +328,9 @@ function content(url) {
 		 var end=ts.indexOf(";",start);
 		 var out=ts.slice(start+9,end);
 		 
-		 var js="javascript:decryptParams("+out+")";
-		 var jsout = JavaUtils.webViewEvalJS("https://manwawang.com/chapter/429108/140027",js);
+		 var jsout = decryptParams(out)
 		 
-		 var jsondt=JSON.parse(jsout);
+		 var jsondt = JSON.parse(jsout);
 		 var images = jsondt.images;
 	
 	
@@ -345,4 +343,18 @@ function content(url) {
 		return JSON.stringify(result);
 	}
 	return null;
+}
+
+
+function decryptParams(encryptedBase64) {
+    var data = JavaUtils.base64Decode(encryptedBase64);
+    var iv = java.util.Arrays.copyOfRange(data, 0, 16);
+    var cipher = java.util.Arrays.copyOfRange(data, 16, data.length);
+    var decrypted = JavaUtils.decryptAES(
+        cipher,
+        "9S8$vJnU2ANeSRoF",
+        "AES/CBC/PKCS5Padding",
+        iv
+    );
+    return JavaUtils.bytesToStr(decrypted);
 }
