@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 16,
+		version: 17,
 
 		//自述文件网址
 		readmeUrlList: [
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1788353851,
+		lastUpdateTime: 1788607925,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -67,15 +67,15 @@ function manifest() {
 			},
 			{
 				type: 3,
-				key: "baseUrl",
+				key: "baseUrl2",
 				name: "使用镜像网址",
 				summary: "不能加载的时候可以尝试切换",
 				itemList: {
+					"www.dzmanga.com": "https://www.dzmanga.com",
 					"cn.baozimhcn.com": "https://cn.baozimhcn.com",
-					"cn.baozimh.com": "https://cn.baozimh.com",
-					"cn.webmota.com": "https://cn.webmota.com",
 					"tw.baozimh.com": "https://tw.baozimh.com",
 					"www.baozimh.com": "https://www.baozimh.com",
+					"cn.webmota.com": "https://cn.webmota.com",
 					"www.webmota.com": "https://www.webmota.com",
 					"cn.czmanga.com": "https://cn.czmanga.com",
 					"tw.czmanga.com": "https://tw.czmanga.com",
@@ -83,17 +83,31 @@ function manifest() {
 					"cn.kukuc.co": "https://cn.kukuc.co",
 					"tw.kukuc.co": "https://tw.kukuc.co",
 					"www.kukuc.co": "https://www.kukuc.co",
-					"cn.dzmanga.com": "https://cn.dzmanga.com",
 				},
 				defaultValue: 0
 			},
+			{
+				type: 3,
+				key: "imgBaseUrl2",
+				name: "切换图源线路",
+				summary: "图片不能加载的时候可以尝试切换",
+				itemList: {
+					"线路1": "https://s1.baozimh.com",
+					"线路2": "https://s2.baozimh.com",
+					"线路3(部分漫画无法加载)": "https://ascn-a1.linkdatas.com",// 仅部分漫画可用
+					"线路4(部分漫画无法加载)": "https://s1-rsa1-usla.bzcdn.net",// 仅部分漫画可用
+					"网站默认": "default",
+				},
+				defaultValue: 0
+			},
+			/*
 			{
 				type: 3,
 				key: "imgBaseUrl",
 				name: "切换图源线路",
 				summary: "图片不能加载的时候可以尝试切换",
 				itemList: {
-					"默认": "https://ascn-a1.linkdatas.com/w640",
+					"默认": "default",
 					"线路1": "https://ascn-a1.linkdatas.com/w640",
 					"线路2": "https://ascn-a2.linkdatas.com/w640",
 					"线路3": "https://s1.baozicdn.com",
@@ -105,6 +119,7 @@ function manifest() {
 				},
 				defaultValue: 1
 			}
+			*/
 		],
 		
 		//分组
@@ -177,7 +192,7 @@ function manifest() {
 		},
 	});
 }
-const baseUrl = JavaUtils.getPreference().getString("baseUrl", "https://cn.baozimhcn.com");
+const baseUrl = JavaUtils.getPreference().getString("baseUrl2", "https://www.dzmanga.com");
 /**
  * 备用
  * https://cn.baozimh.com
@@ -362,7 +377,7 @@ function content(url) {
 				srcUrl = imageElement.absUrl('src');
 			}
 
-			var imgBaseUrl = JavaUtils.getPreference().getString("imgBaseUrl", "default");
+			var imgBaseUrl = JavaUtils.getPreference().getString("imgBaseUrl2", "default");
 			if(imgBaseUrl != "default"){
 				var baseUrl = JavaUtils.getBaseUrl(String(srcUrl))
 				srcUrl = String(srcUrl).replace(baseUrl, imgBaseUrl); 
