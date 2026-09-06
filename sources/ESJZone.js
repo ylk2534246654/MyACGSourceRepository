@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 2,
+		version: 3,
 
 		//自述文件网址
 		readmeUrlList: [
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1703912727,
+		lastUpdateTime: 1788674973,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -54,6 +54,12 @@ function manifest() {
 		
 		//@NonNull 详情页的基本网址
 		baseUrl: baseUrl,//如果失效建议贴吧搜索最新网址
+
+		//启用用户登录
+		enableUserLogin: true,
+		
+		//用户登录网址
+		userLoginUrl: JavaUtils.urlJoin(baseUrl, "my/login"),
 	});
 }
 const baseUrl = "https://www.esjzone.one";
@@ -62,6 +68,40 @@ const baseUrl = "https://www.esjzone.one";
  * www.esjzone.net
  * https://www.esjzone.one
  */
+
+
+/*
+ * 是否完成登录
+ * @param {string} url		网址
+ * @param {string} responseHtml	响应源码
+ * @return {boolean}  登录结果
+ */
+function isUserLoggedIn(url, responseHtml) {
+	if(url != null && url.indexOf('/my/profile') != -1){
+		if(responseHtml.indexOf('個人資料') != -1){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	return false;
+}
+/*
+ * 验证完成登录
+ * @return {boolean} 登录结果
+ */
+function verifyUserLoggedIn() {
+	const response = JavaUtils.httpRequest(JavaUtils.urlJoin(baseUrl, "/my/profile"));
+	if(response.code() == 200){
+		if(response.body().string().indexOf('個人資料') != -1){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	return true;
+}
+
 
 /**
  * 搜索
@@ -134,34 +174,84 @@ function detail(url) {
  * @returns {[{name, chapters:{[{name, url}]}}]}
  */
 function tocs(document) {
-	//创建章节数组
-	var newChapters = [];
-		
-	//章节元素选择器
-	var chapterElements = document.select('#chapterList > p,#chapterList > a');
-	
-	var group = '';//分组记录
-	for (var i2 = 0;i2 < chapterElements.size();i2++) {
-		var chapterElement = chapterElements.get(i2);
-		
-		var href = chapterElement.selectFirst('a').absUrl('href');
-		if(!JavaUtils.isNetworkUrl(href)){
-			group = chapterElement.selectFirst(':matchText').text();
-		}else{
-			newChapters.push({
-				//章节名称
-				name: group + ' ' + chapterElement.selectFirst('a').text(),
-				//章节网址
-				url: chapterElement.selectFirst('a').absUrl('href')
-			});
-		}
-	}
+    var volumesList = [];
+    var currentGroupChapters = [];
+
+    var chapterNodes = document.select('#chapterList > details,#chapterList > p,#chapterList > a');
+    var currentGroupName = null;
+
+    for (var nodeIndex = 0; nodeIndex < chapterNodes.size(); nodeIndex++) {
+        var node = chapterNodes.get(nodeIndex);
+
+        if (node.is("details")) {
+            // 处理折叠卷（details 元素）
+            var detailLinks = node.select("a");
+            var volumeChapters = [];
+
+            for (var linkIndex = 0; linkIndex < detailLinks.size(); linkIndex++) {
+                var link = detailLinks.get(linkIndex);
+                if (link.is("a")) {
+                    volumeChapters.push({
+                        name: link.selectFirst(':matchText').text(),
+                        url: link.absUrl('href')
+                    });
+                }
+            }
+            volumesList.push({
+                name: node.selectFirst("summary").text(),
+                chapters: volumeChapters
+            });
+        } else if (node.is("p")) {
+            // 普通卷名（p 标签表示新卷开始）
+            if (currentGroupChapters.length > 0) {
+                volumesList.push({
+                    name: currentGroupName,
+                    chapters: currentGroupChapters
+                });
+                currentGroupChapters = [];
+            }
+            currentGroupName = node.selectFirst(':matchText').text();
+        } else if (node.is("a")) {
+            // 普通章节（a 标签）
+            currentGroupChapters.push({
+                name: node.selectFirst(':matchText').text(),
+                url: node.absUrl('href')
+            });
+        }
+    }
+
+    // 处理最后一组未放入卷的章节
+    if (currentGroupChapters.length > 0) {
+        volumesList.push({
+            name: currentGroupName,
+            chapters: currentGroupChapters
+        });
+    }
+
+	var allChapters = [];
+    for (var volIndex = 0; volIndex < volumesList.length; volIndex++) {
+        var volume = volumesList[volIndex];
+        var volumeName = volume.name;
+        var chapterList = volume.chapters;
+        for (var chapIndex = 0; chapIndex < chapterList.length; chapIndex++) {
+            var chapter = chapterList[chapIndex];
+			var name = chapter.name
+			if(volumeName != null && volumeName.trim() !== "") {
+			// 卷名 + 空格 + 章节名
+				name = volumeName + " " + name;
+			}
+            allChapters.push({
+                name: name,
+                url: chapter.url
+            });
+        }
+    }
 	return [{
 		//目录名称
-		name: '目录',
+		name: "目录",
 		//章节
-		chapters : newChapters
-	}];
+		chapters : allChapters
+	}]
 }
 
 /**
