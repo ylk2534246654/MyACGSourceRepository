@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 17,
+		version: 18,
 
 		//自述文件网址
 		readmeUrlList: [
@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1788607925,
+		lastUpdateTime: 1790780641,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 2,
@@ -67,25 +67,27 @@ function manifest() {
 			},
 			{
 				type: 3,
-				key: "baseUrl2",
+				key: "baseUrl3",
 				name: "使用镜像网址",
 				summary: "不能加载的时候可以尝试切换",
 				itemList: {
-					"www.dzmanga.com": "https://www.dzmanga.com",
-					"cn.baozimhcn.com": "https://cn.baozimhcn.com",
-					"tw.baozimh.com": "https://tw.baozimh.com",
-					"www.baozimh.com": "https://www.baozimh.com",
 					"cn.webmota.com": "https://cn.webmota.com",
 					"www.webmota.com": "https://www.webmota.com",
-					"cn.czmanga.com": "https://cn.czmanga.com",
-					"tw.czmanga.com": "https://tw.czmanga.com",
-					"www.czmanga.com": "https://www.czmanga.com",
 					"cn.kukuc.co": "https://cn.kukuc.co",
 					"tw.kukuc.co": "https://tw.kukuc.co",
 					"www.kukuc.co": "https://www.kukuc.co",
+					// 以下证书不受信任
+					// "cn.czmanga.com": "https://cn.czmanga.com",
+					// "tw.czmanga.com": "https://tw.czmanga.com",
+					// "www.czmanga.com": "https://www.czmanga.com",
+					// "www.dzmanga.com": "https://www.dzmanga.com",
+					// "cn.baozimhcn.com": "https://cn.baozimhcn.com",
+					// "tw.baozimh.com": "https://tw.baozimh.com",
+					// "www.baozimh.com": "https://www.baozimh.com",
 				},
 				defaultValue: 0
 			},
+			/*
 			{
 				type: 3,
 				key: "imgBaseUrl2",
@@ -100,7 +102,7 @@ function manifest() {
 				},
 				defaultValue: 0
 			},
-			/*
+			*/
 			{
 				type: 3,
 				key: "imgBaseUrl",
@@ -108,8 +110,8 @@ function manifest() {
 				summary: "图片不能加载的时候可以尝试切换",
 				itemList: {
 					"默认": "default",
-					"线路1": "https://ascn-a1.linkdatas.com/w640",
-					"线路2": "https://ascn-a2.linkdatas.com/w640",
+					"线路1": "https://ascn-a1.linkdatas.com",
+					"线路2": "https://ascn-a2.linkdatas.com",
 					"线路3": "https://s1.baozicdn.com",
 					"线路4": "https://s2.baozicdn.com",
 					"线路5": "https://s1.baozimh.com",
@@ -119,7 +121,6 @@ function manifest() {
 				},
 				defaultValue: 1
 			}
-			*/
 		],
 		
 		//分组
@@ -192,7 +193,7 @@ function manifest() {
 		},
 	});
 }
-const baseUrl = JavaUtils.getPreference().getString("baseUrl2", "https://www.dzmanga.com");
+const baseUrl = JavaUtils.getPreference().getString("baseUrl3", "https://cn.webmota.com");
 /**
  * 备用
  * https://cn.baozimh.com
@@ -209,7 +210,7 @@ const baseUrl = JavaUtils.getPreference().getString("baseUrl2", "https://www.dzm
 function search(key) {
 	var url = JavaUtils.urlJoin(baseUrl,'/search?q='+ encodeURI(key));
 	var result= [];
-	const response = JavaUtils.httpRequest(url);
+	const response = JavaUtils.httpRequest(url + "@enableFrameSource->true");
 	if(response.code() == 200){
 		var document = response.body().cssDocument();
 		var elements = document.select("div.search > div.pure-g > div");
@@ -240,7 +241,7 @@ function search(key) {
 function find(region, status, label, page) {
 	var url = JavaUtils.urlJoin(baseUrl,`/classify?type=${label}&region=${region}&state=${status}&filter=%2a`);
 	var result= [];
-	const response = JavaUtils.httpRequest(url);
+	const response = JavaUtils.httpRequest(url + "@enableFrameSource->true");
 	if(response.code() == 200){
 		var document = response.body().cssDocument();
 		var elements = document.select(".classify-items > div");
@@ -269,7 +270,7 @@ function find(region, status, label, page) {
  * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
-	const response = JavaUtils.httpRequest(url);
+	const response = JavaUtils.httpRequest(url + "@enableFrameSource->true");
 	if(response.code() == 200){
 		var document = response.body().cssDocument();
 		return JSON.stringify({
@@ -377,7 +378,7 @@ function content(url) {
 				srcUrl = imageElement.absUrl('src');
 			}
 
-			var imgBaseUrl = JavaUtils.getPreference().getString("imgBaseUrl2", "default");
+			var imgBaseUrl = JavaUtils.getPreference().getString("imgBaseUrl", "default");
 			if(imgBaseUrl != "default"){
 				var baseUrl = JavaUtils.getBaseUrl(String(srcUrl))
 				srcUrl = String(srcUrl).replace(baseUrl, imgBaseUrl); 
