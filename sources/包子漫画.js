@@ -24,7 +24,7 @@ function manifest() {
 		email: "2534246654@qq.com",
 
 		//搜索源版本号，低版本搜索源无法覆盖安装高版本搜索源
-		version: 18,
+		version: 19,
 
 		//自述文件网址
 		readmeUrlList: [
@@ -210,7 +210,7 @@ const baseUrl = JavaUtils.getPreference().getString("baseUrl3", "https://cn.webm
 function search(key) {
 	var url = JavaUtils.urlJoin(baseUrl,'/search?q='+ encodeURI(key));
 	var result= [];
-	const response = JavaUtils.httpRequest(url + "@enableFrameSource->true");
+	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		var document = response.body().cssDocument();
 		var elements = document.select("div.search > div.pure-g > div");
@@ -241,7 +241,7 @@ function search(key) {
 function find(region, status, label, page) {
 	var url = JavaUtils.urlJoin(baseUrl,`/classify?type=${label}&region=${region}&state=${status}&filter=%2a`);
 	var result= [];
-	const response = JavaUtils.httpRequest(url + "@enableFrameSource->true");
+	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		var document = response.body().cssDocument();
 		var elements = document.select(".classify-items > div");
@@ -270,7 +270,7 @@ function find(region, status, label, page) {
  * @return {[{name, author, lastUpdateTime, summary, coverUrl, enableChapterReverseOrder, tocs:{[{name, chapter:{[{name, url}]}}]}}]}
  */
 function detail(url) {
-	const response = JavaUtils.httpRequest(url + "@enableFrameSource->true");
+	const response = JavaUtils.httpRequest(url);
 	if(response.code() == 200){
 		var document = response.body().cssDocument();
 		return JSON.stringify({
