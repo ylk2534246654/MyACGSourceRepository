@@ -12,7 +12,7 @@ function manifest() {
 		
 		//启用失效#默认关闭
 		//true: 无法安装，并且已安装的变灰，用于解决失效源
-		enableInvalid: false,
+		enableInvalid: true,
 		
 		//@NonNull 搜索源名称
 		name: "哔哩轻小说",
@@ -92,7 +92,7 @@ function manifest() {
 	});
 }
 
-const baseUrl = "https://www.bilinovel.com";
+const baseUrl = "https://www.linovelib.com";
 /**
  * https://www.bilinovel.com
  * https://www.linovelib.com

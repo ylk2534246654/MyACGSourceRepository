@@ -41,7 +41,7 @@ function manifest() {
 		},
 		
 		//最近更新时间
-		lastUpdateTime: 1779956334,
+		lastUpdateTime: 1793418171,
 		
 		//默认为1，类别（1:网页，2:图库，3:视频，4:书籍，5:音频，6:图片）
 		type: 4,
@@ -74,7 +74,7 @@ function manifest() {
 	});
 }
 
-const baseUrl = "http://www.huangyixiaoshuo.info";
+const baseUrl = "http://www.huangyixiaoshuo.la";
 //备份：
 /**
  * www.huangyixiaoshuo.com

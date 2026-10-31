@@ -77,8 +77,9 @@ function manifest() {
 	});
 }
 
-const baseUrl = "http://www.xbiqugu.la";
+const baseUrl = "http://www.ibiqugu.net";
 //备用：http://www.xbiqugu.la,www.xbiquge.la,www.ibiquge.la,www.ibiquges.org
+//www.xbiqugu.la
 
 /**
  * 搜索

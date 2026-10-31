@@ -77,7 +77,7 @@ function manifest() {
 	});
 }
 
-const baseUrl = "http://www.biqukun.org";
+const baseUrl = "http://www.xbiqukun.com";
 //备份：www.bswtan.org、www.bswtan.com、www.biqukun.la、www.biqukun.com、www.biqukun.info
 
 /**

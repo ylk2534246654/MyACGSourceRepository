@@ -73,12 +73,13 @@ function manifest() {
 	});
 }
 
-const baseUrl = "http://www.pfwx.com";
+const baseUrl = "http://www.pksge.la";
 /**
  * 备份：
  * http://www.pksge.info
  * http://www.pksge.org
  * http://www.pksge.la
+ * http://www.pfwx.com
  */
 
 /**

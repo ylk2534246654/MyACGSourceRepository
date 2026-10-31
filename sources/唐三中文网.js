@@ -77,8 +77,9 @@ function manifest() {
 	});
 }
 
-const baseUrl = "http://www.xtangsanshu.com";
+const baseUrl = "http://www.xtangsanshu.info";
 //备份：www.tangsanshu.net、www.xtangsanshu.com、www.xuanshu.com
+//www.xtangsanshu.com
 
 /**
  * 搜索
